@@ -27,25 +27,25 @@ type LinkButtonProps = BaseProps & {
 type Props = ButtonProps | LinkButtonProps;
 
 const variants: Record<Variant, string> = {
-  // Primary: Solid vibrant Court Blue with crisp border and glow
+  // Primary: Solid Court Blue with crisp border + glow
   primary:
-    'bg-court-600 text-white hover:bg-court-500 active:bg-court-700 shadow-glow-court font-semibold border border-court-400/50',
+    'bg-primary-600 text-white hover:bg-primary-500 active:bg-primary-700 shadow-glow-court font-semibold border border-primary-400/50',
 
-  // Secondary: High-contrast outlined surface that stands out against dark forest backgrounds
+  // Secondary: High-contrast outlined surface on dark navy
   secondary:
-    'border border-forest-500 bg-forest-800 text-cream hover:border-court-400 hover:bg-forest-700 hover:text-white active:bg-forest-600 font-medium shadow-sm',
+    'border border-neutral-600 bg-neutral-800 text-cream hover:border-primary-400 hover:bg-neutral-700 hover:text-white active:bg-neutral-600 font-medium shadow-sm',
 
   // Ghost: Subtle flat button for tertiary actions
   ghost:
-    'text-cream-muted hover:text-cream hover:bg-forest-800/60 active:bg-forest-700/60 font-medium',
+    'text-cream-muted hover:text-cream hover:bg-neutral-800/60 active:bg-neutral-700/60 font-medium',
 
-  // Danger: Red tinted pill with clean affordance
+  // Danger: Red tinted pill — destructive actions
   danger:
     'bg-error/20 text-red-300 border border-error/40 hover:bg-error hover:text-white active:bg-error/90 font-semibold',
 
-  // Success: Green tinted pill with clean affordance
+  // Success: Lime tinted pill — confirm/approve actions
   success:
-    'bg-success/20 text-green-300 border border-success/40 hover:bg-success hover:text-white active:bg-success/90 font-semibold',
+    'bg-accent-500/20 text-accent-300 border border-accent-500/40 hover:bg-accent-500 hover:text-neutral-950 active:bg-accent-500/90 font-semibold',
 };
 
 const sizes: Record<Size, string> = {
@@ -87,7 +87,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
     },
     ref
   ) => {
-    const classes = `inline-flex items-center justify-center select-none transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-court-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-forest-950 disabled:opacity-40 disabled:pointer-events-none active:scale-[0.98] ${variants[variant]} ${sizes[size]} ${fullWidth ? 'w-full' : ''} ${className}`;
+    const classes = `inline-flex items-center justify-center select-none transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 disabled:opacity-40 disabled:pointer-events-none active:scale-[0.98] ${variants[variant]} ${sizes[size]} ${fullWidth ? 'w-full' : ''} ${className}`;
 
     if ('to' in rest && rest.to) {
       return (

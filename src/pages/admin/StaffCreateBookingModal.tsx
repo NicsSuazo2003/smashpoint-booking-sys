@@ -48,17 +48,14 @@ export function StaffCreateBookingModal({ isOpen, onClose, onCreated }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load courts on first open
   useEffect(() => {
     if (isOpen && courts.length === 0) loadCourts();
   }, [isOpen, courts.length, loadCourts]);
 
-  // Default court
   useEffect(() => {
     if (isOpen && !courtId && courts.length > 0) setCourtId(courts[0].id);
   }, [isOpen, courtId, courts]);
 
-  // Load availability whenever court or date changes
   useEffect(() => {
     if (!isOpen || !courtId || !date) return;
 
@@ -157,7 +154,7 @@ export function StaffCreateBookingModal({ isOpen, onClose, onCreated }: Props) {
       size="lg"
     >
       <div className="space-y-4 text-cream">
-        {/* ─── Court + Date ─── */}
+        {/* Court + Date */}
         <div className="grid gap-3.5 sm:grid-cols-2">
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-cream-muted">
@@ -166,10 +163,10 @@ export function StaffCreateBookingModal({ isOpen, onClose, onCreated }: Props) {
             <select
               value={courtId}
               onChange={(e) => setCourtId(e.target.value)}
-              className="w-full rounded-xl border border-forest-700/80 bg-forest-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-brand-blue-400 focus:outline-none focus:ring-2 focus:ring-brand-blue-500/20"
+              className="w-full rounded-xl border border-neutral-700 bg-neutral-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
             >
               {courts.map((c) => (
-                <option key={c.id} value={c.id} className="bg-forest-900">
+                <option key={c.id} value={c.id} className="bg-neutral-900">
                   {c.name}
                 </option>
               ))}
@@ -183,22 +180,22 @@ export function StaffCreateBookingModal({ isOpen, onClose, onCreated }: Props) {
           />
         </div>
 
-        {/* ─── Slots ─── */}
+        {/* Slots */}
         <div>
           <label className="mb-1.5 flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-cream-muted">
             <span>
               Available Slots *{' '}
-              {loadingSlots && <Loader2 className="ml-1.5 inline h-3.5 w-3.5 animate-spin text-brand-blue-300" />}
+              {loadingSlots && <Loader2 className="ml-1.5 inline h-3.5 w-3.5 animate-spin text-primary-300" />}
             </span>
             {selectedSlotIds.length > 0 && (
-              <span className="font-bold text-brand-blue-300">
+              <span className="font-bold text-accent-400">
                 {selectedSlotIds.length} chosen (Auto: {formatCurrency(autoAmount)})
               </span>
             )}
           </label>
 
           {loadingSlots ? (
-            <div className="rounded-xl border border-forest-700/60 bg-forest-950/40 p-4 text-center text-xs text-cream-muted">
+            <div className="rounded-xl border border-neutral-700 bg-neutral-950/40 p-4 text-center text-xs text-cream-muted">
               Checking court schedule availability…
             </div>
           ) : slots.length === 0 ? (
@@ -216,8 +213,8 @@ export function StaffCreateBookingModal({ isOpen, onClose, onCreated }: Props) {
                     onClick={() => toggleSlot(slot.id)}
                     className={`rounded-xl border p-2.5 text-center text-xs transition ${
                       selected
-                        ? 'border-brand-blue-400 bg-brand-blue-500 text-white shadow-glow-blue font-bold'
-                        : 'border-forest-700/80 bg-forest-950/60 text-cream-muted hover:border-brand-blue-400/50 hover:text-cream'
+                        ? 'border-accent-400 bg-accent-500 text-neutral-950 shadow-glow-lime font-bold'
+                        : 'border-neutral-700 bg-neutral-950/60 text-cream-muted hover:border-primary-400/50 hover:text-cream'
                     }`}
                   >
                     <span className="font-mono block">
@@ -233,7 +230,7 @@ export function StaffCreateBookingModal({ isOpen, onClose, onCreated }: Props) {
           )}
         </div>
 
-        {/* ─── Customer ─── */}
+        {/* Customer */}
         <div className="grid gap-3.5 sm:grid-cols-2">
           <Input
             label="Customer Name *"
@@ -258,7 +255,7 @@ export function StaffCreateBookingModal({ isOpen, onClose, onCreated }: Props) {
           </div>
         </div>
 
-        {/* ─── Payment Mode ─── */}
+        {/* Payment Mode */}
         <div>
           <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-cream-muted">
             Payment Mode *
@@ -273,15 +270,15 @@ export function StaffCreateBookingModal({ isOpen, onClose, onCreated }: Props) {
                   onClick={() => setPaymentMode(mode.value)}
                   className={`rounded-xl border p-3 text-left transition ${
                     selected
-                      ? 'border-brand-blue-400 bg-brand-blue-500/20 shadow-glow-blue'
-                      : 'border-forest-700/80 bg-forest-950/60 hover:border-brand-blue-400/50'
+                      ? 'border-primary-400 bg-primary-500/20 shadow-glow-blue'
+                      : 'border-neutral-700 bg-neutral-950/60 hover:border-primary-400/50'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs font-bold ${selected ? 'text-brand-blue-200' : 'text-cream'}`}>
+                    <span className={`text-xs font-bold ${selected ? 'text-primary-200' : 'text-cream'}`}>
                       {mode.label}
                     </span>
-                    {selected && <Check className="h-4 w-4 text-brand-blue-300" />}
+                    {selected && <Check className="h-4 w-4 text-primary-300" />}
                   </div>
                   <p className="mt-0.5 text-[11px] text-cream-muted leading-tight">{mode.hint}</p>
                 </button>
@@ -305,7 +302,7 @@ export function StaffCreateBookingModal({ isOpen, onClose, onCreated }: Props) {
           )}
         </div>
 
-        {/* ─── Notes ─── */}
+        {/* Notes */}
         <div className="space-y-3">
           <Textarea
             label="Customer Notes (optional)"
@@ -323,20 +320,20 @@ export function StaffCreateBookingModal({ isOpen, onClose, onCreated }: Props) {
           />
         </div>
 
-        {/* ─── Confirmation Email ─── */}
+        {/* Confirmation Email */}
         <div className="pt-1">
           <label className="flex items-center gap-2 text-xs font-semibold text-cream cursor-pointer">
             <input
               type="checkbox"
               checked={sendConfirmation}
               onChange={(e) => setSendConfirmation(e.target.checked)}
-              className="h-4 w-4 rounded border-forest-600 bg-forest-950 accent-brand-blue-500 cursor-pointer"
+              className="h-4 w-4 rounded border-neutral-600 bg-neutral-950 accent-primary-500 cursor-pointer"
             />
             Send automated booking confirmation to the customer's email
           </label>
         </div>
 
-        {/* ─── Error Display ─── */}
+        {/* Error */}
         {error && (
           <div className="flex items-start gap-2 rounded-xl border border-error/30 bg-error/10 p-3 text-xs font-semibold text-error">
             <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
@@ -344,8 +341,8 @@ export function StaffCreateBookingModal({ isOpen, onClose, onCreated }: Props) {
           </div>
         )}
 
-        {/* ─── Modal Actions ─── */}
-        <div className="flex flex-col gap-2.5 border-t border-forest-700/80 pt-4 sm:flex-row sm:gap-3">
+        {/* Actions */}
+        <div className="flex flex-col gap-2.5 border-t border-neutral-700 pt-4 sm:flex-row sm:gap-3">
           <Button
             fullWidth
             isLoading={submitting}

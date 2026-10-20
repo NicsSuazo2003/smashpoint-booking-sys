@@ -1,17 +1,13 @@
 export const APP_CONFIG = {
-  name: import.meta.env.VITE_APP_NAME ?? 'Center Court',
+  name: import.meta.env.VITE_APP_NAME ?? 'Smash Point',
   demoMode: (import.meta.env.VITE_DEMO_MODE ?? 'false') === 'true',
   apiUrl: import.meta.env.VITE_API_BASE_URL ?? 'https://pickleballcourbookingv2-e064.onrender.com',
-  tagline: 'Book Your Court. Play Your Game.',
+  tagline: 'Dink Fast. Smash Hard.',
   established: '2026',
-  paymentNumber: '09XX XXX XXXX',
-  paymentAccountName: 'Center Court',
+  paymentNumber: '09XX XXX XXXX', // TODO: real GCash number
+  paymentAccountName: 'Smash Point Pickle Sports Center',
   developer: 'Astravex Systems',
   paymentTimerSeconds: 15 * 60,
-  /**
-   * ⭐ NEW — Fallback max advance booking window (days) used before the
-   * client's real setting loads from the API. 0 = unlimited.
-   */
   defaultMaxAdvanceBookingDays: 90,
 };
 
@@ -24,7 +20,7 @@ export const FIXED_SLOT = {
 };
 
 export const ADMIN_CREDENTIALS = {
-  email: 'admin@sideout.com',
+  email: 'admin@smashpoint.com',
   password: 'Admin123!',
 };
 
@@ -41,10 +37,10 @@ export const BOOKING_STATUS_META: Record<
   },
   payment_submitted: {
     label: 'Payment Submitted',
-    color: 'text-court-300',
-    bg: 'bg-court-600/20',
-    border: 'border-court-400/40',
-    dot: 'bg-court-400',
+    color: 'text-primary-300',
+    bg: 'bg-primary-600/20',
+    border: 'border-primary-400/40',
+    dot: 'bg-primary-400',
   },
   confirmed: {
     label: 'Confirmed',
@@ -55,10 +51,10 @@ export const BOOKING_STATUS_META: Record<
   },
   completed: {
     label: 'Completed',
-    color: 'text-court-200',
-    bg: 'bg-court-600/30',
-    border: 'border-court-400/50',
-    dot: 'bg-court-300',
+    color: 'text-primary-200',
+    bg: 'bg-primary-600/30',
+    border: 'border-primary-400/50',
+    dot: 'bg-primary-300',
   },
   cancelled: {
     label: 'Cancelled',
@@ -77,9 +73,9 @@ export const BOOKING_STATUS_META: Record<
   expired: {
     label: 'Expired',
     color: 'text-cream-muted',
-    bg: 'bg-forest-600/30',
-    border: 'border-forest-500/50',
-    dot: 'bg-forest-400',
+    bg: 'bg-neutral-800/50',
+    border: 'border-neutral-700',
+    dot: 'bg-neutral-500',
   },
   refunded: {
     label: 'Refunded',
@@ -91,18 +87,16 @@ export const BOOKING_STATUS_META: Record<
 };
 
 export const COURT_IMAGES = {
-  hero: '/images/bg1.jpg',
-  court1: '/images/bg1.jpg',
-  court2: '/images/bg2.jpg',
-  court3: '/images/bg3.jpg',
-  gallery1: '/images/bg1.jpg',
-  gallery2: '/images/bg2.jpg',
-  gallery3: '/images/bg3.jpg',
-  gallery4: '/images/bg1.jpg',
+  hero: '/images/bg.jpg',
+  court1: '/images/bg.jpg',
+  court2: '/images/bg.jpg',
+  court3: '/images/bg.jpg',
+  gallery1: '/images/bg.jpg',
+  gallery2: '/images/bg.jpg',
+  gallery3: '/images/bg.jpg',
+  gallery4: '/images/bg.jpg',
   heroSlideshow: [
-    '/images/bg1.jpg',
-    '/images/bg2.jpg',
-    '/images/bg3.jpg',
+    '/images/bg.jpg',
   ],
 };
 
@@ -116,11 +110,11 @@ export const BOOKING_COPY = {
     step03Title: "Secure Your Slot",
     step03Desc: "Complete payment via your preferred method and upload the proof of payment.",
     step04Title: "Get Confirmed",
-    step04Desc: "We’ll quickly verify your payment and send your booking confirmation. See you on the court!",
+    step04Desc: "We'll quickly verify your payment and send your booking confirmation. See you on the court!",
   },
   emptyState: {
     titleToday: "No slots available today",
     titleFuture: "No slots available for this date",
-    description: "Try selecting a different date above. We're open 5 AM to 12 AM daily.",
+    description: "Try selecting a different date above. We're open 7 AM to 12 AM daily.",
   }
 };

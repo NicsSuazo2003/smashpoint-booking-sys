@@ -30,8 +30,8 @@ export function AdminSidebar() {
   const { user, logout } = useAuthStore();
 
   return (
-    <div className="flex h-full flex-col bg-forest-900 text-cream">
-      <div className="border-b border-forest-700/80 px-6 py-5">
+    <div className="flex h-full flex-col bg-neutral-900 text-cream">
+      <div className="border-b border-neutral-700 px-6 py-5">
         <Logo size="sm" to="/admin" />
       </div>
 
@@ -47,13 +47,13 @@ export function AdminSidebar() {
               to={item.path}
               className={`flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all ${
                 active
-                  ? 'border border-brand-blue-400/40 bg-brand-blue-500/20 text-brand-blue-300 shadow-glow-blue'
-                  : 'border border-transparent text-cream-muted hover:border-forest-700 hover:bg-forest-800/60 hover:text-cream'
+                  ? 'border border-primary-400/40 bg-primary-500/20 text-primary-300 shadow-glow-blue'
+                  : 'border border-transparent text-cream-muted hover:border-neutral-700 hover:bg-neutral-800/60 hover:text-cream'
               }`}
             >
               <Icon
                 className={`h-5 w-5 ${
-                  active ? 'text-brand-blue-300' : 'text-cream-muted'
+                  active ? 'text-primary-300' : 'text-cream-muted'
                 }`}
               />
               {item.label}
@@ -62,9 +62,9 @@ export function AdminSidebar() {
         })}
       </nav>
 
-      <div className="border-t border-forest-700/80 p-4">
-        <div className="mb-3 flex items-center gap-3 rounded-xl border border-forest-700/70 bg-forest-950/70 p-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-brand-blue-400/40 bg-brand-blue-500 text-sm font-black text-white shadow-sm">
+      <div className="border-t border-neutral-700 p-4">
+        <div className="mb-3 flex items-center gap-3 rounded-xl border border-neutral-700 bg-neutral-950/70 p-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-primary-400/40 bg-primary-500 text-sm font-black text-white shadow-sm">
             {(user?.name ?? 'A')[0].toUpperCase()}
           </div>
           <div className="min-w-0 flex-1">
@@ -104,7 +104,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-charcoal text-cream">
       {/* Desktop sidebar */}
-      <aside className="fixed left-0 top-0 z-30 hidden h-screen w-64 border-r border-forest-700/80 bg-forest-900 shadow-xl lg:block">
+      <aside className="fixed left-0 top-0 z-30 hidden h-screen w-64 border-r border-neutral-700 bg-neutral-900 shadow-xl lg:block">
         <AdminSidebar />
       </aside>
 
@@ -117,14 +117,14 @@ export function AdminLayout({ children }: { children: ReactNode }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileOpen(false)}
-              className="fixed inset-0 z-40 bg-forest-950/80 backdrop-blur-sm lg:hidden"
+              className="fixed inset-0 z-40 bg-neutral-950/80 backdrop-blur-sm lg:hidden"
             />
             <motion.aside
               initial={{ x: -280 }}
               animate={{ x: 0 }}
               exit={{ x: -280 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="fixed left-0 top-0 z-50 h-screen w-64 border-r border-forest-700/80 bg-forest-900 shadow-2xl lg:hidden"
+              className="fixed left-0 top-0 z-50 h-screen w-64 border-r border-neutral-700 bg-neutral-900 shadow-2xl lg:hidden"
             >
               <AdminSidebar />
             </motion.aside>
@@ -134,11 +134,11 @@ export function AdminLayout({ children }: { children: ReactNode }) {
 
       <div className="lg:pl-64">
         {/* Mobile top bar */}
-        <div className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-forest-700/80 bg-forest-900/95 px-4 backdrop-blur-md lg:hidden">
+        <div className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-neutral-700 bg-neutral-900/95 px-4 backdrop-blur-md lg:hidden">
           <Logo size="sm" to="/admin" />
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="rounded-lg border border-forest-700 bg-forest-800/80 p-2 text-cream transition hover:border-brand-blue-400 hover:text-brand-blue-300"
+            className="rounded-lg border border-neutral-700 bg-neutral-800/80 p-2 text-cream transition hover:border-primary-400 hover:text-primary-300"
             aria-label="Toggle Navigation"
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

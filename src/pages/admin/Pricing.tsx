@@ -10,10 +10,6 @@ import { useAdminStore } from '@/stores/adminStore';
 import { formatCurrency } from '@/utils/format';
 import type { Court } from '@/types';
 
-/**
- * Base rate form state. Numeric fields can be '' while editing so the admin
- * can clear the field. Coerced to number on save.
- */
 interface BaseRateForm {
   court_id: string;
   base_price: number | '';
@@ -32,9 +28,6 @@ export function Pricing() {
     loadCourts();
   }, [loadCourts]);
 
-  // Seed base-rate state for any newly loaded court. Existing edits are
-  // preserved so a background store update doesn't wipe what the admin
-  // is typing into another court.
   useEffect(() => {
     setBaseRates((prev) => {
       const next: Record<string, BaseRateForm> = {};
@@ -61,7 +54,6 @@ export function Pricing() {
     }));
   };
 
-  // Only converts to Number, never coerces "" to 0.
   const handleNumericChange = (
     courtId: string,
     field: keyof BaseRateForm,
@@ -87,8 +79,6 @@ export function Pricing() {
         price_per_hour: Number(form.base_price) || 0,
       });
 
-      // Sync this court's form from the store so it reflects exactly what
-      // the backend stored (in case it normalized/rounded).
       const updated = useAdminStore.getState().courts.find((c) => c.id === court.id);
       if (updated) {
         setBaseRates((prev) => ({
@@ -100,8 +90,7 @@ export function Pricing() {
         }));
       }
     } catch {
-      // Store already recorded the error. Keep the user's input so they
-      // can retry without retyping.
+      // Store surfaces the error.
     } finally {
       setSavingId(null);
     }
@@ -122,7 +111,7 @@ export function Pricing() {
         {loadingCourts ? (
           <LoadingSpinner className="py-16" />
         ) : courts.length === 0 ? (
-          <div className="card rounded-2xl border border-forest-700/80 bg-forest-900/60 py-12 text-center shadow-xl backdrop-blur-sm">
+          <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/60 py-12 text-center shadow-xl backdrop-blur-sm">
             <Tag className="mx-auto h-12 w-12 text-cream-muted/40" />
             <p className="mt-4 text-sm font-medium text-cream-muted">
               No courts available to configure.
@@ -132,12 +121,9 @@ export function Pricing() {
           <div className="space-y-6">
             {courts.map((court, i) => {
               if (!court) return null;
-
               const form = baseRates[court.id];
               if (!form) return null;
-
-              const baseRate =
-                form.base_price === '' ? 0 : Number(form.base_price) || 0;
+              const baseRate = form.base_price === '' ? 0 : Number(form.base_price) || 0;
 
               return (
                 <motion.div
@@ -145,11 +131,10 @@ export function Pricing() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="card rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6"
+                  className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6"
                 >
-                  {/* ─── Header ─── */}
                   <div className="mb-5 flex items-center gap-3.5">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-brand-blue-400/30 bg-brand-blue-500/20 text-brand-blue-300 shadow-inner">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-primary-400/30 bg-primary-500/20 text-primary-300 shadow-inner">
                       <Tag className="h-5 w-5" />
                     </div>
                     <div>
@@ -162,11 +147,10 @@ export function Pricing() {
                     </div>
                   </div>
 
-                  {/* ─── Base Rate ─── */}
-                  <div className="rounded-xl border border-forest-700/60 bg-forest-950/40 p-4">
+                  <div className="rounded-xl border border-neutral-700 bg-neutral-950/40 p-4">
                     <div className="mb-2 flex items-center justify-between">
                       <div>
-                        <p className="text-xs font-bold uppercase tracking-wider text-brand-blue-300">
+                        <p className="text-xs font-bold uppercase tracking-wider text-primary-300">
                           Base Rate
                         </p>
                         <p className="text-[11px] text-cream-muted">
@@ -186,17 +170,15 @@ export function Pricing() {
                         }
                         onFocus={(e) => e.target.select()}
                         leftIcon={
-                          <span className="text-xs font-bold text-brand-blue-300">₱</span>
+                          <span className="text-xs font-bold text-accent-400">₱</span>
                         }
                       />
                     </div>
                   </div>
 
-                  {/* ─── Pricing Rules ─── */}
                   <PricingRulesEditor courtId={court.id} />
 
-                  {/* ─── Save ─── */}
-                  <div className="mt-5 border-t border-forest-700/80 pt-4">
+                  <div className="mt-5 border-t border-neutral-700 pt-4">
                     <Button
                       size="sm"
                       leftIcon={<Save className="h-4 w-4" />}
@@ -213,9 +195,8 @@ export function Pricing() {
           </div>
         )}
 
-        {/* ─── Legend / helper ─── */}
-        <div className="mt-6 card rounded-2xl border border-brand-blue-500/40 bg-forest-900/90 p-5 sm:p-6 shadow-xl backdrop-blur-sm">
-          <div className="mb-2 flex items-center gap-2 text-brand-blue-300">
+        <div className="mt-6 card rounded-2xl border border-primary-500/40 bg-neutral-900/90 p-5 sm:p-6 shadow-xl backdrop-blur-sm">
+          <div className="mb-2 flex items-center gap-2 text-primary-300">
             <Tag className="h-5 w-5" />
             <h3 className="font-display text-lg font-bold text-cream">
               How pricing works
@@ -223,21 +204,21 @@ export function Pricing() {
           </div>
           <ul className="mt-3 space-y-2 text-xs leading-relaxed text-cream-muted sm:text-sm">
             <li className="flex gap-2">
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-blue-300" />
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-300" />
               <span>
                 <strong className="text-cream">Base rate</strong> is the price per hour
                 for any slot that doesn't match a rule.
               </span>
             </li>
             <li className="flex gap-2">
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-blue-300" />
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-300" />
               <span>
                 <strong className="text-cream">Rules</strong> override the base rate for
                 specific days and time windows — e.g. weekday evenings, weekends, holidays.
               </span>
             </li>
             <li className="flex gap-2">
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-blue-300" />
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-300" />
               <span>
                 When multiple rules overlap, the one with{' '}
                 <strong className="text-cream">higher priority</strong> wins. Rules with

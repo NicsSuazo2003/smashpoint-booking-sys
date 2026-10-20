@@ -36,11 +36,10 @@ const normalizePhone = (value: string) =>
 const NOTES_MAX = 500;
 const HOLD_MINUTES = Math.round(APP_CONFIG.paymentTimerSeconds / 60);
 
-// 👇 Helper to check for test/sample keywords
 const isTestString = (val: string) => {
   const lower = val.toLowerCase();
   const blockedWords = ['test', 'sample', 'testing', 'admin', 'fake'];
-  return blockedWords.some(word => lower.includes(word));
+  return blockedWords.some((word) => lower.includes(word));
 };
 
 const customerSchema = z.object({
@@ -50,9 +49,8 @@ const customerSchema = z.object({
     .min(2, 'Name is required')
     .max(80, 'Name is too long')
     .regex(/^[A-Za-zÀ-ÿ.'\-\s]+$/, "Name can only contain letters, spaces, and . ' -")
-    // 👇 Block test names
     .refine((v) => !isTestString(v), {
-      message: "Please enter your real full name.",
+      message: 'Please enter your real full name.',
     }),
 
   email: z
@@ -62,14 +60,16 @@ const customerSchema = z.object({
     .min(1, 'Email is required')
     .email('Enter a valid email address')
     .max(120, 'Email is too long')
-    // 👇 Block test emails and specific domains
-    .refine((v) => {
-      const blockedDomains = ['test.com', 'example.com', 'mailinator.com', 'tempmail.com'];
-      const domain = v.split('@')[1];
-      return !blockedDomains.includes(domain) && !isTestString(v);
-    }, {
-      message: 'Please use a real, active email address.',
-    }),
+    .refine(
+      (v) => {
+        const blockedDomains = ['test.com', 'example.com', 'mailinator.com', 'tempmail.com'];
+        const domain = v.split('@')[1];
+        return !blockedDomains.includes(domain) && !isTestString(v);
+      },
+      {
+        message: 'Please use a real, active email address.',
+      }
+    ),
 
   phone: z
     .string()
@@ -79,18 +79,15 @@ const customerSchema = z.object({
     .refine((v) => /^09\d{9}$/.test(v), {
       message: 'Enter a valid PH mobile number (e.g. 0917 123 4567)',
     })
-    // 👇 Block dummy numbers like 09000000000
     .refine((v) => !/^09(0{9}|1{9}|2{9}|3{9}|4{9}|5{9}|6{9}|7{9}|8{9}|9{9})$/.test(v), {
       message: 'Please enter a real mobile number.',
     }),
 
   notes: z.string().max(NOTES_MAX, 'Notes are too long').optional(),
 
-  termsAccepted: z
-    .boolean()
-    .refine((v) => v === true, {
-      message: 'You must agree to the Terms & Privacy Policy to continue',
-    }),
+  termsAccepted: z.boolean().refine((v) => v === true, {
+    message: 'You must agree to the Terms & Privacy Policy to continue',
+  }),
 });
 
 type CustomerForm = z.infer<typeof customerSchema>;
@@ -167,7 +164,7 @@ export function Booking() {
       const isStillAvailable = await refreshSlots();
       if (!isStillAvailable) {
         setSubmitError(
-          "Sorry, one of your selected slots was just booked by another customer. Please go back and select a different time."
+          'Sorry, one of your selected slots was just booked by another customer. Please go back and select a different time.'
         );
         setSubmitting(false);
         return;
@@ -257,16 +254,16 @@ export function Booking() {
         <div className="grid gap-5 md:gap-6 lg:grid-cols-3">
           <div className="space-y-5 lg:col-span-2">
             {/* Selection Summary */}
-            <div className="card rounded-2xl border border-forest-700/70 bg-forest-900/80 p-4 sm:p-5 shadow-xl backdrop-blur-sm">
+            <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-4 sm:p-5 shadow-xl backdrop-blur-sm">
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-brand-blue-300">
-                  <CalendarDays className="h-3.5 w-3.5 text-brand-blue-300" />
+                <h2 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary-300">
+                  <CalendarDays className="h-3.5 w-3.5 text-primary-300" />
                   Your Selection ({selectedCourts.length} court
                   {selectedCourts.length !== 1 ? 's' : ''})
                 </h2>
                 <Link
                   to="/"
-                  className="flex items-center gap-1 text-xs font-semibold text-cream-muted underline decoration-dotted transition hover:text-brand-blue-300"
+                  className="flex items-center gap-1 text-xs font-semibold text-cream-muted underline decoration-dotted transition hover:text-primary-300"
                 >
                   <Pencil className="h-3 w-3" />
                   Edit selection
@@ -286,9 +283,9 @@ export function Booking() {
                   return (
                     <div
                       key={court.id}
-                      className="flex items-center gap-3.5 rounded-xl border border-brand-blue-500/40 bg-forest-950/60 p-3.5 transition"
+                      className="flex items-center gap-3.5 rounded-xl border border-primary-500/40 bg-neutral-950/60 p-3.5 transition"
                     >
-                      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-forest-700 sm:h-16 sm:w-16">
+                      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-neutral-700 sm:h-16 sm:w-16">
                         <img
                           src={court.image}
                           alt={court.name}
@@ -304,7 +301,7 @@ export function Booking() {
                         </p>
                       </div>
                       <div className="text-right shrink-0">
-                        <p className="text-sm font-bold text-brand-blue-300">
+                        <p className="text-sm font-bold text-accent-400">
                           {formatCurrency(courtSlots.reduce((sum, s) => sum + s.price, 0))}
                         </p>
                         <p className="text-[11px] text-cream-muted">
@@ -322,21 +319,21 @@ export function Booking() {
                   return (
                     <div
                       key={slot.slot_id}
-                      className="flex items-center justify-between rounded-xl border border-forest-700/60 bg-forest-800/80 px-3.5 py-2.5"
+                      className="flex items-center justify-between rounded-xl border border-neutral-700 bg-neutral-800/80 px-3.5 py-2.5"
                     >
                       <div className="flex min-w-0 items-center gap-2">
-                        <Clock className="h-3.5 w-3.5 shrink-0 text-brand-blue-300" />
+                        <Clock className="h-3.5 w-3.5 shrink-0 text-primary-300" />
                         <span className="truncate text-xs font-medium text-cream sm:text-sm">
                           {court?.name || 'Court'} ·{' '}
                           {formatTimeRange(slot.start_time, slot.end_time)}
                         </span>
                         {slot.type === 'fixed_2hr' && (
-                          <span className="shrink-0 rounded-full border border-brand-blue-400/40 bg-brand-blue-500/30 px-2 py-0.5 text-[10px] font-bold text-brand-blue-200">
+                          <span className="shrink-0 rounded-full border border-primary-400/40 bg-primary-500/30 px-2 py-0.5 text-[10px] font-bold text-primary-200">
                             {FIXED_SLOT.label}
                           </span>
                         )}
                       </div>
-                      <span className="shrink-0 pl-2 text-xs font-bold text-brand-blue-300 sm:text-sm">
+                      <span className="shrink-0 pl-2 text-xs font-bold text-accent-400 sm:text-sm">
                         {formatCurrency(slot.price)}
                       </span>
                     </div>
@@ -344,11 +341,11 @@ export function Booking() {
                 })}
               </div>
 
-              <div className="mt-4 flex items-center justify-between border-t border-forest-700/80 pt-3.5">
+              <div className="mt-4 flex items-center justify-between border-t border-neutral-700 pt-3.5">
                 <span className="text-xs text-cream-muted">
                   {selectedSlots.length} slot{selectedSlots.length !== 1 ? 's' : ''} selected
                 </span>
-                <span className="font-display text-xl font-extrabold text-brand-blue-300">
+                <span className="font-display text-xl font-extrabold text-accent-400">
                   {formatCurrency(total)}
                 </span>
               </div>
@@ -357,9 +354,9 @@ export function Booking() {
             {/* Customer Details Form */}
             <div
               ref={formRef}
-              className="card rounded-2xl border border-forest-700/70 bg-forest-900/80 p-4 scroll-mt-24 sm:p-5 shadow-xl backdrop-blur-sm"
+              className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-4 scroll-mt-24 sm:p-5 shadow-xl backdrop-blur-sm"
             >
-              <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-brand-blue-300">
+              <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-primary-300">
                 Your Details
               </h2>
               <form
@@ -417,10 +414,10 @@ export function Booking() {
                   </p>
                 </div>
 
-                <div className="flex items-start gap-2.5 rounded-xl border border-brand-blue-500/30 bg-brand-blue-500/10 p-3.5">
-                  <Timer className="mt-0.5 h-4 w-4 shrink-0 text-brand-blue-300" />
+                <div className="flex items-start gap-2.5 rounded-xl border border-primary-500/30 bg-primary-500/10 p-3.5">
+                  <Timer className="mt-0.5 h-4 w-4 shrink-0 text-primary-300" />
                   <p className="text-xs leading-relaxed text-cream-muted">
-                    <strong className="font-semibold text-brand-blue-200">
+                    <strong className="font-semibold text-primary-200">
                       What happens next:
                     </strong>{' '}
                     your slots are held for {HOLD_MINUTES} minutes once you continue. Pay and submit
@@ -428,12 +425,12 @@ export function Booking() {
                   </p>
                 </div>
 
-                <div className="flex items-start gap-2.5 rounded-xl border border-forest-700/60 bg-forest-950/60 p-3.5">
+                <div className="flex items-start gap-2.5 rounded-xl border border-neutral-700 bg-neutral-950/60 p-3.5">
                   <input
                     type="checkbox"
                     id="termsAccepted"
                     {...register('termsAccepted')}
-                    className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-forest-600 bg-forest-950 accent-brand-blue-500 focus:ring-2 focus:ring-brand-blue-500/40"
+                    className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-neutral-600 bg-neutral-950 accent-primary-500 focus:ring-2 focus:ring-primary-500/40"
                   />
                   <label
                     htmlFor="termsAccepted"
@@ -444,7 +441,7 @@ export function Booking() {
                       to="/terms"
                       target="_blank"
                       rel="noreferrer"
-                      className="font-semibold text-brand-blue-300 underline underline-offset-2 hover:text-brand-blue-200"
+                      className="font-semibold text-primary-300 underline underline-offset-2 hover:text-primary-200"
                     >
                       Terms and Conditions
                     </Link>{' '}
@@ -472,7 +469,7 @@ export function Booking() {
           {/* Right: Booking Summary Sidebar */}
           <div className="hidden lg:col-span-1 lg:block">
             <div className="sticky top-24 space-y-3">
-              <div className="card rounded-2xl border border-forest-700/70 bg-forest-900/90 p-5 shadow-xl">
+              <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/90 p-5 shadow-xl">
                 <h2 className="mb-3.5 font-display text-base font-bold text-cream">
                   Booking Summary
                 </h2>
@@ -486,7 +483,7 @@ export function Booking() {
                     return (
                       <div
                         key={court.id}
-                        className="rounded-xl border border-forest-700/60 bg-forest-950/60 p-3"
+                        className="rounded-xl border border-neutral-700 bg-neutral-950/60 p-3"
                       >
                         <p className="text-[11px] font-semibold uppercase tracking-wider text-cream-muted">
                           Court
@@ -495,7 +492,7 @@ export function Booking() {
                         <p className="text-[11px] text-cream-muted">
                           {formatDateLong(selectedDate)}
                         </p>
-                        <p className="mt-1.5 text-xs font-semibold text-brand-blue-300">
+                        <p className="mt-1.5 text-xs font-semibold text-accent-400">
                           {courtSlots.length} slot{courtSlots.length !== 1 ? 's' : ''} ·{' '}
                           {formatCurrency(courtSlots.reduce((sum, s) => sum + s.price, 0))}
                         </p>
@@ -516,7 +513,7 @@ export function Booking() {
                       return (
                         <div
                           key={slot.slot_id}
-                          className="flex items-center justify-between rounded-lg bg-forest-800/80 px-3 py-2 text-xs"
+                          className="flex items-center justify-between rounded-lg bg-neutral-800/80 px-3 py-2 text-xs"
                         >
                           <div className="min-w-0 flex-1 pr-2">
                             <p className="truncate font-medium text-cream">
@@ -524,12 +521,12 @@ export function Booking() {
                               {formatTimeRange(slot.start_time, slot.end_time)}
                             </p>
                             {slot.type === 'fixed_2hr' && (
-                              <span className="text-[10px] font-bold text-brand-blue-300">
+                              <span className="text-[10px] font-bold text-primary-300">
                                 {FIXED_SLOT.label}
                               </span>
                             )}
                           </div>
-                          <span className="shrink-0 font-bold text-brand-blue-300">
+                          <span className="shrink-0 font-bold text-accent-400">
                             {formatCurrency(slot.price)}
                           </span>
                         </div>
@@ -538,12 +535,12 @@ export function Booking() {
                   </motion.div>
                 </AnimatePresence>
 
-                <div className="mt-4 border-t border-forest-700/80 pt-3.5">
+                <div className="mt-4 border-t border-neutral-700 pt-3.5">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-cream-muted">
                       {selectedSlots.length} slot{selectedSlots.length !== 1 ? 's' : ''}
                     </span>
-                    <span className="font-display text-2xl font-extrabold text-brand-blue-300">
+                    <span className="font-display text-2xl font-extrabold text-accent-400">
                       {formatCurrency(total)}
                     </span>
                   </div>
@@ -569,7 +566,7 @@ export function Booking() {
                     to="/terms"
                     target="_blank"
                     rel="noreferrer"
-                    className="font-semibold text-brand-blue-300 underline"
+                    className="font-semibold text-primary-300 underline"
                   >
                     Terms
                   </Link>
@@ -578,7 +575,7 @@ export function Booking() {
                     to="/privacy"
                     target="_blank"
                     rel="noreferrer"
-                    className="font-semibold text-brand-blue-300 underline"
+                    className="font-semibold text-primary-300 underline"
                   >
                     Privacy Policy
                   </Link>
@@ -587,7 +584,7 @@ export function Booking() {
                     to="/refund-policy"
                     target="_blank"
                     rel="noreferrer"
-                    className="font-semibold text-brand-blue-300 underline"
+                    className="font-semibold text-primary-300 underline"
                   >
                     No Refund Policy
                   </Link>
@@ -600,13 +597,13 @@ export function Booking() {
       </div>
 
       {/* Sticky Mobile Checkout Bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-forest-700/80 bg-forest-950/95 p-3.5 backdrop-blur-md lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-700 bg-neutral-950/95 p-3.5 backdrop-blur-md lg:hidden">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0 flex-1">
             <p className="text-[11px] uppercase font-semibold tracking-wider text-cream-muted">
               {selectedSlots.length} slot{selectedSlots.length !== 1 ? 's' : ''} selected
             </p>
-            <p className="text-xl font-extrabold text-brand-blue-300">{formatCurrency(total)}</p>
+            <p className="text-xl font-extrabold text-accent-400">{formatCurrency(total)}</p>
             {errors.termsAccepted && (
               <p className="mt-0.5 text-[10px] font-medium text-error">
                 ⚠ Agree to Terms &amp; Privacy above

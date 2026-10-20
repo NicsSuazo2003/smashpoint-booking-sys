@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 interface LogoProps {
@@ -7,6 +8,8 @@ interface LogoProps {
 }
 
 export function Logo({ size = 'md', withText = true, to = '/' }: LogoProps) {
+  const [imageFailed, setImageFailed] = useState(false);
+
   const sizes = {
     sm: { image: 40, text: 'text-lg' },
     md: { image: 50, text: 'text-xl' },
@@ -19,19 +22,21 @@ export function Logo({ size = 'md', withText = true, to = '/' }: LogoProps) {
 
   const content = (
     <div className="flex items-center gap-2.5">
-      <img
-        src="/images/CC.png"
-        alt="Center Court"
-        width={s.image}
-        height={s.image}
-        className="object-contain"
-      />
+      {/* ✅ Only render <img> if it hasn't failed yet — no broken-image icon */}
+      {!imageFailed && (
+        <img
+          src="/images/SP.png"
+          alt="Smash Point"
+          width={s.image}
+          height={s.image}
+          className="object-contain"
+          onError={() => setImageFailed(true)}
+        />
+      )}
       {withText && (
         <span className={`font-display ${s.text} font-bold tracking-tight`}>
-          {/* ⭐ "Center" = gold-400 (medium steel blue) */}
-          <span className="text-gold-400">Center</span>
-          {/* ⭐ "Court" = accentGreen-400 (sea/jade green) */}
-          <span className="text-accentGreen-400">Court</span>
+          <span className="text-cream">Smash</span>{' '}
+          <span className="text-accent-400">Point</span>
         </span>
       )}
     </div>
@@ -39,7 +44,7 @@ export function Logo({ size = 'md', withText = true, to = '/' }: LogoProps) {
 
   if (to) {
     return (
-      <Link to={to} aria-label="Center Court home">
+      <Link to={to} aria-label="Smash Point home">
         {content}
       </Link>
     );

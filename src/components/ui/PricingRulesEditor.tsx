@@ -42,7 +42,6 @@ const EMPTY_FORM: EditorForm = {
 
 function formatTimeShort(time: string): string {
   if (!time) return '';
-  // Handle 00:00 as Midnight (12 AM)
   const [hour, minute] = time.split(':').map(Number);
   const ampm = hour >= 12 ? 'PM' : 'AM';
   const hour12 = hour % 12 || 12;
@@ -202,7 +201,6 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
     interval: { start_time: string; end_time: string }
   ): boolean => {
     if (!start) return false;
-    // 👇 FIX: Handle 00:00 as end of day
     if (!end || start === end || end === '00:00') {
       return interval.start_time >= start;
     }
@@ -253,7 +251,6 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
       (max, x) => (x.end_time > max.end_time ? x : max),
       allIntervals[0]
     );
-    // If the last interval ends at midnight, ensure it's saved as 00:00
     const finalEnd = last.end_time === '00:00' ? '00:00' : last.end_time;
     setForm({ ...form, start_time: first.start_time, end_time: finalEnd });
   };
@@ -276,7 +273,6 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
     if (!form || evening.length === 0) return;
     const first = evening[0];
     const last = evening[evening.length - 1];
-    // 👇 FIX: If evening ends at midnight, force 00:00
     const finalEnd = last.end_time === '00:00' ? '00:00' : last.end_time;
     setForm({ ...form, start_time: first.start_time, end_time: finalEnd });
   };
@@ -298,8 +294,6 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
       setLocalError('Please pick a start and end time.');
       return;
     }
-    
-    // 👇 FIX: Allow 00:00 (Midnight) as an end time
     if (form.end_time !== '00:00' && form.end_time <= form.start_time) {
       setLocalError('End time must be after start time.');
       return;
@@ -360,10 +354,10 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
       <div key={title}>
         <div className="mb-2 flex items-center gap-2">
           {icon}
-          <span className="text-[11px] font-bold uppercase tracking-wider text-court-300">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-primary-300">
             {title}
           </span>
-          <div className="h-px flex-1 bg-forest-700/60" />
+          <div className="h-px flex-1 bg-neutral-700/60" />
         </div>
         <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
           {intervals.map((it) => {
@@ -375,8 +369,8 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                 onClick={() => handleSlotClick(it)}
                 className={`flex h-9 items-center justify-center rounded-lg border px-1.5 text-[11px] font-semibold tracking-tight transition-all ${
                   active
-                    ? 'border-court-300 bg-court-600 text-white shadow-glow-court'
-                    : 'border-forest-700/80 bg-forest-950/60 text-cream-muted hover:border-court-400/50 hover:text-cream'
+                    ? 'border-accent-400 bg-accent-500 text-neutral-950 shadow-glow-lime'
+                    : 'border-neutral-700 bg-neutral-950/60 text-cream-muted hover:border-primary-400/50 hover:text-cream'
                 }`}
               >
                 {formatTimeShort(it.start_time)}–{formatTimeShort(it.end_time)}
@@ -389,10 +383,10 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
   };
 
   return (
-    <div className="mt-5 border-t border-forest-700/80 pt-4">
+    <div className="mt-5 border-t border-neutral-700 pt-4">
       <div className="mb-3 flex items-center justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-wider text-brand-blue-300">
+          <p className="text-xs font-bold uppercase tracking-wider text-primary-300">
             Day-Based Pricing Rules
           </p>
           <p className="text-[11px] text-cream-muted">
@@ -410,7 +404,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
       </div>
 
       {rules.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-forest-700/80 bg-forest-950/40 p-4 text-center text-xs text-cream-muted">
+        <div className="rounded-xl border border-dashed border-neutral-700 bg-neutral-950/40 p-4 text-center text-xs text-cream-muted">
           No rules yet. Base and peak prices above apply to all slots.
         </div>
       ) : (
@@ -421,16 +415,16 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
             .map((rule) => (
               <div
                 key={rule.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-forest-700/80 bg-forest-950/60 px-3.5 py-2.5"
+                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-neutral-700 bg-neutral-950/60 px-3.5 py-2.5"
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <Tag className="h-3.5 w-3.5 shrink-0 text-brand-blue-300" />
+                    <Tag className="h-3.5 w-3.5 shrink-0 text-primary-300" />
                     <span className="truncate text-sm font-bold text-cream">
                       {rule.label}
                     </span>
                     {rule.priority > 0 && (
-                      <span className="rounded-md border border-brand-blue-400/40 bg-brand-blue-500/20 px-1.5 py-0.5 text-[9px] font-bold text-brand-blue-200">
+                      <span className="rounded-md border border-primary-400/40 bg-primary-500/20 px-1.5 py-0.5 text-[9px] font-bold text-primary-200">
                         P{rule.priority}
                       </span>
                     )}
@@ -442,7 +436,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                 </div>
 
                 <div className="text-right">
-                  <p className="font-display text-base font-bold text-brand-blue-300">
+                  <p className="font-display text-base font-bold text-accent-400">
                     {formatCurrency(rule.price_per_hour)}
                     <span className="text-[10px] font-normal text-cream-muted">/hr</span>
                   </p>
@@ -451,14 +445,14 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                 <div className="flex gap-1">
                   <button
                     onClick={() => openEdit(rule)}
-                    className="rounded-lg border border-forest-600 bg-forest-800 p-1.5 text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300 active:scale-95"
+                    className="rounded-lg border border-neutral-600 bg-neutral-800 p-1.5 text-cream-muted transition hover:border-primary-400 hover:text-primary-300 active:scale-95"
                     title="Edit rule"
                   >
                     <Pencil className="h-3.5 w-3.5" />
                   </button>
                   <button
                     onClick={() => handleDelete(rule)}
-                    className="rounded-lg border border-forest-600 bg-forest-800 p-1.5 text-cream-muted transition hover:border-red-400 hover:text-red-400 active:scale-95"
+                    className="rounded-lg border border-neutral-600 bg-neutral-800 p-1.5 text-cream-muted transition hover:border-red-400 hover:text-red-400 active:scale-95"
                     title="Delete rule"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -493,7 +487,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                   <button
                     type="button"
                     onClick={selectEveryDay}
-                    className="text-brand-blue-300 underline hover:text-brand-blue-200"
+                    className="text-primary-300 underline hover:text-primary-200"
                   >
                     Every day
                   </button>
@@ -516,8 +510,8 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                       onClick={() => toggleDay(d.key)}
                       className={`min-w-[52px] rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition ${
                         isSelected
-                          ? 'border-brand-blue-400 bg-brand-blue-500 text-white'
-                          : 'border-forest-700/80 bg-forest-950/60 text-cream-muted hover:border-brand-blue-400/40 hover:text-cream'
+                          ? 'border-primary-400 bg-primary-500 text-white'
+                          : 'border-neutral-700 bg-neutral-950/60 text-cream-muted hover:border-primary-400/40 hover:text-cream'
                       }`}
                     >
                       {d.label}
@@ -538,15 +532,15 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                 <button
                   type="button"
                   onClick={() => setManualMode((m) => !m)}
-                  className="text-[11px] text-brand-blue-300 underline hover:text-brand-blue-200"
+                  className="text-[11px] text-primary-300 underline hover:text-primary-200"
                 >
                   {manualMode ? 'Pick from slots' : 'Enter manually'}
                 </button>
               </div>
 
-              <div className="mb-3 rounded-lg border border-brand-blue-500/30 bg-brand-blue-500/10 p-3">
+              <div className="mb-3 rounded-lg border border-primary-500/30 bg-primary-500/10 p-3">
                 <div className="flex items-center gap-2 text-xs">
-                  <Clock className="h-3.5 w-3.5 shrink-0 text-brand-blue-300" />
+                  <Clock className="h-3.5 w-3.5 shrink-0 text-primary-300" />
                   {form.start_time && form.end_time ? (
                     <span className="font-semibold text-cream">
                       {formatRange(form.start_time, form.end_time)}
@@ -563,7 +557,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                     <button
                       type="button"
                       onClick={selectWholeDay}
-                      className="rounded-lg border border-brand-blue-400/40 bg-brand-blue-500/15 px-2.5 py-1 text-[11px] font-semibold text-brand-blue-200 transition hover:bg-brand-blue-500/25"
+                      className="rounded-lg border border-primary-400/40 bg-primary-500/15 px-2.5 py-1 text-[11px] font-semibold text-primary-200 transition hover:bg-primary-500/25"
                     >
                       Whole day
                     </button>
@@ -571,7 +565,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                       <button
                         type="button"
                         onClick={selectMorning}
-                        className="rounded-lg border border-forest-700/80 bg-forest-950/60 px-2.5 py-1 text-[11px] text-cream-muted transition hover:border-court-400/40 hover:text-cream"
+                        className="rounded-lg border border-neutral-700 bg-neutral-950/60 px-2.5 py-1 text-[11px] text-cream-muted transition hover:border-primary-400/40 hover:text-cream"
                       >
                         Morning
                       </button>
@@ -580,7 +574,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                       <button
                         type="button"
                         onClick={selectAfternoon}
-                        className="rounded-lg border border-forest-700/80 bg-forest-950/60 px-2.5 py-1 text-[11px] text-cream-muted transition hover:border-court-400/40 hover:text-cream"
+                        className="rounded-lg border border-neutral-700 bg-neutral-950/60 px-2.5 py-1 text-[11px] text-cream-muted transition hover:border-primary-400/40 hover:text-cream"
                       >
                         Afternoon
                       </button>
@@ -589,7 +583,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                       <button
                         type="button"
                         onClick={selectEvening}
-                        className="rounded-lg border border-forest-700/80 bg-forest-950/60 px-2.5 py-1 text-[11px] text-cream-muted transition hover:border-court-400/40 hover:text-cream"
+                        className="rounded-lg border border-neutral-700 bg-neutral-950/60 px-2.5 py-1 text-[11px] text-cream-muted transition hover:border-primary-400/40 hover:text-cream"
                       >
                         Evening
                       </button>
@@ -597,7 +591,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                     <button
                       type="button"
                       onClick={clearRange}
-                      className="rounded-lg border border-forest-700/80 bg-forest-950/60 px-2.5 py-1 text-[11px] text-cream-muted transition hover:text-error"
+                      className="rounded-lg border border-neutral-700 bg-neutral-950/60 px-2.5 py-1 text-[11px] text-cream-muted transition hover:text-error"
                     >
                       Clear
                     </button>
@@ -621,35 +615,35 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                   />
                 </div>
               ) : loadingSlots ? (
-                <div className="rounded-xl border border-forest-700/80 bg-forest-950/40 py-6 text-center">
+                <div className="rounded-xl border border-neutral-700 bg-neutral-950/40 py-6 text-center">
                   <LoadingSpinner />
                 </div>
               ) : allIntervals.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-forest-700/80 bg-forest-950/40 p-4 text-center text-xs text-cream-muted">
+                <div className="rounded-xl border border-dashed border-neutral-700 bg-neutral-950/40 p-4 text-center text-xs text-cream-muted">
                   No time slots found for this court.{' '}
                   <button
                     type="button"
                     onClick={() => setManualMode(true)}
-                    className="text-brand-blue-300 underline"
+                    className="text-primary-300 underline"
                   >
                     Enter manually
                   </button>
                 </div>
               ) : (
-                <div className="space-y-4 rounded-xl border border-forest-700/80 bg-forest-950/40 p-3.5">
+                <div className="space-y-4 rounded-xl border border-neutral-700 bg-neutral-950/40 p-3.5">
                   {renderSlotGroup(
                     'Morning',
-                    <CloudSun className="h-3.5 w-3.5 text-court-300" />,
+                    <CloudSun className="h-3.5 w-3.5 text-primary-300" />,
                     morning
                   )}
                   {renderSlotGroup(
                     'Afternoon',
-                    <Sun className="h-3.5 w-3.5 text-court-300" />,
+                    <Sun className="h-3.5 w-3.5 text-primary-300" />,
                     afternoon
                   )}
                   {renderSlotGroup(
                     'Evening',
-                    <Moon className="h-3.5 w-3.5 text-court-300" />,
+                    <Moon className="h-3.5 w-3.5 text-primary-300" />,
                     evening
                   )}
                 </div>
@@ -671,7 +665,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                   });
                 }}
                 onFocus={(e) => e.target.select()}
-                leftIcon={<span className="text-xs font-bold text-brand-blue-300">₱</span>}
+                leftIcon={<span className="text-xs font-bold text-accent-400">₱</span>}
               />
               <Input
                 label="Priority"

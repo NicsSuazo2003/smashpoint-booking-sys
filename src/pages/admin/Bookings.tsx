@@ -234,10 +234,8 @@ type BookingExtras = {
 
 const toDay = (d: string | undefined | null) => (d ? d.slice(0, 10) : '');
 
-/** Normalizes IDs so "ABC-123" and "abc-123 " compare equal. */
 const normId = (id: unknown): string => (id == null ? '' : String(id).trim().toLowerCase());
 
-/** Trims "19:00:00" → "19:00" so duplicate detection ignores seconds. */
 const trimTime = (t: string | undefined | null): string => (t ? t.slice(0, 5) : '');
 
 function localDayString(offsetDays = 0) {
@@ -265,20 +263,6 @@ type SlotLike = {
   start_time: string;
   end_time: string;
 };
-
-/**
- * Groups slots by court_id, de-duplicates identical time ranges within each
- * court, sorts times chronologically, and formats a readable summary.
- *
- * Example: "Court 1: 7:00 PM - 8:00 PM | Court 2: 7:00 PM - 8:00 PM"
- *
- * - Safe with null/undefined/empty slots and malformed entries.
- * - Court ids are compared case-insensitively.
- * - If a court can't be resolved (e.g. courts list not loaded yet), it falls
- *   back to `fallbackCourtName` when there's a single group, otherwise
- *   "Unknown court". It re-renders with real names once courts load.
- */
-// Inside src/pages/admin/Bookings.tsx
 
 function slotsSummary(
   slots: SlotLike[] | null | undefined,
@@ -310,11 +294,10 @@ function slotsSummary(
   if (byCourt.size === 0) return 'No slots';
 
   const mergeRanges = (times: Map<string, { start: string; end: string }>) => {
-    // 👇 FIX: Sort the times array by start time FIRST
     const sorted = Array.from(times.values()).sort((a, b) =>
       trimTime(a.start).localeCompare(trimTime(b.start))
     );
-    
+
     const merged: { start: string; end: string }[] = [];
     for (const t of sorted) {
       const last = merged[merged.length - 1];
@@ -327,8 +310,6 @@ function slotsSummary(
     return merged;
   };
 
-  
-  // 3) group courts that ended up with identical times
   const bySignature = new Map<string, { labels: string[]; text: string }>();
 
   byCourt.forEach((times, courtKey) => {
@@ -347,7 +328,6 @@ function slotsSummary(
 
   const groups = Array.from(bySignature.values());
 
-  // Every court has the same times → just show the times once
   if (groups.length === 1) {
     return byCourt.size > 1 ? `${groups[0].text} (each court)` : groups[0].text;
   }
@@ -363,7 +343,7 @@ function slotsSummary(
 }
 
 const selectClass =
-  'w-full rounded-xl border border-forest-700/80 bg-forest-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-brand-blue-400 focus:outline-none focus:ring-2 focus:ring-brand-blue-500/20';
+  'w-full rounded-xl border border-neutral-700 bg-neutral-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20';
 
 /* ────────────────────────────────────────────────────────────────────────── */
 /* Page                                                                       */
@@ -393,7 +373,6 @@ export function Bookings() {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [updatingStatus, setUpdatingStatus] = useState<BookingStatus | null>(null);
 
-  // ✅ Reschedule flow
   const [rescheduleTarget, setRescheduleTarget] = useState<Booking | null>(null);
   const [pendingAdjustments, setPendingAdjustments] = useState<
     Record<string, { balance_due: number; refund_due: number }>
@@ -454,7 +433,7 @@ export function Bookings() {
     if (tabCounts.review > 0) setTab('review');
   }, [loadingBookings, bookings.length, tabCounts.review]);
 
-  /* ── Court lookup (rebuilds whenever the courts array changes) ────────── */
+  /* ── Court lookup ─────────────────────────────────────────────────────── */
 
   const courtNameById = useMemo(() => {
     const map = new Map<string, string>();
@@ -464,14 +443,6 @@ export function Bookings() {
     return map;
   }, [courts]);
 
-  /**
-   * Looks at every court_id in the booking's slots, matches them against the
-   * courts from the store, and returns e.g. "Court 1, Court 2, Court 3".
-   *
-   * Because it's memoized on `courtNameById`, anything that depends on it
-   * (the filtered list, the table rows) recalculates as soon as courts load.
-   * Until then it falls back to the booking's own court_name.
-   */
   const getCourtNamesForBooking = useCallback(
     (booking: Booking): string => {
       const ids = Array.from(
@@ -501,7 +472,6 @@ export function Bookings() {
     const list = bookings.filter((b) => {
       if (activeTab?.statuses && !activeTab.statuses.includes(b.status)) return false;
 
-      // Match the court filter against the booking's main court AND every slot's court
       if (courtFilter !== 'all') {
         const matchesMain = normId(b.court_id) === courtFilterId;
         const matchesSlot = (b.slots ?? []).some((s) => normId(s.court_id) === courtFilterId);
@@ -707,14 +677,14 @@ export function Bookings() {
                 onClick={() => setTab(t.key)}
                 className={`flex shrink-0 items-center gap-2 rounded-xl border px-3.5 py-2 text-sm font-semibold transition ${
                   active
-                    ? 'border-brand-blue-400 bg-brand-blue-500/20 text-cream'
-                    : 'border-forest-700/80 bg-forest-900/60 text-cream-muted hover:text-cream'
+                    ? 'border-primary-400 bg-primary-500/20 text-cream'
+                    : 'border-neutral-700 bg-neutral-900/60 text-cream-muted hover:text-cream'
                 }`}
               >
                 {t.label}
                 <span
                   className={`rounded-full px-2 py-0.5 text-xs font-bold ${
-                    urgent ? 'bg-amber-400 text-forest-950' : 'bg-forest-950/70 text-cream-muted'
+                    urgent ? 'bg-amber-400 text-neutral-950' : 'bg-neutral-950/70 text-cream-muted'
                   }`}
                 >
                   {tabCounts[t.key]}
@@ -725,7 +695,7 @@ export function Bookings() {
         </div>
 
         {/* Filter controls */}
-        <div className="mb-6 card rounded-2xl border border-forest-700/80 bg-forest-900/80 p-4 sm:p-5 shadow-xl backdrop-blur-sm">
+        <div className="mb-6 card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-4 sm:p-5 shadow-xl backdrop-blur-sm">
           <div className={`grid gap-3 ${isAdmin ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
             <Input
               aria-label="Search bookings"
@@ -741,7 +711,7 @@ export function Bookings() {
               className={selectClass}
             >
               {DATE_FILTERS.map((opt) => (
-                <option key={opt.value} value={opt.value} className="bg-forest-900">
+                <option key={opt.value} value={opt.value} className="bg-neutral-900">
                   {opt.label}
                 </option>
               ))}
@@ -753,12 +723,12 @@ export function Bookings() {
                 onChange={(e) => setCourtFilter(e.target.value)}
                 className={selectClass}
               >
-                <option value="all" className="bg-forest-900">
+                <option value="all" className="bg-neutral-900">
                   All Courts
                 </option>
                 {courts.map((c) =>
                   c ? (
-                    <option key={c.id} value={c.id} className="bg-forest-900">
+                    <option key={c.id} value={c.id} className="bg-neutral-900">
                       {c.name || 'Unnamed Court'}
                     </option>
                   ) : null
@@ -774,7 +744,7 @@ export function Bookings() {
               <button
                 type="button"
                 onClick={clearFilters}
-                className="font-semibold text-brand-blue-300 hover:underline"
+                className="font-semibold text-primary-300 hover:underline"
               >
                 Clear filters
               </button>
@@ -794,7 +764,7 @@ export function Bookings() {
             </Button>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="card rounded-2xl border border-forest-700/80 bg-forest-900/60 px-4 py-12 text-center shadow-xl">
+          <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/60 px-4 py-12 text-center shadow-xl">
             {bookings.length === 0 ? (
               <>
                 <p className="text-sm font-semibold text-cream">No bookings yet</p>
@@ -824,12 +794,12 @@ export function Bookings() {
             )}
           </div>
         ) : (
-          <div className="card rounded-2xl border border-forest-700/80 bg-forest-900/80 overflow-hidden shadow-xl">
+          <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 overflow-hidden shadow-xl">
             {/* Desktop table view */}
             <div className="hidden overflow-x-auto md:block">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-forest-700/80 bg-forest-950/70 text-xs uppercase tracking-wider text-cream-muted">
+                  <tr className="border-b border-neutral-700 bg-neutral-950/70 text-xs uppercase tracking-wider text-cream-muted">
                     <th className="px-4 py-3 font-semibold">Reference</th>
                     <th className="px-4 py-3 font-semibold">Customer</th>
                     <th className="px-4 py-3 font-semibold">Court(s)</th>
@@ -840,7 +810,7 @@ export function Bookings() {
                     <th className="px-4 py-3 font-semibold text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-forest-800/80">
+                <tbody className="divide-y divide-neutral-800/80">
                   {pageItems.map((b) => {
                     const needsReview = b.status === 'payment_submitted';
                     const adjust = pendingAdjustments[b.id];
@@ -851,13 +821,13 @@ export function Bookings() {
                       <tr
                         key={b.id}
                         onClick={() => openDetails(b)}
-                        className={`cursor-pointer transition hover:bg-forest-800/40 ${
+                        className={`cursor-pointer transition hover:bg-neutral-800/40 ${
                           needsReview ? 'border-l-4 border-l-amber-400 bg-amber-400/5' : ''
                         }`}
                       >
                         <td className="px-4 py-3.5">
                           <div className="flex flex-wrap items-center gap-1.5">
-                            <span className="font-mono font-bold text-brand-blue-300 tracking-wide">
+                            <span className="font-mono font-bold text-primary-300 tracking-wide">
                               {b.reference_code || 'N/A'}
                             </span>
                             {refundDue > 0 && (
@@ -893,7 +863,7 @@ export function Bookings() {
                         <td className="px-4 py-3.5 text-xs text-cream-muted max-w-[280px]">
                           {slotsSummary(b.slots, courts, b.court_name)}
                         </td>
-                        <td className="px-4 py-3.5 font-bold text-brand-blue-300">
+                        <td className="px-4 py-3.5 font-bold text-accent-400">
                           {formatCurrency(b.total_amount || 0)}
                         </td>
                         <td className="px-4 py-3.5">
@@ -917,7 +887,7 @@ export function Bookings() {
                                 e.stopPropagation();
                                 openDetails(b);
                               }}
-                              className="rounded-lg border border-forest-600 bg-forest-800/60 p-1.5 text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300 active:scale-95"
+                              className="rounded-lg border border-neutral-600 bg-neutral-800/60 p-1.5 text-cream-muted transition hover:border-primary-400 hover:text-primary-300 active:scale-95"
                               title="View details"
                               aria-label={`View details for booking ${b.reference_code || ''}`}
                             >
@@ -951,12 +921,12 @@ export function Bookings() {
                 return (
                   <div
                     key={b.id}
-                    className={`rounded-xl border bg-forest-950/70 p-4 space-y-2 ${
-                      needsReview ? 'border-amber-400/60' : 'border-forest-700/70'
+                    className={`rounded-xl border bg-neutral-950/70 p-4 space-y-2 ${
+                      needsReview ? 'border-amber-400/60' : 'border-neutral-700'
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-mono font-bold text-brand-blue-300 tracking-wide">
+                      <span className="font-mono font-bold text-primary-300 tracking-wide">
                         {b.reference_code || 'N/A'}
                       </span>
                       <StatusBadge status={b.status} size="sm" />
@@ -987,7 +957,7 @@ export function Bookings() {
                       {b.customer?.phone && (
                         <a
                           href={`tel:${b.customer.phone}`}
-                          className="text-xs text-brand-blue-300 underline"
+                          className="text-xs text-primary-300 underline"
                         >
                           {b.customer.phone}
                         </a>
@@ -1004,8 +974,8 @@ export function Bookings() {
                         Pay ref: <span className="font-mono text-cream">{b.payment_reference}</span>
                       </p>
                     )}
-                    <div className="flex items-center justify-between border-t border-forest-800 pt-3">
-                      <span className="text-sm font-extrabold text-brand-blue-300">
+                    <div className="flex items-center justify-between border-t border-neutral-800 pt-3">
+                      <span className="text-sm font-extrabold text-accent-400">
                         {formatCurrency(b.total_amount || 0)}
                       </span>
                       <Button
@@ -1023,7 +993,7 @@ export function Bookings() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between border-t border-forest-800 px-4 py-3 text-xs text-cream-muted">
+              <div className="flex items-center justify-between border-t border-neutral-800 px-4 py-3 text-xs text-cream-muted">
                 <span>
                   Page {currentPage} of {totalPages}
                 </span>
@@ -1053,7 +1023,6 @@ export function Bookings() {
         )}
       </div>
 
-      
       {/* ─────────────────────── Booking Details Modal ─────────────────────── */}
       <AnimatePresence>
         {selectedBooking && (
@@ -1063,12 +1032,10 @@ export function Bookings() {
             title={`Booking ${selectedBooking.reference_code || 'N/A'}`}
             size="lg"
           >
-            {/* 👇 FIX: Use flex-col to separate scrollable content from the fixed footer */}
             <div className="flex max-h-[80vh] flex-col">
-              
-              {/* 👇 SCROLLABLE CONTENT AREA */}
+              {/* Scrollable content area */}
               <div className="flex-1 overflow-y-auto pr-1 pb-4 space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-forest-700/80 pb-3">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-700 pb-3">
                   <StatusBadge status={selectedBooking.status} />
                   <span className="text-xs text-cream-muted font-medium">
                     Created {formatDateTime(selectedBooking.created_at)}
@@ -1076,7 +1043,7 @@ export function Bookings() {
                 </div>
 
                 {extra?.status_updated_at && (
-                  <p className="rounded-lg border border-forest-800 bg-forest-900/60 px-3 py-2 text-xs text-cream-muted">
+                  <p className="rounded-lg border border-neutral-800 bg-neutral-900/60 px-3 py-2 text-xs text-cream-muted">
                     Last changed {extra.status_updated_by ? `by ${extra.status_updated_by} ` : ''}
                     on {formatDateTime(extra.status_updated_at)}
                     {extra.status_reason ? ` — "{extra.status_reason}"` : ''}
@@ -1084,8 +1051,8 @@ export function Bookings() {
                 )}
 
                 <div className="grid gap-3.5 sm:grid-cols-2">
-                  <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-4">
-                    <p className="text-xs font-bold uppercase tracking-wider text-brand-blue-300">
+                  <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-4">
+                    <p className="text-xs font-bold uppercase tracking-wider text-primary-300">
                       Customer
                     </p>
                     <p className="mt-1 text-sm font-bold text-cream">
@@ -1094,7 +1061,7 @@ export function Bookings() {
                     {selectedBooking.customer?.email ? (
                       <a
                         href={`mailto:${selectedBooking.customer.email}`}
-                        className="mt-1 flex items-center gap-1.5 text-xs text-cream-muted hover:text-brand-blue-300"
+                        className="mt-1 flex items-center gap-1.5 text-xs text-cream-muted hover:text-primary-300"
                       >
                         <Mail className="h-3.5 w-3.5" />
                         {selectedBooking.customer.email}
@@ -1105,7 +1072,7 @@ export function Bookings() {
                     {selectedBooking.customer?.phone ? (
                       <a
                         href={`tel:${selectedBooking.customer.phone}`}
-                        className="mt-1 flex items-center gap-1.5 text-xs text-cream-muted hover:text-brand-blue-300"
+                        className="mt-1 flex items-center gap-1.5 text-xs text-cream-muted hover:text-primary-300"
                       >
                         <Phone className="h-3.5 w-3.5" />
                         {selectedBooking.customer.phone}
@@ -1114,14 +1081,14 @@ export function Bookings() {
                       <p className="mt-1 text-xs text-cream-muted">No phone</p>
                     )}
                     {selectedBooking.customer?.notes && (
-                      <p className="mt-2.5 rounded-lg border border-forest-800 bg-forest-900/60 p-2 text-xs italic text-cream-muted">
+                      <p className="mt-2.5 rounded-lg border border-neutral-800 bg-neutral-900/60 p-2 text-xs italic text-cream-muted">
                         "{selectedBooking.customer.notes}"
                       </p>
                     )}
                   </div>
 
-                  <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-4">
-                    <p className="text-xs font-bold uppercase tracking-wider text-brand-blue-300">
+                  <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-4">
+                    <p className="text-xs font-bold uppercase tracking-wider text-primary-300">
                       Court Booking
                     </p>
                     <p className="mt-1 text-sm font-bold text-cream">
@@ -1135,44 +1102,44 @@ export function Bookings() {
                 </div>
 
                 {/* Total Summary */}
-                <div className="flex items-center justify-between rounded-xl border border-brand-blue-500/40 bg-brand-blue-500/15 p-4">
+                <div className="flex items-center justify-between rounded-xl border border-primary-500/40 bg-primary-500/15 p-4">
                   <span className="text-xs font-semibold uppercase tracking-wider text-cream-muted">
                     {selectedBooking.status === 'payment_submitted'
                       ? 'Amount to verify'
                       : 'Total Amount'}
                   </span>
-                  <span className="font-display text-2xl font-extrabold text-brand-blue-300">
+                  <span className="font-display text-2xl font-extrabold text-accent-400">
                     {formatCurrency(selectedBooking.total_amount || 0)}
                   </span>
                 </div>
 
                 {/* Payment Details */}
-                <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-4">
-                  <p className="mb-2.5 text-xs font-bold uppercase tracking-wider text-brand-blue-300">
+                <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-4">
+                  <p className="mb-2.5 text-xs font-bold uppercase tracking-wider text-primary-300">
                     Payment Details
                   </p>
 
                   {selectedBooking.payment_screenshot_url || selectedBooking.payment_reference ? (
                     <>
                       {selectedBooking.payment_reference && (
-                        <div className="mb-3 flex items-center justify-between rounded-xl border border-forest-700/60 bg-forest-900/70 p-3">
+                        <div className="mb-3 flex items-center justify-between rounded-xl border border-neutral-700 bg-neutral-900/70 p-3">
                           <div>
                             <p className="text-[11px] font-semibold uppercase tracking-wider text-cream-muted">
                               Reference Number
                             </p>
-                            <p className="mt-0.5 font-mono text-sm font-bold tracking-wider text-brand-blue-300">
+                            <p className="mt-0.5 font-mono text-sm font-bold tracking-wider text-primary-300">
                               {selectedBooking.payment_reference}
                             </p>
                           </div>
                           <button
                             onClick={() => copyReference(selectedBooking.payment_reference || '')}
-                            className="flex items-center gap-1.5 rounded-lg border border-forest-600 bg-forest-800 px-2.5 py-1.5 text-xs text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300 active:scale-95"
+                            className="flex items-center gap-1.5 rounded-lg border border-neutral-600 bg-neutral-800 px-2.5 py-1.5 text-xs text-cream-muted transition hover:border-primary-400 hover:text-primary-300 active:scale-95"
                             title="Copy reference"
                             aria-label="Copy payment reference number"
                           >
                             {copied ? (
                               <>
-                                <Check className="h-3.5 w-3.5 text-green-400" /> Copied
+                                <Check className="h-3.5 w-3.5 text-accent-400" /> Copied
                               </>
                             ) : (
                               <>
@@ -1193,20 +1160,20 @@ export function Bookings() {
                           <img
                             src={selectedBooking.payment_screenshot_url}
                             alt="Payment screenshot"
-                            className="max-h-72 w-full rounded-lg object-contain bg-forest-950 border border-forest-800"
+                            className="max-h-72 w-full rounded-lg object-contain bg-neutral-950 border border-neutral-800"
                           />
                           <span className="absolute bottom-2 right-2 flex items-center gap-1 rounded-md bg-black/60 px-2 py-1 text-[11px] font-medium text-white opacity-90">
                             <ZoomIn className="h-3 w-3" /> Click to enlarge
                           </span>
                         </button>
                       ) : (
-                        <p className="rounded-lg border border-dashed border-forest-700 bg-forest-950/60 p-3 text-center text-xs text-cream-muted">
+                        <p className="rounded-lg border border-dashed border-neutral-700 bg-neutral-950/60 p-3 text-center text-xs text-cream-muted">
                           No screenshot uploaded — customer submitted a reference number only.
                         </p>
                       )}
                     </>
                   ) : (
-                    <div className="rounded-lg border border-dashed border-forest-700 bg-forest-950/60 p-3 text-center text-xs text-cream-muted">
+                    <div className="rounded-lg border border-dashed border-neutral-700 bg-neutral-950/60 p-3 text-center text-xs text-cream-muted">
                       <p className="font-semibold text-cream">Awaiting payment</p>
                       <p className="mt-0.5">The customer hasn't submitted payment proof yet.</p>
                       {selectedBooking.status === 'pending_payment' && deadline && (
@@ -1220,8 +1187,8 @@ export function Bookings() {
                 </div>
               </div>
 
-              {/* 👇 FIXED BOTTOM ACTIONS BAR */}
-              <div className="shrink-0 border-t border-forest-700/80 bg-forest-900 px-1 pt-4 pb-1 mt-2">
+              {/* Fixed bottom actions bar */}
+              <div className="shrink-0 border-t border-neutral-700 bg-neutral-900 px-1 pt-4 pb-1 mt-2">
                 <p className="mb-3 text-xs font-bold uppercase tracking-wider text-cream-muted">
                   Actions
                 </p>
@@ -1300,7 +1267,7 @@ export function Bookings() {
               <p className="text-sm text-cream-muted">{pendingAction.action.confirm?.message}</p>
               <p className="text-xs text-cream-muted">
                 Booking{' '}
-                <span className="font-mono font-bold text-brand-blue-300">
+                <span className="font-mono font-bold text-primary-300">
                   {pendingAction.booking.reference_code}
                 </span>{' '}
                 · {pendingAction.booking.customer?.name || 'Unknown'}
@@ -1383,8 +1350,8 @@ export function Bookings() {
             role="status"
             className={`pointer-events-auto flex max-w-md items-start gap-2 rounded-xl border px-4 py-3 text-sm font-medium shadow-2xl ${
               toast.type === 'success'
-                ? 'border-green-500/50 bg-green-900/90 text-green-50'
-                : 'border-red-500/50 bg-red-900/90 text-red-50'
+                ? 'border-accent-500/50 bg-neutral-900/95 text-accent-200'
+                : 'border-red-500/50 bg-neutral-900/95 text-red-200'
             }`}
           >
             {toast.type === 'success' ? (

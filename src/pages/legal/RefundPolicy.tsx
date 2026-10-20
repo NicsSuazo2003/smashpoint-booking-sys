@@ -28,7 +28,7 @@ export function RefundPolicy() {
       <div className="container-page pt-24 pb-16">
         <Link
           to="/"
-          className="mb-6 inline-flex items-center gap-1.5 text-xs font-semibold text-cream-muted transition hover:text-brand-blue-300"
+          className="mb-6 inline-flex items-center gap-1.5 text-xs font-semibold text-cream-muted transition hover:text-primary-300"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Back to Home
@@ -36,8 +36,8 @@ export function RefundPolicy() {
 
         <div className="mx-auto max-w-3xl">
           <div className="mb-8 flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-court-400/30 bg-court-600/30">
-              <RotateCcw className="h-6 w-6 text-court-300" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-primary-400/30 bg-primary-600/30">
+              <RotateCcw className="h-6 w-6 text-primary-300" />
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-cream sm:text-3xl">
@@ -69,9 +69,9 @@ export function RefundPolicy() {
 
           <div className="space-y-8">
             {/* Slot Transfers */}
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-4 flex items-center gap-2.5">
-                <Ban className="h-5 w-5 shrink-0 text-court-300" />
+                <Ban className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">If You Cannot Attend</h2>
               </div>
               <div className="space-y-4 text-sm leading-relaxed text-cream-muted">
@@ -82,14 +82,14 @@ export function RefundPolicy() {
             </section>
 
             {/* Facility Cancellations */}
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-4 flex items-center gap-2.5">
                 <Clock className="h-5 w-5 shrink-0 text-amber-400" />
                 <h2 className="text-lg font-bold text-cream">Facility-Initiated Cancellations</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
                 <p>
-                  Center Court reserves the right to cancel or reschedule bookings due to:
+                  Smash Point reserves the right to cancel or reschedule bookings due to:
                 </p>
                 <ul className="list-inside list-disc space-y-1.5 pl-2">
                   <li>Facility maintenance</li>
@@ -105,28 +105,27 @@ export function RefundPolicy() {
             </section>
 
             {/* How to Request */}
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <HelpCircle className="h-5 w-5 shrink-0 text-court-300" />
+                <HelpCircle className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">Need Help?</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
                 <p>If you have questions about our cancellation policy, please contact us:</p>
                 <div className="mt-3 space-y-2">
                   <p className="flex items-center gap-2">
-                    <Mail className="h-4 w-4 shrink-0 text-court-300" />
-                    <span>centercourttandag@gmail.com</span>
+                    <Mail className="h-4 w-4 shrink-0 text-primary-300" />
+                    <span>smashpoint@gmail.com</span>
                   </p>
                   <p className="flex items-center gap-2">
-                    {/* 👇 Replaced Phone with Facebook */}
-                    <Facebook className="h-4 w-4 shrink-0 text-court-300" />
-                    <a 
-                      href="https://www.facebook.com/profile.php?id=61594106069425&mibextid=wwXIfr&rdid=2CqRPgsgi7BZIBAd&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1D5snWhetr%2F#"
+                    <Facebook className="h-4 w-4 shrink-0 text-primary-300" />
+                    <a
+                      href="https://www.facebook.com/profile.php?id=61594106069425"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:text-brand-blue-300 transition"
+                      className="hover:text-primary-300 transition"
                     >
-                      Center Court Tandag
+                      Smash Point Pickle Sports Center
                     </a>
                   </p>
                 </div>

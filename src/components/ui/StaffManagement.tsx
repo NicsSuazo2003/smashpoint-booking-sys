@@ -140,11 +140,11 @@ export function StaffManagement() {
   };
 
   return (
-    <div className="card rounded-2xl border border-forest-700/80 bg-forest-900 p-6 shadow-xl">
+    <div className="card rounded-2xl border border-neutral-700 bg-neutral-900 p-6 shadow-xl">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="flex items-center gap-2 font-display text-lg font-bold text-cream">
-            <Users className="h-5 w-5 text-brand-blue-400" />
+            <Users className="h-5 w-5 text-primary-300" />
             Staff Management
           </h2>
           <p className="mt-0.5 text-xs text-cream-muted">
@@ -177,16 +177,16 @@ export function StaffManagement() {
       {loading ? (
         <LoadingSpinner className="py-12" />
       ) : staff.length === 0 ? (
-        <div className="rounded-xl border border-forest-800 bg-forest-950/50 py-12 text-center">
+        <div className="rounded-xl border border-neutral-800 bg-neutral-950/50 py-12 text-center">
           <Users className="mx-auto h-10 w-10 text-cream-muted/30" />
           <p className="mt-3 text-sm font-medium text-cream-muted">No staff members registered.</p>
           <p className="text-xs text-cream-muted/60">Click "Add Staff" to create an account.</p>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-forest-700/70">
+        <div className="overflow-x-auto rounded-xl border border-neutral-700">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-forest-700/80 bg-forest-950/60 text-[11px] uppercase tracking-wider text-cream-muted">
+              <tr className="border-b border-neutral-700 bg-neutral-950/60 text-[11px] uppercase tracking-wider text-cream-muted">
                 <th className="px-4 py-3 font-semibold">Name</th>
                 <th className="px-4 py-3 font-semibold">Email</th>
                 <th className="px-4 py-3 font-semibold">Phone</th>
@@ -195,9 +195,9 @@ export function StaffManagement() {
                 <th className="px-4 py-3 text-right font-semibold">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-forest-800/80 bg-forest-900/50">
+            <tbody className="divide-y divide-neutral-800/80 bg-neutral-900/50">
               {staff.map((member) => (
-                <tr key={member.id} className="transition hover:bg-forest-800/40">
+                <tr key={member.id} className="transition hover:bg-neutral-800/40">
                   <td className="px-4 py-3 font-medium text-cream">{member.name}</td>
                   <td className="px-4 py-3 text-xs text-cream-muted">{member.email}</td>
                   <td className="px-4 py-3 text-xs text-cream-muted">{member.phone || '—'}</td>
@@ -205,13 +205,13 @@ export function StaffManagement() {
                     <span
                       className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
                         member.status === 'active'
-                          ? 'border border-accentGreen-500/40 bg-accentGreen-500/10 text-accentGreen-300'
+                          ? 'border border-accent-500/40 bg-accent-500/10 text-accent-300'
                           : 'border border-error/40 bg-error/10 text-error'
                       }`}
                     >
                       <span
                         className={`h-1.5 w-1.5 rounded-full ${
-                          member.status === 'active' ? 'bg-accentGreen-400' : 'bg-error'
+                          member.status === 'active' ? 'bg-accent-400' : 'bg-error'
                         }`}
                       />
                       {member.status === 'active' ? 'Active' : 'Suspended'}
@@ -224,13 +224,13 @@ export function StaffManagement() {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => handleUpdateStatus(member.id, member.status)}
-                        className="rounded-lg border border-forest-600 bg-forest-800/60 px-2.5 py-1 text-xs text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300"
+                        className="rounded-lg border border-neutral-600 bg-neutral-800/60 px-2.5 py-1 text-xs text-cream-muted transition hover:border-primary-400 hover:text-primary-300"
                       >
                         {member.status === 'active' ? 'Suspend' : 'Activate'}
                       </button>
                       <button
                         onClick={() => handleDeleteStaff(member.id, member.name)}
-                        className="rounded-lg border border-forest-600 bg-forest-800/60 p-1.5 text-cream-muted transition hover:border-error hover:text-error"
+                        className="rounded-lg border border-neutral-600 bg-neutral-800/60 p-1.5 text-cream-muted transition hover:border-error hover:text-error"
                         aria-label={`Remove ${member.name}`}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -262,7 +262,7 @@ export function StaffManagement() {
           <Input
             label="Email Address"
             type="email"
-            placeholder="staff@pickleball.com"
+            placeholder="staff@smashpoint.com"
             leftIcon={<Mail className="h-4 w-4" />}
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -298,7 +298,7 @@ export function StaffManagement() {
             </div>
           )}
 
-          <div className="flex gap-3 border-t border-forest-700/80 pt-4">
+          <div className="flex gap-3 border-t border-neutral-700 pt-4">
             <Button
               fullWidth
               isLoading={saving}

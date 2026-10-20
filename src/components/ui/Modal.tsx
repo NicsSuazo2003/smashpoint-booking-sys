@@ -91,12 +91,12 @@ export function Modal({
             exit={{ opacity: 0, scale: 0.97, y: 15 }}
             transition={{ type: 'spring', damping: 26, stiffness: 320 }}
             className={`
-              relative flex w-full flex-col bg-forest-900/95
+              relative flex w-full flex-col bg-neutral-900/95
               ${sizes[size]}
               ${fullScreenOnMobile
                 ? 'h-full max-h-none rounded-none sm:h-auto sm:max-h-[90vh] sm:rounded-2xl'
                 : 'max-h-[90vh] rounded-2xl'}
-              border border-forest-700/80 shadow-2xl backdrop-blur-sm
+              border border-neutral-700 shadow-2xl backdrop-blur-sm
               ${className || ''}
             `}
             role="dialog"
@@ -104,13 +104,13 @@ export function Modal({
           >
             {/* Header */}
             {title && (
-              <div className="flex shrink-0 items-center justify-between border-b border-forest-700/80 px-4 py-3.5 sm:px-6 sm:py-4">
+              <div className="flex shrink-0 items-center justify-between border-b border-neutral-700 px-4 py-3.5 sm:px-6 sm:py-4">
                 <h3 className="pr-2 font-display text-base font-bold text-cream sm:text-lg">
                   {title}
                 </h3>
                 <button
                   onClick={onClose}
-                  className="shrink-0 rounded-xl border border-transparent p-1.5 text-cream-muted transition hover:border-forest-600 hover:bg-forest-800/80 hover:text-brand-blue-300 active:scale-95"
+                  className="shrink-0 rounded-xl border border-transparent p-1.5 text-cream-muted transition hover:border-neutral-600 hover:bg-neutral-800/80 hover:text-primary-300 active:scale-95"
                   aria-label="Close"
                 >
                   <X className="h-5 w-5" />
@@ -127,8 +127,8 @@ export function Modal({
             {footer && (
               <div
                 className="
-                  shrink-0 border-t border-forest-700/80
-                  bg-forest-950/90 backdrop-blur-sm
+                  shrink-0 border-t border-neutral-700
+                  bg-neutral-950/90 backdrop-blur-sm
                   p-4 sm:p-5
                 "
               >

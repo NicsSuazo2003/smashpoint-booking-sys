@@ -68,9 +68,9 @@ export function Success() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring', damping: 15, delay: 0.2 }}
-              className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-accentGreen-400/40 bg-accentGreen-500/20 shadow-glow-green sm:h-20 sm:w-20"
+              className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-accent-400/40 bg-accent-500/20 shadow-glow-green sm:h-20 sm:w-20"
             >
-              <CheckCircle2 className="h-8 w-8 text-accentGreen-300 sm:h-11 sm:w-11" />
+              <CheckCircle2 className="h-8 w-8 text-accent-300 sm:h-11 sm:w-11" />
             </motion.div>
             <h1 className="mt-4 text-2xl font-bold text-cream sm:mt-6 sm:text-4xl">
               Payment Submitted!
@@ -84,14 +84,14 @@ export function Success() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="card mt-6 rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 shadow-xl backdrop-blur-sm sm:mt-8 sm:p-6"
+            className="card mt-6 rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 shadow-xl backdrop-blur-sm sm:mt-8 sm:p-6"
           >
-            <div className="flex items-center justify-between border-b border-forest-700/80 pb-4">
+            <div className="flex items-center justify-between border-b border-neutral-700 pb-4">
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-cream-muted">
                   Reference Code
                 </p>
-                <p className="font-mono text-xl font-extrabold tracking-wider text-brand-blue-300 sm:text-2xl">
+                <p className="font-mono text-xl font-extrabold tracking-wider text-primary-300 sm:text-2xl">
                   {currentBooking.reference_code}
                 </p>
               </div>
@@ -100,7 +100,7 @@ export function Success() {
 
             <div className="mt-4 space-y-3 sm:mt-5 sm:space-y-3.5">
               <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-forest-700 bg-forest-950/70 text-brand-blue-300">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-950/70 text-primary-300">
                   <MapPin className="h-4 w-4" />
                 </div>
                 <div>
@@ -110,7 +110,7 @@ export function Success() {
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-forest-700 bg-forest-950/70 text-brand-blue-300">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-950/70 text-primary-300">
                   <Calendar className="h-4 w-4" />
                 </div>
                 <div>
@@ -120,7 +120,7 @@ export function Success() {
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-forest-700 bg-forest-950/70 text-brand-blue-300">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-950/70 text-primary-300">
                   <Clock className="h-4 w-4" />
                 </div>
                 <div>
@@ -132,9 +132,9 @@ export function Success() {
               </div>
             </div>
 
-            <div className="mt-5 flex items-center justify-between border-t border-forest-700/80 pt-4">
+            <div className="mt-5 flex items-center justify-between border-t border-neutral-700 pt-4">
               <span className="text-xs text-cream-muted sm:text-sm">Total Paid</span>
-              <span className="font-display text-2xl font-extrabold text-brand-blue-300 sm:text-3xl">
+              <span className="font-display text-2xl font-extrabold text-accent-400 sm:text-3xl">
                 {formatCurrency(totalAmount)}
               </span>
             </div>
@@ -144,22 +144,22 @@ export function Success() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="mt-5 rounded-2xl border border-brand-blue-500/40 bg-brand-blue-500/10 p-4 sm:mt-6 sm:p-5"
+            className="mt-5 rounded-2xl border border-primary-500/40 bg-primary-500/10 p-4 sm:mt-6 sm:p-5"
           >
-            <h3 className="text-sm font-bold text-brand-blue-200 sm:text-base">
+            <h3 className="text-sm font-bold text-primary-200 sm:text-base">
               What happens next?
             </h3>
             <ul className="mt-2.5 space-y-2 text-xs text-cream-muted sm:mt-3 sm:text-sm">
               <li className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-blue-300" />
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-300" />
                 <span>Our team will verify your payment reference number and screenshot.</span>
               </li>
               <li className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-blue-300" />
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-300" />
                 <span>You will receive approval and confirmation usually within 30 minutes.</span>
               </li>
               <li className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-blue-300" />
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-300" />
                 <span>Save your reference code to check your live court reservation status anytime.</span>
               </li>
             </ul>
@@ -187,7 +187,7 @@ export function Success() {
 
           <p className="mt-5 text-center text-xs text-cream-muted sm:mt-6">
             Bookmark this page or save your reference code:{' '}
-            <span className="font-mono font-bold text-brand-blue-300">
+            <span className="font-mono font-bold text-primary-300">
               {currentBooking.reference_code}
             </span>
           </p>

@@ -49,22 +49,22 @@ import type {
 const SKILL_LEVELS: OpenPlaySkillLevel[] = ['Beginner', 'Intermediate', 'Advanced', 'All Levels'];
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
-  upcoming: { label: 'Upcoming', className: 'bg-forest-800 text-cream-muted border border-forest-600' },
-  active: { label: 'Active Now', className: 'bg-accentGreen-500/20 text-accentGreen-300 border border-accentGreen-400/40' },
+  upcoming: { label: 'Upcoming', className: 'bg-neutral-800 text-cream-muted border border-neutral-600' },
+  active: { label: 'Active Now', className: 'bg-accent-500/20 text-accent-300 border border-accent-400/40' },
   full: { label: 'Full', className: 'bg-red-500/15 text-red-400 border border-red-500/30' },
-  past: { label: 'Past', className: 'bg-forest-900/60 text-cream-muted/50 border border-forest-800' },
-  cancelled: { label: 'Cancelled', className: 'bg-forest-900/60 text-cream-muted/50 border border-forest-800' },
+  past: { label: 'Past', className: 'bg-neutral-900/60 text-cream-muted/50 border border-neutral-800' },
+  cancelled: { label: 'Cancelled', className: 'bg-neutral-900/60 text-cream-muted/50 border border-neutral-800' },
 };
 
 const PAYMENT_STATUS_BADGE: Record<string, { label: string; className: string }> = {
   pending_payment: { label: 'Pending', className: 'bg-amber-500/15 text-amber-300 border border-amber-500/30' },
-  payment_submitted: { label: 'Submitted', className: 'bg-brand-blue-500/20 text-brand-blue-300 border border-brand-blue-400/30' },
-  confirmed: { label: 'Confirmed', className: 'bg-accentGreen-500/20 text-accentGreen-300 border border-accentGreen-400/30' },
-  completed: { label: 'Completed', className: 'bg-accentGreen-500/20 text-accentGreen-300 border border-accentGreen-400/30' },
+  payment_submitted: { label: 'Submitted', className: 'bg-primary-500/20 text-primary-300 border border-primary-400/30' },
+  confirmed: { label: 'Confirmed', className: 'bg-accent-500/20 text-accent-300 border border-accent-400/30' },
+  completed: { label: 'Completed', className: 'bg-accent-500/20 text-accent-300 border border-accent-400/30' },
   cancelled: { label: 'Cancelled', className: 'bg-red-500/15 text-red-400 border border-red-500/30' },
-  expired: { label: 'Expired', className: 'bg-forest-800 text-cream-muted/60 border border-forest-700' },
+  expired: { label: 'Expired', className: 'bg-neutral-800 text-cream-muted/60 border border-neutral-700' },
   rejected: { label: 'Rejected', className: 'bg-red-500/15 text-red-400 border border-red-500/30' },
-  free: { label: 'Free', className: 'bg-brand-blue-500/20 text-brand-blue-300 border border-brand-blue-400/30' },
+  free: { label: 'Free', className: 'bg-primary-500/20 text-primary-300 border border-primary-400/30' },
 };
 
 const EMPTY_FORM: CreateOpenPlaySessionPayload = {
@@ -111,7 +111,6 @@ export function OpenPlayManagement() {
   const [selectedSlotIds, setSelectedSlotIds] = useState<string[]>([]);
   const [selectedCourtIds, setSelectedCourtIds] = useState<string[]>([]);
 
-  // ✅ NEW — per-court availability grid
   const [showPerCourtGrid, setShowPerCourtGrid] = useState(false);
   const [perCourtSlots, setPerCourtSlots] = useState<Record<string, TimeSlot[]>>({});
 
@@ -130,10 +129,6 @@ export function OpenPlayManagement() {
     }
   }, [viewingPlayers, adminLoadPlayers, adminLoadStats]);
 
-  // ─────────────────────────────────────────────────────────
-  // Merge availability across ALL selected courts.
-  // A time window is selectable only if it's free on EVERY court.
-  // ─────────────────────────────────────────────────────────
   const fetchAndSetSlots = async (
     courtIds: string[],
     date: string,
@@ -152,14 +147,12 @@ export function OpenPlayManagement() {
         courtIds.map((id) => courtService.getAvailability(id, date))
       );
 
-      // ✅ NEW — store per-court availability for the diagnostic grid
       const byCourt: Record<string, TimeSlot[]> = {};
       courtIds.forEach((id, idx) => {
         byCourt[id] = results[idx];
       });
       setPerCourtSlots(byCourt);
 
-      // Map key: "HH:mm-HH:mm" → { start, end, price, availableOn: Set<courtId> }
       const byTime = new Map<
         string,
         { start: string; end: string; price: number; availableOn: Set<string> }
@@ -181,7 +174,6 @@ export function OpenPlayManagement() {
         });
       });
 
-      // Keep only windows available on every selected court
       const merged = Array.from(byTime.values())
         .filter((m) => m.availableOn.size === courtIds.length)
         .sort((a, b) => a.start.localeCompare(b.start));
@@ -200,7 +192,6 @@ export function OpenPlayManagement() {
 
       setAvailableSlots(synthetic);
 
-      // Try to restore selection when editing
       if (match) {
         const found = synthetic.find(
           (s) => s.start_time === match.start && s.end_time === match.end
@@ -254,10 +245,6 @@ export function OpenPlayManagement() {
     fetchAndSetSlots(selectedCourtIds, date);
   };
 
-  // ─────────────────────────────────────────────────────────
-  // Slot selection — allows multiple CONTIGUOUS hours.
-  // Example: click 8-9, then 9-10 → picks 8-10. Gaps are rejected.
-  // ─────────────────────────────────────────────────────────
   const isContiguous = (ids: string[]) => {
     if (ids.length <= 1) return true;
     const times = ids
@@ -278,11 +265,8 @@ export function OpenPlayManagement() {
 
     setSelectedSlotIds((prev) => {
       const isSelected = prev.includes(slotId);
-      const next = isSelected
-        ? prev.filter((id) => id !== slotId)
-        : [...prev, slotId];
+      const next = isSelected ? prev.filter((id) => id !== slotId) : [...prev, slotId];
 
-      // Reject non-contiguous selections
       if (!isContiguous(next)) {
         return prev;
       }
@@ -296,9 +280,7 @@ export function OpenPlayManagement() {
         return [];
       }
 
-      const sorted = pickedSlots.sort((a, b) =>
-        a.start_time.localeCompare(b.start_time)
-      );
+      const sorted = pickedSlots.sort((a, b) => a.start_time.localeCompare(b.start_time));
       setFormData((f) => ({
         ...f,
         start_time: sorted[0].start_time,
@@ -321,12 +303,10 @@ export function OpenPlayManagement() {
   const validateForm = (): string | null => {
     if (!formData.court_ids || formData.court_ids.length === 0)
       return 'Please select at least one court';
-    if (!formData.start_time || !formData.end_time)
-      return 'Please select a time slot';
+    if (!formData.start_time || !formData.end_time) return 'Please select a time slot';
     if (formData.max_players < 2 || formData.max_players > 20)
       return 'Max players must be between 2 and 20';
-    if (formData.price_per_player < 0)
-      return 'Price per player cannot be negative';
+    if (formData.price_per_player < 0) return 'Price per player cannot be negative';
     return null;
   };
 
@@ -502,12 +482,7 @@ export function OpenPlayManagement() {
 
   const handleViewPlayers = (sessionId: string) => setViewingPlayers(sessionId);
 
-  // ─────────────────────────────────────────────────────────
-  // ✅ NEW — build a per-court availability grid from perCourtSlots
-  // Returns an array of { start, end, cells: { courtId: slot | undefined } }
-  // ─────────────────────────────────────────────────────────
   const buildPerCourtGrid = () => {
-    // Gather all unique time intervals across all courts
     const intervals = new Map<string, { start: string; end: string }>();
     Object.values(perCourtSlots).forEach((slots) => {
       slots.forEach((s) => {
@@ -544,11 +519,10 @@ export function OpenPlayManagement() {
 
   return (
     <div className="space-y-4 p-4 sm:space-y-6 sm:p-6 text-cream">
-      {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div>
           <h2 className="flex items-center gap-2 text-base font-bold tracking-tight text-cream sm:text-lg">
-            <Users className="h-5 w-5 text-brand-blue-300" />
+            <Users className="h-5 w-5 text-primary-300" />
             Open Play Sessions
           </h2>
           <p className="mt-0.5 text-xs text-cream-muted sm:text-sm">
@@ -580,9 +554,8 @@ export function OpenPlayManagement() {
         </div>
       )}
 
-      {/* Sessions List */}
       {adminSessions.length === 0 ? (
-        <div className="rounded-2xl border border-forest-700/80 bg-forest-900/60 p-8 text-center shadow-xl backdrop-blur-sm">
+        <div className="rounded-2xl border border-neutral-700 bg-neutral-900/60 p-8 text-center shadow-xl backdrop-blur-sm">
           <Users className="mx-auto h-10 w-10 text-cream-muted/30" />
           <p className="mt-2 text-sm font-semibold text-cream-muted">
             No Open Play sessions created yet.
@@ -605,7 +578,7 @@ export function OpenPlayManagement() {
                 key={session.id}
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-forest-700/80 bg-forest-900/80 p-4 shadow-xl backdrop-blur-sm transition-all hover:border-brand-blue-400/50"
+                className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-neutral-700 bg-neutral-900/80 p-4 shadow-xl backdrop-blur-sm transition-all hover:border-primary-400/50"
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
@@ -615,7 +588,7 @@ export function OpenPlayManagement() {
                     <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${status.className}`}>
                       {status.label}
                     </span>
-                    <span className="rounded-full border border-brand-blue-400/30 bg-brand-blue-500/20 px-2.5 py-0.5 text-[10px] font-bold text-brand-blue-200">
+                    <span className="rounded-full border border-primary-400/30 bg-primary-500/20 px-2.5 py-0.5 text-[10px] font-bold text-primary-200">
                       {session.skill_level}
                     </span>
                     {!session.is_active && (
@@ -626,24 +599,24 @@ export function OpenPlayManagement() {
                   </div>
                   <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-cream-muted">
                     <span className="flex items-center gap-1.5">
-                      <CalendarDays className="h-3.5 w-3.5 text-brand-blue-300" />
+                      <CalendarDays className="h-3.5 w-3.5 text-primary-300" />
                       {formatDateLong(session.date)}
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <Clock className="h-3.5 w-3.5 text-brand-blue-300" />
+                      <Clock className="h-3.5 w-3.5 text-primary-300" />
                       {formatTimeRange(session.start_time, session.end_time)}
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <Users className="h-3.5 w-3.5 text-brand-blue-300" />
+                      <Users className="h-3.5 w-3.5 text-primary-300" />
                       {session.current_players}/{session.max_players} players
                     </span>
-                    <span className="font-extrabold text-brand-blue-300">
+                    <span className="font-extrabold text-accent-400">
                       {session.price_per_player === 0
                         ? 'Free'
                         : `${formatCurrency(session.price_per_player)}/player`}
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <UserCircle2 className="h-3.5 w-3.5 text-brand-blue-300" />
+                      <UserCircle2 className="h-3.5 w-3.5 text-primary-300" />
                       {courtNames}
                     </span>
                     {session.host_name && (
@@ -657,7 +630,7 @@ export function OpenPlayManagement() {
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     onClick={() => handleViewPlayers(session.id)}
-                    className="rounded-lg border border-forest-600 bg-forest-800/60 p-2 text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300 active:scale-95"
+                    className="rounded-lg border border-neutral-600 bg-neutral-800/60 p-2 text-cream-muted transition hover:border-primary-400 hover:text-primary-300 active:scale-95"
                     title="View players"
                   >
                     <Eye className="h-4 w-4" />
@@ -667,8 +640,8 @@ export function OpenPlayManagement() {
                     onClick={() => toggleActive(session)}
                     className={`rounded-lg border p-2 transition active:scale-95 ${
                       session.is_active
-                        ? 'border-accentGreen-500/40 bg-accentGreen-500/15 text-accentGreen-300 hover:border-accentGreen-400'
-                        : 'border-forest-600 bg-forest-800/60 text-cream-muted hover:border-brand-blue-400 hover:text-brand-blue-300'
+                        ? 'border-accent-500/40 bg-accent-500/15 text-accent-300 hover:border-accent-400'
+                        : 'border-neutral-600 bg-neutral-800/60 text-cream-muted hover:border-primary-400 hover:text-primary-300'
                     }`}
                     title={session.is_active ? 'Deactivate' : 'Activate'}
                   >
@@ -681,7 +654,7 @@ export function OpenPlayManagement() {
 
                   <button
                     onClick={() => openEditModal(session)}
-                    className="rounded-lg border border-forest-600 bg-forest-800/60 p-2 text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300 active:scale-95"
+                    className="rounded-lg border border-neutral-600 bg-neutral-800/60 p-2 text-cream-muted transition hover:border-primary-400 hover:text-primary-300 active:scale-95"
                     title="Edit session"
                   >
                     <Edit3 className="h-4 w-4" />
@@ -689,7 +662,7 @@ export function OpenPlayManagement() {
 
                   <button
                     onClick={() => handleDelete(session.id, session)}
-                    className="rounded-lg border border-forest-600 bg-forest-800/60 p-2 text-cream-muted transition hover:border-error hover:text-error active:scale-95"
+                    className="rounded-lg border border-neutral-600 bg-neutral-800/60 p-2 text-cream-muted transition hover:border-error hover:text-error active:scale-95"
                     title="Delete session"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -701,7 +674,6 @@ export function OpenPlayManagement() {
         </div>
       )}
 
-      {/* ─────────────────────── Create/Edit Modal ─────────────────────── */}
       <Modal
         isOpen={showCreateModal || !!editingSession}
         onClose={() => {
@@ -713,14 +685,11 @@ export function OpenPlayManagement() {
         size="lg"
       >
         <div className="space-y-4">
-          {/* Multi-court selection */}
           <div>
             <label className="mb-1.5 flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-cream-muted">
               <span>Courts *</span>
               {selectedCourtIds.length > 0 && (
-                <span className="text-brand-blue-300">
-                  ({selectedCourtIds.length} selected)
-                </span>
+                <span className="text-primary-300">({selectedCourtIds.length} selected)</span>
               )}
             </label>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -733,8 +702,8 @@ export function OpenPlayManagement() {
                     onClick={() => handleCourtToggle(court.id)}
                     className={`rounded-xl border p-2.5 text-left text-xs transition ${
                       checked
-                        ? 'border-brand-blue-400 bg-brand-blue-500 text-white font-bold'
-                        : 'border-forest-700/80 bg-forest-950/60 text-cream-muted hover:border-brand-blue-400/50 hover:text-cream'
+                        ? 'border-primary-400 bg-primary-500 text-white font-bold'
+                        : 'border-neutral-700 bg-neutral-950/60 text-cream-muted hover:border-primary-400/50 hover:text-cream'
                     }`}
                   >
                     <span className="block">{court.name}</span>
@@ -750,7 +719,6 @@ export function OpenPlayManagement() {
             )}
           </div>
 
-          {/* Date and Skill Level */}
           <div className="grid gap-3.5 sm:grid-cols-2">
             <Input
               label="Date *"
@@ -772,10 +740,10 @@ export function OpenPlayManagement() {
                     skill_level: e.target.value as OpenPlaySkillLevel,
                   })
                 }
-                className="w-full rounded-xl border border-forest-700/80 bg-forest-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-brand-blue-400 focus:outline-none focus:ring-2 focus:ring-brand-blue-500/20"
+                className="w-full rounded-xl border border-neutral-700 bg-neutral-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               >
                 {SKILL_LEVELS.map((level) => (
-                  <option key={level} value={level} className="bg-forest-900">
+                  <option key={level} value={level} className="bg-neutral-900">
                     {level}
                   </option>
                 ))}
@@ -783,21 +751,18 @@ export function OpenPlayManagement() {
             </div>
           </div>
 
-          {/* Time Slot Selection */}
           <div>
             <label className="mb-1.5 flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-cream-muted">
               <span>Time Slot *</span>
               {selectedCourtIds.length > 1 && (
-                <span className="text-brand-blue-300 text-[10px] font-normal">
+                <span className="text-primary-300 text-[10px] font-normal">
                   Only slots free on all {selectedCourtIds.length} courts shown
                 </span>
               )}
             </label>
 
             {selectedCourtIds.length === 0 || !formData.date ? (
-              <p className="text-xs text-cream-muted">
-                Select at least one court and a date first
-              </p>
+              <p className="text-xs text-cream-muted">Select at least one court and a date first</p>
             ) : loadingSlots ? (
               <div className="flex items-center gap-2 py-3">
                 <LoadingSpinner />
@@ -819,8 +784,8 @@ export function OpenPlayManagement() {
                         onClick={() => handleSlotSelect(slot.id)}
                         className={`rounded-xl border p-2.5 text-center text-xs transition ${
                           isSelected
-                            ? 'border-brand-blue-400 bg-brand-blue-500 text-white shadow-glow-blue font-bold'
-                            : 'border-forest-700/80 bg-forest-950/60 text-cream-muted hover:border-brand-blue-400/50 hover:text-cream'
+                            ? 'border-accent-400 bg-accent-500 text-neutral-950 shadow-glow-lime font-bold'
+                            : 'border-neutral-700 bg-neutral-950/60 text-cream-muted hover:border-primary-400/50 hover:text-cream'
                         }`}
                       >
                         <span className="font-mono block font-bold">
@@ -834,36 +799,33 @@ export function OpenPlayManagement() {
                   })}
                 </div>
 
-                {selectedSlotIds.length > 1 &&
-                  formData.start_time &&
-                  formData.end_time && (
-                    <div className="mt-2.5 rounded-xl border border-brand-blue-500/30 bg-brand-blue-500/10 p-2.5 text-xs">
-                      <p className="font-semibold text-brand-blue-200">
-                        Selected range: {formatTimeRange(formData.start_time, formData.end_time)}
-                      </p>
-                      <p className="text-[11px] text-cream-muted mt-0.5">
-                        {selectedSlotIds.length} hour{selectedSlotIds.length > 1 ? 's' : ''} ×{' '}
-                        {selectedCourtIds.length} court
-                        {selectedCourtIds.length > 1 ? 's' : ''}
-                      </p>
-                    </div>
-                  )}
+                {selectedSlotIds.length > 1 && formData.start_time && formData.end_time && (
+                  <div className="mt-2.5 rounded-xl border border-primary-500/30 bg-primary-500/10 p-2.5 text-xs">
+                    <p className="font-semibold text-primary-200">
+                      Selected range: {formatTimeRange(formData.start_time, formData.end_time)}
+                    </p>
+                    <p className="text-[11px] text-cream-muted mt-0.5">
+                      {selectedSlotIds.length} hour{selectedSlotIds.length > 1 ? 's' : ''} ×{' '}
+                      {selectedCourtIds.length} court
+                      {selectedCourtIds.length > 1 ? 's' : ''}
+                    </p>
+                  </div>
+                )}
               </>
             )}
 
-            {/* ✅ NEW — per-court availability toggle + grid */}
             {selectedCourtIds.length > 1 && !loadingSlots && Object.keys(perCourtSlots).length > 0 && (
               <div className="mt-4">
                 <button
                   type="button"
                   onClick={() => setShowPerCourtGrid((v) => !v)}
-                  className="flex w-full items-center justify-between rounded-xl border border-forest-700/80 bg-forest-950/60 px-3 py-2 text-xs font-semibold text-cream-muted transition hover:border-brand-blue-400/50 hover:text-cream"
+                  className="flex w-full items-center justify-between rounded-xl border border-neutral-700 bg-neutral-950/60 px-3 py-2 text-xs font-semibold text-cream-muted transition hover:border-primary-400/50 hover:text-cream"
                 >
                   <span className="flex items-center gap-2">
                     {showPerCourtGrid ? (
-                      <ChevronUp className="h-3.5 w-3.5 text-brand-blue-300" />
+                      <ChevronUp className="h-3.5 w-3.5 text-primary-300" />
                     ) : (
-                      <ChevronDown className="h-3.5 w-3.5 text-brand-blue-300" />
+                      <ChevronDown className="h-3.5 w-3.5 text-primary-300" />
                     )}
                     Check availability per court
                   </span>
@@ -873,10 +835,10 @@ export function OpenPlayManagement() {
                 </button>
 
                 {showPerCourtGrid && (
-                  <div className="mt-2 overflow-hidden rounded-xl border border-forest-700/80 bg-forest-950/70">
+                  <div className="mt-2 overflow-hidden rounded-xl border border-neutral-700 bg-neutral-950/70">
                     <div className="max-h-[320px] overflow-auto">
                       <table className="w-full text-xs">
-                        <thead className="sticky top-0 z-10 bg-forest-900 border-b border-forest-700/80">
+                        <thead className="sticky top-0 z-10 bg-neutral-900 border-b border-neutral-700">
                           <tr>
                             <th className="px-3 py-2 text-left font-bold uppercase tracking-wider text-cream-muted text-[10px]">
                               Hour
@@ -886,7 +848,7 @@ export function OpenPlayManagement() {
                               return (
                                 <th
                                   key={courtId}
-                                  className="px-3 py-2 text-center font-bold uppercase tracking-wider text-brand-blue-200 text-[10px]"
+                                  className="px-3 py-2 text-center font-bold uppercase tracking-wider text-primary-200 text-[10px]"
                                 >
                                   {court?.name || 'Court'}
                                 </th>
@@ -902,9 +864,7 @@ export function OpenPlayManagement() {
                             return (
                               <tr
                                 key={`${row.start}-${row.end}`}
-                                className={`border-b border-forest-800/60 ${
-                                  allFree ? 'bg-brand-blue-500/5' : ''
-                                }`}
+                                className={`border-b border-neutral-800/60 ${allFree ? 'bg-primary-500/5' : ''}`}
                               >
                                 <td className="px-3 py-1.5 font-mono font-bold text-cream whitespace-nowrap">
                                   {formatTimeRange(row.start, row.end)}
@@ -924,7 +884,7 @@ export function OpenPlayManagement() {
                                   return (
                                     <td key={courtId} className="px-3 py-1.5 text-center">
                                       {cell.is_available ? (
-                                        <span className="inline-flex items-center gap-1 text-accentGreen-300">
+                                        <span className="inline-flex items-center gap-1 text-accent-300">
                                           <Check className="h-3.5 w-3.5" />
                                         </span>
                                       ) : (
@@ -941,10 +901,10 @@ export function OpenPlayManagement() {
                         </tbody>
                       </table>
                     </div>
-                    <div className="border-t border-forest-700/80 bg-forest-900/60 px-3 py-2 text-[10px] text-cream-muted">
-                      <Check className="mr-1 inline h-3 w-3 text-accentGreen-300" /> = free ·
+                    <div className="border-t border-neutral-700 bg-neutral-900/60 px-3 py-2 text-[10px] text-cream-muted">
+                      <Check className="mr-1 inline h-3 w-3 text-accent-300" /> = free ·
                       <X className="mx-1 inline h-3 w-3 text-red-400/80" /> = booked/blocked ·
-                      Hours free on <strong className="text-brand-blue-200">all courts</strong> appear in the picker above.
+                      Hours free on <strong className="text-primary-200">all courts</strong> appear in the picker above.
                     </div>
                   </div>
                 )}
@@ -952,7 +912,6 @@ export function OpenPlayManagement() {
             )}
           </div>
 
-          {/* Max Players & Price */}
           <div className="grid gap-3.5 sm:grid-cols-2">
             <Input
               label="Max Players *"
@@ -1010,7 +969,7 @@ export function OpenPlayManagement() {
             </div>
           )}
 
-          <div className="flex flex-col gap-2.5 border-t border-forest-700/80 pt-4 sm:flex-row sm:gap-3">
+          <div className="flex flex-col gap-2.5 border-t border-neutral-700 pt-4 sm:flex-row sm:gap-3">
             <Button
               fullWidth
               isLoading={loadingAction}
@@ -1034,7 +993,6 @@ export function OpenPlayManagement() {
         </div>
       </Modal>
 
-      {/* ─────────────────────── Players List Modal ─────────────────────── */}
       <Modal
         isOpen={!!viewingPlayers}
         onClose={() => setViewingPlayers(null)}
@@ -1049,24 +1007,24 @@ export function OpenPlayManagement() {
           <>
             {stats && (
               <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-                <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-3 text-center">
+                <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-3 text-center">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-cream-muted">Players</p>
                   <p className="mt-1 text-xl font-extrabold text-cream">
                     {stats.total_players}/{stats.max_players}
                   </p>
                 </div>
-                <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-3 text-center">
+                <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-3 text-center">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-cream-muted">Confirmed</p>
-                  <p className="mt-1 text-xl font-extrabold text-accentGreen-300">
+                  <p className="mt-1 text-xl font-extrabold text-accent-300">
                     {stats.confirmed_count}
                   </p>
                   {stats.total_revenue > 0 && (
-                    <p className="text-[10px] text-brand-blue-300 font-semibold">
+                    <p className="text-[10px] text-accent-400 font-semibold">
                       {formatCurrency(stats.total_revenue)}
                     </p>
                   )}
                 </div>
-                <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-3 text-center">
+                <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-3 text-center">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-cream-muted">Pending</p>
                   <p className="mt-1 text-xl font-extrabold text-amber-300">
                     {stats.pending_count}
@@ -1077,9 +1035,9 @@ export function OpenPlayManagement() {
                     </p>
                   )}
                 </div>
-                <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-3 text-center">
+                <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-3 text-center">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-cream-muted">Est. Revenue</p>
-                  <p className="mt-1 text-xl font-extrabold text-brand-blue-300">
+                  <p className="mt-1 text-xl font-extrabold text-accent-400">
                     {formatCurrency((stats.total_revenue || 0) + (stats.pending_revenue || 0))}
                   </p>
                 </div>
@@ -1098,7 +1056,7 @@ export function OpenPlayManagement() {
                   return (
                     <div
                       key={player.booking_id}
-                      className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-forest-700/80 bg-forest-950/70 p-3.5"
+                      className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-neutral-700 bg-neutral-950/70 p-3.5"
                     >
                       <div className="min-w-0">
                         <p className="truncate text-sm font-bold text-cream">
@@ -1110,7 +1068,7 @@ export function OpenPlayManagement() {
                         {player.customer_phone && (
                           <p className="text-xs text-cream-muted/70">{player.customer_phone}</p>
                         )}
-                        <p className="font-mono text-xs font-semibold text-brand-blue-300 mt-1">
+                        <p className="font-mono text-xs font-semibold text-primary-300 mt-1">
                           {player.reference_code}
                         </p>
                       </div>
@@ -1139,7 +1097,7 @@ export function OpenPlayManagement() {
                         </div>
                         <button
                           onClick={() => openPlayerDetails(player)}
-                          className="rounded-lg border border-forest-600 bg-forest-800/60 p-2 text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300 active:scale-95"
+                          className="rounded-lg border border-neutral-600 bg-neutral-800/60 p-2 text-cream-muted transition hover:border-primary-400 hover:text-primary-300 active:scale-95"
                           title="Manage player payment"
                         >
                           <CreditCard className="h-4 w-4" />
@@ -1154,7 +1112,6 @@ export function OpenPlayManagement() {
         )}
       </Modal>
 
-      {/* ─────────────────────── Player Booking Details Modal ─────────────────────── */}
       <Modal
         isOpen={!!selectedPlayerBooking}
         onClose={() => setSelectedPlayerBooking(null)}
@@ -1163,7 +1120,7 @@ export function OpenPlayManagement() {
       >
         {selectedPlayerBooking && (
           <div className="space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-forest-700/80 pb-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-700 pb-3">
               <StatusBadge status={selectedPlayerBooking.status} />
               <span className="text-xs text-cream-muted font-medium">
                 Joined {formatDateTime(selectedPlayerBooking.created_at)}
@@ -1171,8 +1128,8 @@ export function OpenPlayManagement() {
             </div>
 
             <div className="grid gap-3.5 sm:grid-cols-2">
-              <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-4">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-brand-blue-300">
+              <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-4">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-primary-300">
                   Customer
                 </p>
                 <p className="mt-1 text-sm font-bold text-cream">
@@ -1190,32 +1147,32 @@ export function OpenPlayManagement() {
                   </p>
                 )}
               </div>
-              <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-4">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-brand-blue-300">
+              <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-4">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-primary-300">
                   Session Information
                 </p>
                 <p className="mt-1 text-sm font-bold text-cream">Social Open Play</p>
                 <p className="text-xs text-cream-muted">
                   {formatDateLong(selectedPlayerBooking.date)}
                 </p>
-                <p className="mt-1 font-mono text-xs text-brand-blue-300">
+                <p className="mt-1 font-mono text-xs text-primary-300">
                   Ref: {selectedPlayerBooking.reference_code}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center justify-between rounded-xl border border-brand-blue-500/40 bg-brand-blue-500/15 p-4">
+            <div className="flex items-center justify-between rounded-xl border border-primary-500/40 bg-primary-500/15 p-4">
               <span className="text-xs font-semibold uppercase tracking-wider text-cream-muted">
                 Total Amount
               </span>
-              <span className="font-display text-2xl font-extrabold text-brand-blue-300">
+              <span className="font-display text-2xl font-extrabold text-accent-400">
                 {selectedPlayerBooking.total_amount === 0
                   ? 'Free'
                   : formatCurrency(selectedPlayerBooking.total_amount || 0)}
               </span>
             </div>
 
-            <div className="border-t border-forest-700/80 pt-4">
+            <div className="border-t border-neutral-700 pt-4">
               <p className="mb-3 text-xs font-bold uppercase tracking-wider text-cream-muted">
                 Update Payment Status
               </p>

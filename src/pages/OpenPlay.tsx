@@ -71,27 +71,27 @@ const SKILL_BADGE: Record<string, string> = {
   Beginner: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30',
   Intermediate: 'bg-amber-500/15 text-amber-300 border border-amber-500/30',
   Advanced: 'bg-purple-500/15 text-purple-300 border border-purple-500/30',
-  'All Levels': 'bg-brand-blue-500/20 text-brand-blue-200 border border-brand-blue-400/40',
+  'All Levels': 'bg-primary-500/20 text-primary-200 border border-primary-400/40',
 };
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   upcoming: {
     label: 'Upcoming',
-    className: 'bg-forest-800 text-cream-muted border border-forest-600',
+    className: 'bg-neutral-800 text-cream-muted border border-neutral-600',
   },
   active: {
     label: 'Active Now',
     className:
-      'bg-accentGreen-500/20 text-accentGreen-300 border border-accentGreen-400/40',
+      'bg-accent-500/20 text-accent-300 border border-accent-400/40',
   },
   full: { label: 'Full', className: 'bg-red-500/15 text-red-400 border border-red-500/30' },
   past: {
     label: 'Past',
-    className: 'bg-forest-900/60 text-cream-muted/50 border border-forest-800',
+    className: 'bg-neutral-900/60 text-cream-muted/50 border border-neutral-800',
   },
   cancelled: {
     label: 'Cancelled',
-    className: 'bg-forest-900/60 text-cream-muted/50 border border-forest-800',
+    className: 'bg-neutral-900/60 text-cream-muted/50 border border-neutral-800',
   },
 };
 
@@ -209,7 +209,6 @@ export function OpenPlay() {
       setShowJoinModal(false);
       resetCustomerForm();
 
-      // ✅ Free sessions skip checkout entirely
       if (booking.status === 'confirmed' && booking.total_amount === 0) {
         navigate('/success');
       } else {
@@ -234,7 +233,7 @@ export function OpenPlay() {
 
       <div className="container-page pt-24 pb-16 sm:pt-28">
         <div className="mb-8 text-center sm:mb-10">
-          <span className="mb-2.5 inline-flex items-center gap-1.5 rounded-full border border-brand-blue-400/40 bg-brand-blue-500/20 px-3.5 py-1 text-xs font-bold text-brand-blue-300">
+          <span className="mb-2.5 inline-flex items-center gap-1.5 rounded-full border border-primary-400/40 bg-primary-500/20 px-3.5 py-1 text-xs font-bold text-primary-300">
             <Users className="h-3.5 w-3.5" />
             Social Open Play
           </span>
@@ -252,7 +251,7 @@ export function OpenPlay() {
           <button
             type="button"
             onClick={() => setShowTermsModal(true)}
-            className="inline-flex items-center gap-2 rounded-xl border border-forest-700/80 bg-forest-900/60 px-3.5 py-2 text-xs font-semibold text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300"
+            className="inline-flex items-center gap-2 rounded-xl border border-neutral-700 bg-neutral-900/60 px-3.5 py-2 text-xs font-semibold text-cream-muted transition hover:border-primary-400 hover:text-primary-300"
           >
             <ScrollText className="h-3.5 w-3.5" />
             Read Session Terms
@@ -268,7 +267,7 @@ export function OpenPlay() {
         {loadingSessions ? (
           <LoadingSpinner className="py-20" />
         ) : sessions.length === 0 ? (
-          <div className="mx-auto flex max-w-md flex-col items-center gap-3 rounded-2xl border border-forest-700/80 bg-forest-900/60 p-8 text-center shadow-xl backdrop-blur-sm">
+          <div className="mx-auto flex max-w-md flex-col items-center gap-3 rounded-2xl border border-neutral-700 bg-neutral-900/60 p-8 text-center shadow-xl backdrop-blur-sm">
             <CalendarDays className="h-10 w-10 text-cream-muted/40" />
             <div>
               <h2 className="text-sm font-bold text-cream">No sessions scheduled yet</h2>
@@ -292,7 +291,7 @@ export function OpenPlay() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                   onClick={() => handleViewDetails(session)}
-                  className="card rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 shadow-xl transition-all hover:border-brand-blue-400/60 hover:shadow-glow-blue cursor-pointer flex flex-col justify-between"
+                  className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 shadow-xl transition-all hover:border-primary-400/60 hover:shadow-glow-blue cursor-pointer flex flex-col justify-between"
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
@@ -324,29 +323,28 @@ export function OpenPlay() {
 
                     <div className="mt-3 space-y-2 text-xs text-cream-muted">
                       <div className="flex items-center gap-2">
-                        <CalendarDays className="h-3.5 w-3.5 text-brand-blue-300" />
+                        <CalendarDays className="h-3.5 w-3.5 text-primary-300" />
                         <span>{formatDateLong(session.date)}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Clock className="h-3.5 w-3.5 text-brand-blue-300" />
+                        <Clock className="h-3.5 w-3.5 text-primary-300" />
                         <span>{formatTimeRange(session.start_time, session.end_time)}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Users className="h-3.5 w-3.5 text-brand-blue-300" />
+                        <Users className="h-3.5 w-3.5 text-primary-300" />
                         <span>
                           {session.current_players}/{session.max_players} players ·{' '}
                           {session.spots_left} spot{session.spots_left === 1 ? '' : 's'} left
                         </span>
                       </div>
-                      {/* ✅ Multi-court display */}
                       <div className="flex items-start gap-2">
-                        <UserCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-blue-300" />
+                        <UserCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary-300" />
                         <div className="flex flex-wrap gap-1">
                           {session.courts && session.courts.length > 0 ? (
                             session.courts.map((c) => (
                               <span
                                 key={c.id}
-                                className="text-[10px] px-1.5 py-0.5 rounded bg-forest-800 border border-forest-600"
+                                className="text-[10px] px-1.5 py-0.5 rounded bg-neutral-800 border border-neutral-600"
                               >
                                 {c.name}
                               </span>
@@ -365,12 +363,12 @@ export function OpenPlay() {
                     )}
                   </div>
 
-                  <div className="mt-5 flex items-center justify-between border-t border-forest-700/80 pt-3.5">
+                  <div className="mt-5 flex items-center justify-between border-t border-neutral-700 pt-3.5">
                     <div>
                       <p className="text-[10px] uppercase tracking-wider text-cream-muted font-semibold">
                         Per player
                       </p>
-                      <p className="font-display text-lg font-extrabold text-brand-blue-300">
+                      <p className="font-display text-lg font-extrabold text-accent-400">
                         {session.price_per_player === 0
                           ? 'Free'
                           : formatCurrency(session.price_per_player)}
@@ -407,13 +405,12 @@ export function OpenPlay() {
           </div>
         )}
 
-        {/* Footer disclaimer with terms link */}
         <p className="mt-8 text-center text-xs text-cream-muted">
           Sessions may be cancelled if minimum players are not met.{' '}
           <button
             type="button"
             onClick={() => setShowTermsModal(true)}
-            className="font-semibold text-brand-blue-300 underline hover:text-brand-blue-200"
+            className="font-semibold text-primary-300 underline hover:text-primary-200"
           >
             Read session terms
           </button>
@@ -429,7 +426,6 @@ export function OpenPlay() {
       >
         {detailsSession && (
           <div className="space-y-4">
-            {/* Header badges + title */}
             <div>
               <div className="mb-2.5 flex flex-wrap items-center gap-2">
                 <span
@@ -452,27 +448,25 @@ export function OpenPlay() {
               </h3>
             </div>
 
-            {/* Meta */}
-            <div className="space-y-2 rounded-xl border border-forest-700/80 bg-forest-950/70 p-3.5 text-xs text-cream-muted">
+            <div className="space-y-2 rounded-xl border border-neutral-700 bg-neutral-950/70 p-3.5 text-xs text-cream-muted">
               <div className="flex items-center gap-2.5">
-                <CalendarDays className="h-4 w-4 text-brand-blue-300" />
+                <CalendarDays className="h-4 w-4 text-primary-300" />
                 <span>{formatDateLong(detailsSession.date)}</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Clock className="h-4 w-4 text-brand-blue-300" />
+                <Clock className="h-4 w-4 text-primary-300" />
                 <span>
                   {formatTimeRange(detailsSession.start_time, detailsSession.end_time)}
                 </span>
               </div>
-              {/* ✅ Multi-court display */}
               <div className="flex items-start gap-2.5">
-                <UserCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-blue-300" />
+                <UserCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary-300" />
                 <div className="flex flex-wrap gap-1.5">
                   {detailsSession.courts && detailsSession.courts.length > 0 ? (
                     detailsSession.courts.map((c) => (
                       <span
                         key={c.id}
-                        className="text-[10px] px-2 py-0.5 rounded bg-forest-800 border border-forest-600"
+                        className="text-[10px] px-2 py-0.5 rounded bg-neutral-800 border border-neutral-600"
                       >
                         {c.name}
                       </span>
@@ -484,10 +478,9 @@ export function OpenPlay() {
               </div>
             </div>
 
-            {/* Description */}
             {detailsSession.description && (
               <div>
-                <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-brand-blue-300">
+                <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-primary-300">
                   About this session
                 </p>
                 <p className="whitespace-pre-wrap text-xs text-cream-muted leading-relaxed">
@@ -496,16 +489,14 @@ export function OpenPlay() {
               </div>
             )}
 
-            {/* Roster */}
             <div>
-              <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-brand-blue-300">
+              <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-primary-300">
                 Players ({detailsSession.current_players}/{detailsSession.max_players})
               </p>
 
-              {/* Progress bar */}
-              <div className="mb-3 h-2 w-full overflow-hidden rounded-full bg-forest-800 border border-forest-700/80">
+              <div className="mb-3 h-2 w-full overflow-hidden rounded-full bg-neutral-800 border border-neutral-700">
                 <div
-                  className="h-full bg-brand-blue-400 transition-all duration-300"
+                  className="h-full bg-primary-400 transition-all duration-300"
                   style={{
                     width: `${Math.min(
                       100,
@@ -535,13 +526,13 @@ export function OpenPlay() {
                   {detailsPlayers.map((player) => (
                     <span
                       key={player.booking_id}
-                      className="rounded-lg border border-forest-600 bg-forest-800/90 px-2.5 py-1 text-[11px] font-medium text-cream"
+                      className="rounded-lg border border-neutral-600 bg-neutral-800/90 px-2.5 py-1 text-[11px] font-medium text-cream"
                     >
                       {player.display_name}
                     </span>
                   ))}
                   {detailsSession.spots_left > 0 && (
-                    <span className="rounded-lg border border-dashed border-forest-600 px-2.5 py-1 text-[11px] text-cream-muted">
+                    <span className="rounded-lg border border-dashed border-neutral-600 px-2.5 py-1 text-[11px] text-cream-muted">
                       +{detailsSession.spots_left} spot
                       {detailsSession.spots_left === 1 ? '' : 's'} open
                     </span>
@@ -550,13 +541,12 @@ export function OpenPlay() {
               )}
             </div>
 
-            {/* Price + CTA */}
-            <div className="flex items-center justify-between rounded-xl border border-brand-blue-500/40 bg-brand-blue-500/15 p-3.5">
+            <div className="flex items-center justify-between rounded-xl border border-primary-500/40 bg-primary-500/15 p-3.5">
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-cream-muted">
                   Price per player
                 </p>
-                <p className="font-display text-xl font-extrabold text-brand-blue-300">
+                <p className="font-display text-xl font-extrabold text-accent-400">
                   {detailsSession.price_per_player === 0
                     ? 'Free'
                     : formatCurrency(detailsSession.price_per_player)}
@@ -584,18 +574,16 @@ export function OpenPlay() {
       >
         {selectedSession && (
           <form onSubmit={handleSubmit(handleJoinConfirm)} className="space-y-4">
-            {/* Session Summary */}
-            <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-3.5">
+            <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-3.5">
               <p className="text-sm font-bold text-cream">
                 {selectedSession.title || selectedSession.host_name || 'Open Play Session'}
               </p>
-              {/* ✅ Multi-court display */}
               <div className="mt-0.5 flex flex-wrap gap-1">
                 {selectedSession.courts && selectedSession.courts.length > 0 ? (
                   selectedSession.courts.map((c) => (
                     <span
                       key={c.id}
-                      className="text-[10px] px-1.5 py-0.5 rounded bg-forest-800 border border-forest-600 text-cream-muted"
+                      className="text-[10px] px-1.5 py-0.5 rounded bg-neutral-800 border border-neutral-600 text-cream-muted"
                     >
                       {c.name}
                     </span>
@@ -610,7 +598,7 @@ export function OpenPlay() {
                 {formatDateLong(selectedSession.date)} ·{' '}
                 {formatTimeRange(selectedSession.start_time, selectedSession.end_time)}
               </p>
-              <p className="mt-1 text-xs font-semibold text-brand-blue-300">
+              <p className="mt-1 text-xs font-semibold text-primary-300">
                 {selectedSession.current_players}/{selectedSession.max_players} players ·{' '}
                 {selectedSession.price_per_player === 0
                   ? 'Free'
@@ -657,13 +645,12 @@ export function OpenPlay() {
               {...register('notes')}
             />
 
-            {/* Session terms quick note with link to modal */}
             <p className="text-[11px] leading-relaxed text-cream-muted">
               By joining, you agree to our{' '}
               <button
                 type="button"
                 onClick={() => setShowTermsModal(true)}
-                className="font-semibold text-brand-blue-300 underline"
+                className="font-semibold text-primary-300 underline"
               >
                 session terms
               </button>{' '}
@@ -672,7 +659,7 @@ export function OpenPlay() {
                 to="/terms"
                 target="_blank"
                 rel="noreferrer"
-                className="font-semibold text-brand-blue-300 underline"
+                className="font-semibold text-primary-300 underline"
               >
                 Terms & Conditions
               </Link>
@@ -712,18 +699,18 @@ export function OpenPlay() {
           aria-label="Open Play session terms"
         >
           <div
-            className="w-full max-w-md rounded-2xl border border-forest-700 bg-forest-900 p-6 shadow-2xl"
+            className="w-full max-w-md rounded-2xl border border-neutral-700 bg-neutral-900 p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <ScrollText className="h-5 w-5 text-court-300" />
+                <ScrollText className="h-5 w-5 text-primary-300" />
                 <h3 className="text-lg font-bold text-cream">Open Play Session Terms</h3>
               </div>
               <button
                 onClick={() => setShowTermsModal(false)}
                 aria-label="Close"
-                className="rounded-lg border border-forest-700 bg-forest-900/60 p-1.5 text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300"
+                className="rounded-lg border border-neutral-700 bg-neutral-900/60 p-1.5 text-cream-muted transition hover:border-primary-400 hover:text-primary-300"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -731,25 +718,25 @@ export function OpenPlay() {
 
             <ul className="space-y-2.5 text-sm text-cream-muted">
               <li className="flex items-start gap-2.5">
-                <Users className="mt-0.5 h-4 w-4 shrink-0 text-court-300" />
+                <Users className="mt-0.5 h-4 w-4 shrink-0 text-primary-300" />
                 <span>Sessions may be cancelled if fewer than 4 players sign up.</span>
               </li>
               <li className="flex items-start gap-2.5">
-                <Clock className="mt-0.5 h-4 w-4 shrink-0 text-court-300" />
+                <Clock className="mt-0.5 h-4 w-4 shrink-0 text-primary-300" />
                 <span>
                   You&apos;ll be notified at least 2 hours before if a session is cancelled.
                 </span>
               </li>
               <li className="flex items-start gap-2.5">
-                <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-court-300" />
+                <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary-300" />
                 <span>Full refund if we cancel the session.</span>
               </li>
               <li className="flex items-start gap-2.5">
-                <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-court-300" />
+                <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-primary-300" />
                 <span>Skill levels are self-reported, not verified.</span>
               </li>
               <li className="flex items-start gap-2.5">
-                <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-court-300" />
+                <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-primary-300" />
                 <span>Hosts may remove disruptive players.</span>
               </li>
             </ul>
@@ -759,13 +746,13 @@ export function OpenPlay() {
                 to="/terms"
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs font-semibold text-brand-blue-300 underline"
+                className="text-xs font-semibold text-primary-300 underline"
               >
                 Full Terms
               </Link>
               <button
                 onClick={() => setShowTermsModal(false)}
-                className="rounded-xl bg-brand-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-blue-600"
+                className="rounded-xl bg-primary-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-600"
               >
                 Got it
               </button>

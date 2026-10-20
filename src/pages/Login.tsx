@@ -19,7 +19,6 @@ export function Login() {
   const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/admin';
 
   useEffect(() => {
-    // wait for init() to resolve before deciding whether to redirect
     if (!initializing && isAuthenticated) {
       navigate(from, { replace: true });
     }
@@ -53,14 +52,14 @@ export function Login() {
           alt=""
           className="h-full w-full object-cover opacity-20"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-forest-950 via-forest-950/90 to-charcoal" />
+        <div className="absolute inset-0 bg-gradient-to-br from-neutral-950 via-neutral-950/90 to-charcoal" />
         <div className="absolute inset-0 bg-grid opacity-20" />
       </div>
 
       <div className="relative z-10 w-full max-w-md px-4">
         <Link
           to="/"
-          className="mb-6 inline-flex items-center gap-2 text-sm text-cream-muted hover:text-gold-300 transition"
+          className="mb-6 inline-flex items-center gap-2 text-sm text-cream-muted hover:text-accent-400 transition"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Home
@@ -72,7 +71,6 @@ export function Login() {
           className="card p-8"
         >
           <div className="mb-6 text-center">
-            {/* Just the image logo, bigger, no text */}
             <div className="flex justify-center">
               <Logo size="2xl" to="" withText={false} />
             </div>
@@ -84,7 +82,7 @@ export function Login() {
             <Input
               label="Email"
               type="email"
-              placeholder="admin@picklejoe.com"
+              placeholder="admin@smashpoint.com"
               leftIcon={<Mail className="h-4 w-4" />}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -117,7 +115,6 @@ export function Login() {
               Sign In
             </Button>
           </form>
-
         </motion.div>
       </div>
     </div>

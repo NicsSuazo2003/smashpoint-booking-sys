@@ -31,7 +31,7 @@ export function Terms() {
       <div className="container-page pt-24 pb-16">
         <Link
           to="/"
-          className="mb-6 inline-flex items-center gap-1.5 text-xs font-semibold text-cream-muted transition hover:text-brand-blue-300"
+          className="mb-6 inline-flex items-center gap-1.5 text-xs font-semibold text-cream-muted transition hover:text-primary-300"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Back to Home
@@ -39,8 +39,8 @@ export function Terms() {
 
         <div className="mx-auto max-w-3xl">
           <div className="mb-8 flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-court-400/30 bg-court-600/30">
-              <FileText className="h-6 w-6 text-court-300" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-primary-400/30 bg-primary-600/30">
+              <FileText className="h-6 w-6 text-primary-300" />
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-cream sm:text-3xl">
@@ -59,16 +59,16 @@ export function Terms() {
 
           <div className="space-y-8">
             {/* Intro */}
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <p className="text-sm leading-relaxed text-cream-muted">
-                Please read these Terms & Conditions carefully before booking a court or using the facilities of Center Court Sports Center. These terms govern your use of our facilities and online booking services.
+                Please read these Terms & Conditions carefully before booking a court or using the facilities of Smash Point Pickle Sports Center. These terms govern your use of our facilities and online booking services.
               </p>
             </section>
 
             {/* Section 1 */}
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <CalendarCheck className="h-5 w-5 shrink-0 text-court-300" />
+                <CalendarCheck className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">1. Acceptance of Terms</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
@@ -79,14 +79,14 @@ export function Terms() {
             </section>
 
             {/* Section 2 */}
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <CalendarCheck className="h-5 w-5 shrink-0 text-court-300" />
+                <CalendarCheck className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">2. Court Bookings</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
                 <p>
-                  All court reservations are subject to availability. A booking is confirmed only upon receipt of a confirmation email. Center Court reserves the right to cancel or reschedule bookings due to facility maintenance, safety concerns, or force majeure events.
+                  All court reservations are subject to availability. A booking is confirmed only upon receipt of a confirmation email. Smash Point reserves the right to cancel or reschedule bookings due to facility maintenance, safety concerns, or force majeure events.
                 </p>
               </div>
             </section>
@@ -113,9 +113,9 @@ export function Terms() {
             </section>
 
             {/* Section 4 */}
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <Users className="h-5 w-5 shrink-0 text-court-300" />
+                <Users className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">4. Walk-in Policy</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
@@ -126,22 +126,22 @@ export function Terms() {
             </section>
 
             {/* Section 5 */}
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <AlertTriangle className="h-5 w-5 shrink-0 text-court-300" />
+                <AlertTriangle className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">5. Player Conduct</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
                 <p>
-                  All players must treat staff, fellow players, and the facility with respect. Center Court Sports Center reserves the right to remove anyone displaying disruptive, unsafe, or inappropriate behavior without a refund.
+                  All players must treat staff, fellow players, and the facility with respect. Smash Point Pickle Sports Center reserves the right to remove anyone displaying disruptive, unsafe, or inappropriate behavior without a refund.
                 </p>
               </div>
             </section>
 
             {/* Section 6 */}
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <AlertTriangle className="h-5 w-5 shrink-0 text-court-300" />
+                <AlertTriangle className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">6. Facility Rules</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
@@ -156,9 +156,9 @@ export function Terms() {
             </section>
 
             {/* Section 7 */}
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <AlertTriangle className="h-5 w-5 shrink-0 text-court-300" />
+                <AlertTriangle className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">7. Equipment & Property</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
@@ -169,9 +169,9 @@ export function Terms() {
             </section>
 
             {/* Section 8 */}
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <AlertTriangle className="h-5 w-5 shrink-0 text-court-300" />
+                <AlertTriangle className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">8. Medical Fitness</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
@@ -182,22 +182,22 @@ export function Terms() {
             </section>
 
             {/* Section 9 */}
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <ShieldAlert className="h-5 w-5 shrink-0 text-court-300" />
+                <ShieldAlert className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">9. Liability Waiver, Release & Indemnity</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
                 <p>
-                  Pickleball is a physical sport that carries inherent risks of injury. By making a reservation or using our facilities, the booking party and all participants acknowledge these risks and agree, to the extent permitted by law, to release and hold harmless Center Court Sports Center, its owners, and employees from claims or liabilities arising from personal injury, property damage, or death related to the use of the facility.
+                  Pickleball is a physical sport that carries inherent risks of injury. By making a reservation or using our facilities, the booking party and all participants acknowledge these risks and agree, to the extent permitted by law, to release and hold harmless Smash Point Pickle Sports Center, its owners, and employees from claims or liabilities arising from personal injury, property damage, or death related to the use of the facility.
                 </p>
               </div>
             </section>
 
             {/* Section 10 */}
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <Users className="h-5 w-5 shrink-0 text-court-300" />
+                <Users className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">10. Minors (Under 18)</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
@@ -208,9 +208,9 @@ export function Terms() {
             </section>
 
             {/* Section 11 */}
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <FileText className="h-5 w-5 shrink-0 text-court-300" />
+                <FileText className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">11. Privacy</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
@@ -221,44 +221,43 @@ export function Terms() {
             </section>
 
             {/* Section 12 */}
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <RefreshCw className="h-5 w-5 shrink-0 text-court-300" />
+                <RefreshCw className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">12. Changes to Terms</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
                 <p>
-                  Center Court Sports Center reserves the right to modify or update these Terms and Conditions at any time. Continued use of our facilities or booking platform constitutes acceptance of the revised terms.
+                  Smash Point Pickle Sports Center reserves the right to modify or update these Terms and Conditions at any time. Continued use of our facilities or booking platform constitutes acceptance of the revised terms.
                 </p>
               </div>
             </section>
 
             {/* Contact */}
-            <section className="rounded-2xl border border-court-400/30 bg-court-600/20 p-5 sm:p-6">
+            <section className="rounded-2xl border border-primary-400/30 bg-primary-600/20 p-5 sm:p-6">
               <h2 className="mb-3 text-lg font-bold text-cream">Questions?</h2>
               <p className="text-sm leading-relaxed text-cream-muted">
                 If you have any questions about these Terms & Conditions, please contact us:
               </p>
               <ul className="mt-3 space-y-2 text-sm text-cream-muted">
                 <li className="flex items-center gap-2.5">
-                  <Mail className="h-4 w-4 shrink-0 text-court-300" />
-                  <span>centercourttandag@gmail.com</span>
+                  <Mail className="h-4 w-4 shrink-0 text-primary-300" />
+                  <span>smashpoint@gmail.com</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  {/* 👇 Replaced Phone with Facebook */}
-                  <Facebook className="h-4 w-4 shrink-0 text-court-300" />
-                  <a 
-                    href="https://www.facebook.com/profile.php?id=61594106069425&mibextid=wwXIfr&rdid=2CqRPgsgi7BZIBAd&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1D5snWhetr%2F#"
+                  <Facebook className="h-4 w-4 shrink-0 text-primary-300" />
+                  <a
+                    href="https://www.facebook.com/profile.php?id=61594106069425"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-brand-blue-300 transition"
+                    className="hover:text-primary-300 transition"
                   >
-                    Center Court Tandag
+                    Smash Point Pickle Sports Center
                   </a>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-court-300" />
-                  <span>San Agustin Sur "Dawis", Tandag City, Surigao del Sur</span>
+                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary-300" />
+                  <span>National Highway, Rosario, Tandag City</span>
                 </li>
               </ul>
             </section>

@@ -45,7 +45,7 @@ export function ImageUpload({
       formData.append('file', file);
 
       const token = localStorage.getItem('admin_token');
-const clientSubdomain = import.meta.env.VITE_CLIENT_SUBDOMAIN ?? 'picklejoe';
+      const clientSubdomain = import.meta.env.VITE_CLIENT_SUBDOMAIN ?? 'smashpoint';
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
       if (!apiBaseUrl) {
@@ -100,7 +100,7 @@ const clientSubdomain = import.meta.env.VITE_CLIENT_SUBDOMAIN ?? 'picklejoe';
 
         {value ? (
           <div className="relative group">
-            <div className="relative h-32 w-32 overflow-hidden rounded-xl border border-forest-700/80 bg-forest-950 shadow-md">
+            <div className="relative h-32 w-32 overflow-hidden rounded-xl border border-neutral-700 bg-neutral-950 shadow-md">
               <img
                 src={value}
                 alt="Uploaded"
@@ -114,7 +114,7 @@ const clientSubdomain = import.meta.env.VITE_CLIENT_SUBDOMAIN ?? 'picklejoe';
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="rounded-lg bg-brand-blue-500/90 p-2 text-white transition hover:bg-brand-blue-500"
+                  className="rounded-lg bg-primary-500/90 p-2 text-white transition hover:bg-primary-500"
                   title="Change image"
                 >
                   <Upload className="h-4 w-4" />
@@ -135,10 +135,10 @@ const clientSubdomain = import.meta.env.VITE_CLIENT_SUBDOMAIN ?? 'picklejoe';
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="flex h-32 w-32 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-forest-700/90 bg-forest-950/40 text-cream-muted transition-all hover:border-brand-blue-400 hover:bg-brand-blue-500/5 hover:text-brand-blue-200 disabled:opacity-50"
+            className="flex h-32 w-32 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-neutral-700 bg-neutral-950/40 text-cream-muted transition-all hover:border-primary-400 hover:bg-primary-500/5 hover:text-primary-200 disabled:opacity-50"
           >
             {uploading ? (
-              <Loader2 className="h-7 w-7 animate-spin text-brand-blue-400" />
+              <Loader2 className="h-7 w-7 animate-spin text-primary-400" />
             ) : (
               <>
                 <Image className="h-7 w-7 text-cream-muted/60" />

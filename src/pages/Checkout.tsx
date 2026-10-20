@@ -162,7 +162,6 @@ export function Checkout() {
     }
   }, [enabledMethods, selectedMethod]);
 
-  // Show a spinner while restoring instead of bouncing
   if (restoring && !currentBooking) {
     return (
       <div className="min-h-screen bg-charcoal">
@@ -270,11 +269,11 @@ export function Checkout() {
     <button
       onClick={onClick}
       aria-label={label}
-      className="flex shrink-0 items-center gap-1.5 rounded-lg border border-forest-600 bg-forest-800 px-2.5 py-2 text-xs font-semibold text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300 active:scale-95"
+      className="flex shrink-0 items-center gap-1.5 rounded-lg border border-neutral-600 bg-neutral-800 px-2.5 py-2 text-xs font-semibold text-cream-muted transition hover:border-primary-400 hover:text-primary-300 active:scale-95"
     >
       {copied === k ? (
         <>
-          <CheckCircle2 className="h-4 w-4 text-accentGreen-300" />
+          <CheckCircle2 className="h-4 w-4 text-accent-300" />
           Copied
         </>
       ) : (
@@ -293,7 +292,7 @@ export function Checkout() {
       <div className="container-page pt-24 pb-36 sm:pb-12">
         <Link
           to="/booking"
-          className="mb-4 inline-flex items-center gap-1.5 text-xs font-semibold text-cream-muted transition hover:text-brand-blue-300"
+          className="mb-4 inline-flex items-center gap-1.5 text-xs font-semibold text-cream-muted transition hover:text-primary-300"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Back to Booking
@@ -322,8 +321,8 @@ export function Checkout() {
 
             {/* Payment Timer */}
             <div
-              className={`card rounded-2xl border bg-forest-900/80 p-4 shadow-xl backdrop-blur-sm ${
-                isExpired ? 'border-error/80' : 'border-forest-700/80'
+              className={`card rounded-2xl border bg-neutral-900/80 p-4 shadow-xl backdrop-blur-sm ${
+                isExpired ? 'border-error/80' : 'border-neutral-700'
               }`}
             >
               <div className="flex items-center justify-between">
@@ -351,7 +350,7 @@ export function Checkout() {
                       ? 'text-error'
                       : timeLeft < 120
                         ? 'text-amber-400 animate-pulse'
-                        : 'text-brand-blue-300'
+                        : 'text-primary-300'
                   }`}
                 >
                   {formatCountdown(Math.max(timeLeft, 0))}
@@ -366,11 +365,11 @@ export function Checkout() {
                 <p className="mt-1 text-xs leading-relaxed text-cream-muted">
                   The slots may be available again. If you already sent payment, don&apos;t pay
                   twice. Keep your booking code{' '}
-                  <span className="font-mono font-bold text-brand-blue-300">
+                  <span className="font-mono font-bold text-primary-300">
                     {currentBooking.reference_code}
                   </span>{' '}
                   and contact us, or check{' '}
-                  <Link to="/track" className="font-semibold text-brand-blue-300 underline">
+                  <Link to="/track" className="font-semibold text-primary-300 underline">
                     Track My Booking
                   </Link>
                   .
@@ -383,7 +382,7 @@ export function Checkout() {
 
             {/* Payment Method Selector */}
             {hasMultipleMethods && (
-              <div className="card rounded-2xl border border-forest-700/80 bg-forest-900/80 p-4 shadow-xl backdrop-blur-sm">
+              <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-4 shadow-xl backdrop-blur-sm">
                 <p className="mb-2.5 text-xs font-bold uppercase tracking-wider text-cream-muted">
                   Step 1 · Choose your payment method
                 </p>
@@ -403,8 +402,8 @@ export function Checkout() {
                         onClick={() => setSelectedMethod(method)}
                         className={`flex items-center gap-2 rounded-xl border px-3.5 py-2.5 text-xs font-semibold transition ${
                           isSelected
-                            ? 'border-brand-blue-400 bg-brand-blue-500 text-white shadow-glow-blue'
-                            : 'border-forest-700/90 bg-forest-950/60 text-cream-muted hover:border-brand-blue-400/50 hover:text-cream'
+                            ? 'border-primary-400 bg-primary-500 text-white shadow-glow-blue'
+                            : 'border-neutral-700 bg-neutral-950/60 text-cream-muted hover:border-primary-400/50 hover:text-cream'
                         }`}
                       >
                         <Icon className="h-3.5 w-3.5" />
@@ -430,19 +429,19 @@ export function Checkout() {
 
             {/* Payment Details */}
             {selectedMethod && (
-              <div className="card space-y-3.5 rounded-2xl border border-forest-700/80 bg-forest-900/80 p-4 shadow-xl backdrop-blur-sm sm:p-5">
-                <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-blue-300">
+              <div className="card space-y-3.5 rounded-2xl border border-neutral-700 bg-neutral-900/80 p-4 shadow-xl backdrop-blur-sm sm:p-5">
+                <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary-300">
                   <IconComponent className="h-4 w-4" />
                   Step {1 + offset} · Send payment via {methodName}
                 </h2>
 
                 {/* Amount box */}
-                <div className="flex items-center justify-between gap-3 rounded-xl border border-brand-blue-500/40 bg-brand-blue-500/15 px-4 py-3">
+                <div className="flex items-center justify-between gap-3 rounded-xl border border-primary-500/40 bg-primary-500/15 px-4 py-3">
                   <div>
                     <span className="text-xs font-medium text-cream-muted">
                       Exact amount to send
                     </span>
-                    <p className="font-display text-xl font-extrabold text-brand-blue-300">
+                    <p className="font-display text-xl font-extrabold text-accent-400">
                       {formatCurrency(currentBooking.total_amount)}
                     </p>
                   </div>
@@ -454,7 +453,7 @@ export function Checkout() {
                 </div>
 
                 {displayNumber && (
-                  <div className="flex items-center justify-between gap-3 rounded-xl border border-forest-700/80 bg-forest-950/70 p-3">
+                  <div className="flex items-center justify-between gap-3 rounded-xl border border-neutral-700 bg-neutral-950/70 p-3">
                     <div className="min-w-0">
                       <p className="text-[11px] font-semibold uppercase tracking-wider text-cream-muted">
                         Send to account
@@ -463,7 +462,7 @@ export function Checkout() {
                         {displayNumber}
                       </p>
                       {displayAccountName && (
-                        <p className="text-xs font-medium text-brand-blue-200">
+                        <p className="text-xs font-medium text-primary-200">
                           {displayAccountName}
                         </p>
                       )}
@@ -477,7 +476,7 @@ export function Checkout() {
                 )}
 
                 {!displayNumber && displayAccountName && (
-                  <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-3">
+                  <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-3">
                     <p className="text-[11px] font-semibold uppercase tracking-wider text-cream-muted">
                       Account name
                     </p>
@@ -489,7 +488,7 @@ export function Checkout() {
 
                 {selectedMethod.config?.qr_image_url && (
                   <div className="flex justify-center py-1">
-                    <div className="rounded-2xl border border-forest-700/80 bg-forest-950/90 p-4 text-center shadow-lg">
+                    <div className="rounded-2xl border border-neutral-700 bg-neutral-950/90 p-4 text-center shadow-lg">
                       <img
                         src={selectedMethod.config.qr_image_url}
                         alt={`${methodName} payment QR code`}
@@ -503,11 +502,11 @@ export function Checkout() {
                 )}
 
                 {/* Booking code */}
-                <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 px-3.5 py-2.5">
+                <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 px-3.5 py-2.5">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <span className="text-xs text-cream-muted">Your booking code</span>
-                      <p className="font-mono text-sm font-bold text-brand-blue-300">
+                      <p className="font-mono text-sm font-bold text-primary-300">
                         {currentBooking.reference_code}
                       </p>
                     </div>
@@ -519,7 +518,7 @@ export function Checkout() {
                   </div>
                   <p className="mt-1.5 text-xs leading-relaxed text-cream-muted">
                     Save this to look up your booking later at{' '}
-                    <Link to="/track" className="font-semibold text-brand-blue-300 underline">
+                    <Link to="/track" className="font-semibold text-primary-300 underline">
                       Track My Booking
                     </Link>
                     . It is <strong className="text-cream">not</strong> the reference number from
@@ -528,7 +527,7 @@ export function Checkout() {
                 </div>
 
                 {/* How to pay */}
-                <details className="group rounded-xl border border-forest-700/80 bg-forest-950/70 p-3.5 text-xs text-cream-muted">
+                <details className="group rounded-xl border border-neutral-700 bg-neutral-950/70 p-3.5 text-xs text-cream-muted">
                   <summary className="flex cursor-pointer list-none items-center justify-between text-[13px] font-semibold text-cream">
                     <span>How to pay</span>
                     <ChevronDown className="h-4 w-4 transition group-open:rotate-180" />
@@ -567,14 +566,14 @@ export function Checkout() {
                       <strong className="text-cream">Submit payment</strong>.
                     </li>
                   </ol>
-                  <p className="mt-3 border-t border-forest-700/60 pt-2.5 leading-relaxed">
-                    These account details belong to CenterCourt. If anything looks different from
+                  <p className="mt-3 border-t border-neutral-700 pt-2.5 leading-relaxed">
+                    These account details belong to Smash Point. If anything looks different from
                     what you were told, contact us before sending money.
                   </p>
                 </details>
 
                 {selectedMethod.config?.instructions && (
-                  <details className="group rounded-xl border border-forest-800 bg-forest-950/50 p-3 text-xs text-cream-muted">
+                  <details className="group rounded-xl border border-neutral-800 bg-neutral-950/50 p-3 text-xs text-cream-muted">
                     <summary className="flex cursor-pointer list-none items-center justify-between font-semibold text-cream">
                       <span>Additional instructions</span>
                       <ChevronDown className="h-3.5 w-3.5 text-cream-muted transition group-open:rotate-180" />
@@ -588,10 +587,10 @@ export function Checkout() {
             )}
 
             {/* Reference Number Input */}
-            <div className="card rounded-2xl border border-forest-700/80 bg-forest-900/80 p-4 shadow-xl backdrop-blur-sm sm:p-5">
+            <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-4 shadow-xl backdrop-blur-sm sm:p-5">
               <label
                 htmlFor="paymentRef"
-                className="mb-2 block text-xs font-bold uppercase tracking-wider text-brand-blue-300"
+                className="mb-2 block text-xs font-bold uppercase tracking-wider text-primary-300"
               >
                 Step {2 + offset} · Payment receipt reference number{' '}
                 <span className="text-error">*</span>
@@ -605,7 +604,7 @@ export function Checkout() {
                 value={paymentRef}
                 onChange={(e) => setPaymentRef(e.target.value)}
                 placeholder="e.g. 1234 5678 9012"
-                className="w-full rounded-xl border border-forest-700/80 bg-forest-950/60 px-4 py-3 text-sm text-cream placeholder-cream-muted/40 transition-all focus:border-brand-blue-400 focus:bg-forest-900/60 focus:outline-none focus:ring-2 focus:ring-brand-blue-500/20"
+                className="w-full rounded-xl border border-neutral-700 bg-neutral-950/60 px-4 py-3 text-sm text-cream placeholder-cream-muted/40 transition-all focus:border-primary-400 focus:bg-neutral-900/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               />
               <p className="mt-1.5 text-xs text-cream-muted">
                 Find it on the receipt your payment app or bank shows after you send the money.
@@ -620,8 +619,8 @@ export function Checkout() {
             </div>
 
             {/* Screenshot Upload */}
-            <div className="card rounded-2xl border border-forest-700/80 bg-forest-900/80 p-4 shadow-xl backdrop-blur-sm sm:p-5">
-              <h2 className="mb-2.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-brand-blue-300">
+            <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-4 shadow-xl backdrop-blur-sm sm:p-5">
+              <h2 className="mb-2.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary-300">
                 <Upload className="h-3.5 w-3.5" />
                 Step {3 + offset} · Receipt screenshot (optional)
               </h2>
@@ -640,10 +639,10 @@ export function Checkout() {
                 }}
                 className={`rounded-xl border-2 border-dashed p-4 text-center transition-all ${
                   dragOver
-                    ? 'border-brand-blue-400 bg-brand-blue-500/10'
+                    ? 'border-primary-400 bg-primary-500/10'
                     : screenshot
-                      ? 'border-accentGreen-500/60 bg-accentGreen-500/10'
-                      : 'border-forest-700 hover:border-brand-blue-400/50 hover:bg-forest-950/40'
+                      ? 'border-accent-500/60 bg-accent-500/10'
+                      : 'border-neutral-700 hover:border-primary-400/50 hover:bg-neutral-950/40'
                 }`}
               >
                 {screenshot ? (
@@ -651,10 +650,10 @@ export function Checkout() {
                     <img
                       src={screenshot}
                       alt="Payment screenshot"
-                      className="h-16 w-16 rounded-lg border border-forest-700 bg-forest-950 object-contain"
+                      className="h-16 w-16 rounded-lg border border-neutral-700 bg-neutral-950 object-contain"
                     />
                     <div className="flex-1 text-left">
-                      <p className="text-xs font-bold text-accentGreen-300">
+                      <p className="text-xs font-bold text-accent-300">
                         Receipt attached ✓
                       </p>
                       <button
@@ -672,8 +671,8 @@ export function Checkout() {
                       <span className="hidden sm:inline">Drag your receipt here or </span>
                       <span className="sm:hidden">Attach your receipt screenshot</span>
                     </p>
-                    <label className="mt-2.5 inline-block cursor-pointer rounded-xl focus-within:ring-2 focus-within:ring-brand-blue-400">
-                      <span className="block rounded-xl border border-brand-blue-400/40 bg-brand-blue-500/20 px-4 py-2 text-xs font-semibold text-brand-blue-300 transition hover:bg-brand-blue-500 hover:text-white">
+                    <label className="mt-2.5 inline-block cursor-pointer rounded-xl focus-within:ring-2 focus-within:ring-primary-400">
+                      <span className="block rounded-xl border border-primary-400/40 bg-primary-500/20 px-4 py-2 text-xs font-semibold text-primary-300 transition hover:bg-primary-500 hover:text-white">
                         Browse files
                       </span>
                       <input
@@ -698,27 +697,27 @@ export function Checkout() {
               )}
 
               {/* Terms agreement checkbox */}
-              <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-forest-700/80 bg-forest-950/70 p-3.5">
+              <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-neutral-700 bg-neutral-950/70 p-3.5">
                 <input
                   type="checkbox"
                   id="agree-terms"
                   checked={agreedToTerms}
                   onChange={(e) => setAgreedToTerms(e.target.checked)}
-                  className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-forest-600 bg-forest-900 text-brand-blue-500 accent-brand-blue-500 focus:ring-2 focus:ring-brand-blue-500/40"
+                  className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-neutral-600 bg-neutral-900 text-primary-500 accent-primary-500 focus:ring-2 focus:ring-primary-500/40"
                 />
                 <label
                   htmlFor="agree-terms"
                   className="cursor-pointer text-xs leading-relaxed text-cream-muted"
                 >
                   <span className="inline-flex items-center gap-1 font-semibold text-cream">
-                    <ShieldCheck className="h-3.5 w-3.5 text-court-300" />
+                    <ShieldCheck className="h-3.5 w-3.5 text-primary-300" />
                     I have read and agree to the{' '}
                   </span>
                   <Link
                     to="/terms"
                     target="_blank"
                     rel="noreferrer"
-                    className="font-semibold text-brand-blue-300 underline"
+                    className="font-semibold text-primary-300 underline"
                   >
                     Terms & Conditions
                   </Link>
@@ -727,7 +726,7 @@ export function Checkout() {
                     to="/privacy"
                     target="_blank"
                     rel="noreferrer"
-                    className="font-semibold text-brand-blue-300 underline"
+                    className="font-semibold text-primary-300 underline"
                   >
                     Privacy Policy
                   </Link>
@@ -736,7 +735,7 @@ export function Checkout() {
                     to="/refund-policy"
                     target="_blank"
                     rel="noreferrer"
-                    className="font-semibold text-brand-blue-300 underline"
+                    className="font-semibold text-primary-300 underline"
                   >
                     No Refund Policy
                   </Link>
@@ -770,7 +769,7 @@ export function Checkout() {
 
           {/* Right sidebar */}
           <div className="lg:col-span-2">
-            <div className="card sticky top-24 rounded-2xl border border-forest-700/80 bg-forest-900/90 p-4 shadow-xl sm:p-5">
+            <div className="card sticky top-24 rounded-2xl border border-neutral-700 bg-neutral-900/90 p-4 shadow-xl sm:p-5">
               <button
                 onClick={() => setShowDetails(!showDetails)}
                 aria-expanded={showDetails}
@@ -778,7 +777,7 @@ export function Checkout() {
               >
                 <h2 className="font-display text-base font-bold text-cream">Order Summary</h2>
                 <div className="flex items-center gap-2 text-cream-muted">
-                  <span className="text-sm font-bold text-brand-blue-300">
+                  <span className="text-sm font-bold text-accent-400">
                     {formatCurrency(currentBooking.total_amount)}
                   </span>
                   {showDetails ? (
@@ -794,7 +793,7 @@ export function Checkout() {
               </h2>
 
               <div className={`mt-3.5 space-y-3 ${showDetails ? 'block' : 'hidden lg:block'}`}>
-                <div className="space-y-1.5 rounded-xl border border-forest-700/60 bg-forest-950/60 p-3">
+                <div className="space-y-1.5 rounded-xl border border-neutral-700 bg-neutral-950/60 p-3">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-cream-muted">Court</span>
                     <span className="font-semibold text-cream">{currentBooking.court_name}</span>
@@ -808,7 +807,7 @@ export function Checkout() {
                   {selectedMethod && (
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-cream-muted">Payment</span>
-                      <span className="font-semibold text-brand-blue-300">{methodName}</span>
+                      <span className="font-semibold text-primary-300">{methodName}</span>
                     </div>
                   )}
                 </div>
@@ -820,7 +819,7 @@ export function Checkout() {
                   {currentBooking.slots.map((slot) => (
                     <div
                       key={slot.id}
-                      className="flex items-center justify-between rounded-lg bg-forest-800/70 px-3 py-2 text-xs"
+                      className="flex items-center justify-between rounded-lg bg-neutral-800/70 px-3 py-2 text-xs"
                     >
                       <span className="text-cream">
                         {formatTimeRange(slot.start_time, slot.end_time)}
@@ -829,16 +828,16 @@ export function Checkout() {
                   ))}
                 </div>
 
-                <div className="border-t border-forest-700/80 pt-3">
+                <div className="border-t border-neutral-700 pt-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-cream-muted">Total due</span>
-                    <span className="font-display text-2xl font-extrabold text-brand-blue-300">
+                    <span className="font-display text-2xl font-extrabold text-accent-400">
                       {formatCurrency(currentBooking.total_amount)}
                     </span>
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-forest-800 bg-forest-950/40 p-3 text-xs">
+                <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 p-3 text-xs">
                   <p className="mb-1 text-[11px] font-bold uppercase tracking-wider text-cream-muted">
                     Booker
                   </p>
@@ -847,7 +846,7 @@ export function Checkout() {
                 </div>
 
                 {/* Legal links quick access */}
-                <div className="rounded-xl border border-forest-800 bg-forest-950/40 p-3 text-xs">
+                <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 p-3 text-xs">
                   <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wider text-cream-muted">
                     Policies
                   </p>
@@ -856,7 +855,7 @@ export function Checkout() {
                       to="/terms"
                       target="_blank"
                       rel="noreferrer"
-                      className="text-brand-blue-300 underline hover:text-brand-blue-200"
+                      className="text-primary-300 underline hover:text-primary-200"
                     >
                       Terms
                     </Link>
@@ -864,7 +863,7 @@ export function Checkout() {
                       to="/privacy"
                       target="_blank"
                       rel="noreferrer"
-                      className="text-brand-blue-300 underline hover:text-brand-blue-200"
+                      className="text-primary-300 underline hover:text-primary-200"
                     >
                       Privacy
                     </Link>
@@ -872,7 +871,7 @@ export function Checkout() {
                       to="/refund-policy"
                       target="_blank"
                       rel="noreferrer"
-                      className="text-brand-blue-300 underline hover:text-brand-blue-200"
+                      className="text-primary-300 underline hover:text-primary-200"
                     >
                       Refunds
                     </Link>
@@ -880,7 +879,7 @@ export function Checkout() {
                       to="/payment-policy"
                       target="_blank"
                       rel="noreferrer"
-                      className="text-brand-blue-300 underline hover:text-brand-blue-200"
+                      className="text-primary-300 underline hover:text-primary-200"
                     >
                       Payments
                     </Link>
@@ -910,7 +909,7 @@ export function Checkout() {
                       </button>
                       <button
                         onClick={() => setConfirmRelease(false)}
-                        className="flex-1 rounded-lg border border-forest-600 px-3 py-2 font-semibold text-cream-muted"
+                        className="flex-1 rounded-lg border border-neutral-600 px-3 py-2 font-semibold text-cream-muted"
                       >
                         Keep booking
                       </button>
@@ -924,7 +923,7 @@ export function Checkout() {
       </div>
 
       {/* Sticky mobile bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-forest-500 bg-charcoal/95 p-3.5 backdrop-blur-md sm:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-600 bg-charcoal/95 p-3.5 backdrop-blur-md sm:hidden">
         {uploadError && (
           <p className="mb-2 rounded-lg border border-error/30 bg-error/10 p-2 text-xs font-medium text-error">
             {uploadError}
@@ -933,7 +932,7 @@ export function Checkout() {
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1">
             <p className="text-xs text-cream-muted">{submitHint ?? `via ${methodName}`}</p>
-            <p className="text-sm font-bold text-brand-blue-300">
+            <p className="text-sm font-bold text-accent-400">
               {formatCurrency(currentBooking.total_amount)}
             </p>
           </div>

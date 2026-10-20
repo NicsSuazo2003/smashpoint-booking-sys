@@ -72,24 +72,11 @@ export function isSameDate(a: string, b: string): boolean {
   return a === b;
 }
 
-/**
- * ⭐ NEW — Compute the latest selectable ISO date (YYYY-MM-DD) given a
- * max advance booking setting in days.
- *
- *   0 or negative → null (no limit, don't clamp)
- *   N > 0         → ISO string for today + N days
- *
- * Use this with `<input type="date" max={...} />`, or with any
- * calendar component's maxDate / toDate prop.
- */
 export function getMaxSelectableDate(maxAdvanceDays: number): string | null {
   if (!maxAdvanceDays || maxAdvanceDays <= 0) return null;
   return toISODate(addDays(new Date(), maxAdvanceDays));
 }
 
-/**
- * ⭐ NEW — Human-readable helper for showing "Book up to 3 months ahead" etc.
- */
 export function describeAdvanceWindow(maxAdvanceDays: number): string {
   if (!maxAdvanceDays || maxAdvanceDays <= 0) return 'Any future date';
   if (maxAdvanceDays === 1) return 'Up to 1 day ahead';
@@ -100,8 +87,12 @@ export function describeAdvanceWindow(maxAdvanceDays: number): string {
   return 'Up to 1 year ahead';
 }
 
+/**
+ * ⭐ Booking reference prefix — changed from `PJ` (PickleJoe) to `SP` (Smash Point).
+ * Example output: SPK7M2XQ
+ */
 export function generateReferenceCode(): string {
-  const prefix = 'PJ';
+  const prefix = 'SP';
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code = '';
   for (let i = 0; i < 6; i++) {

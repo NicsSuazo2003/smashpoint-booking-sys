@@ -176,11 +176,11 @@ export function RescheduleBookingModal({ isOpen, booking, onClose, onRescheduled
       <Modal isOpen={isOpen} onClose={handleClose} title="Booking rescheduled" size="md">
         <div className="space-y-4 text-cream">
           <div className="flex items-start gap-3 rounded-xl border border-success/40 bg-success/10 p-4">
-            <Check className="mt-0.5 h-5 w-5 shrink-0 text-green-300" />
+            <Check className="mt-0.5 h-5 w-5 shrink-0 text-accent-300" />
             <div>
               <p className="text-sm font-bold text-cream">Booking updated</p>
               <p className="mt-0.5 text-xs text-cream-muted">
-                Reference <span className="font-mono text-brand-blue-300">
+                Reference <span className="font-mono text-primary-300">
                   {result.booking.reference_code}
                 </span>{' '}
                 has been moved.
@@ -188,7 +188,7 @@ export function RescheduleBookingModal({ isOpen, booking, onClose, onRescheduled
             </div>
           </div>
 
-          <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-4">
+          <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-4">
             <p className="mb-2 text-xs font-bold uppercase tracking-wider text-cream-muted">
               Change summary
             </p>
@@ -196,7 +196,7 @@ export function RescheduleBookingModal({ isOpen, booking, onClose, onRescheduled
               <span className="text-cream-muted">{result.previous_court_name}</span>
               <span className="text-cream-muted">·</span>
               <span className="text-cream-muted">{result.previous_date}</span>
-              <ArrowRight className="h-4 w-4 text-brand-blue-300" />
+              <ArrowRight className="h-4 w-4 text-primary-300" />
               <span className="font-semibold text-cream">{targetCourtName}</span>
               <span className="text-cream-muted">·</span>
               <span className="font-semibold text-cream">{result.booking.date}</span>
@@ -239,7 +239,7 @@ export function RescheduleBookingModal({ isOpen, booking, onClose, onRescheduled
             </div>
           )}
 
-          <div className="flex justify-end border-t border-forest-700/80 pt-4">
+          <div className="flex justify-end border-t border-neutral-700 pt-4">
             <Button size="sm" onClick={handleClose}>Done</Button>
           </div>
         </div>
@@ -255,7 +255,7 @@ export function RescheduleBookingModal({ isOpen, booking, onClose, onRescheduled
       size="lg"
     >
       <div className="space-y-4 text-cream">
-        <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-4">
+        <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-4">
           <p className="mb-2 text-xs font-bold uppercase tracking-wider text-cream-muted">
             Currently booked
           </p>
@@ -266,7 +266,7 @@ export function RescheduleBookingModal({ isOpen, booking, onClose, onRescheduled
               .map((s) => formatTimeRange(s.start_time, s.end_time))
               .join(' · ')}
           </p>
-          <p className="mt-1 text-xs font-semibold text-brand-blue-300">
+          <p className="mt-1 text-xs font-semibold text-accent-400">
             {formatCurrency(previousTotal)}
           </p>
         </div>
@@ -279,10 +279,10 @@ export function RescheduleBookingModal({ isOpen, booking, onClose, onRescheduled
             <select
               value={targetCourtId}
               onChange={(e) => setTargetCourtId(e.target.value)}
-              className="w-full rounded-xl border border-forest-700/80 bg-forest-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-brand-blue-400 focus:outline-none focus:ring-2 focus:ring-brand-blue-500/20"
+              className="w-full rounded-xl border border-neutral-700 bg-neutral-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
             >
               {courts.map((c) => (
-                <option key={c.id} value={c.id} className="bg-forest-900">
+                <option key={c.id} value={c.id} className="bg-neutral-900">
                   {c.name}
                 </option>
               ))}
@@ -302,18 +302,18 @@ export function RescheduleBookingModal({ isOpen, booking, onClose, onRescheduled
             <span>
               New time slots{' '}
               {loadingSlots && (
-                <Loader2 className="ml-1.5 inline h-3.5 w-3.5 animate-spin text-brand-blue-300" />
+                <Loader2 className="ml-1.5 inline h-3.5 w-3.5 animate-spin text-primary-300" />
               )}
             </span>
             {selectedSlotIds.length > 0 && (
-              <span className="font-bold text-brand-blue-300">
+              <span className="font-bold text-accent-400">
                 {selectedSlotIds.length} chosen (New total: {formatCurrency(newTotal)})
               </span>
             )}
           </label>
 
           {loadingSlots ? (
-            <div className="rounded-xl border border-forest-700/60 bg-forest-950/40 p-4 text-center text-xs text-cream-muted">
+            <div className="rounded-xl border border-neutral-700 bg-neutral-950/40 p-4 text-center text-xs text-cream-muted">
               Checking availability…
             </div>
           ) : slots.length === 0 ? (
@@ -342,10 +342,10 @@ export function RescheduleBookingModal({ isOpen, booking, onClose, onRescheduled
                       title={unavailable ? 'Already booked' : undefined}
                       className={`relative rounded-xl border p-2.5 text-center text-xs transition ${
                         unavailable
-                          ? 'cursor-not-allowed border-forest-800 bg-forest-950/30 text-cream-muted/40'
+                          ? 'cursor-not-allowed border-neutral-800 bg-neutral-950/30 text-cream-muted/40'
                           : selected
-                          ? 'border-brand-blue-400 bg-brand-blue-500 font-bold text-white shadow-glow-blue'
-                          : 'border-forest-700/80 bg-forest-950/60 text-cream-muted hover:border-brand-blue-400/50 hover:text-cream'
+                          ? 'border-accent-400 bg-accent-500 font-bold text-neutral-950 shadow-glow-lime'
+                          : 'border-neutral-700 bg-neutral-950/60 text-cream-muted hover:border-primary-400/50 hover:text-cream'
                       }`}
                     >
                       {unavailable && (
@@ -364,15 +364,15 @@ export function RescheduleBookingModal({ isOpen, booking, onClose, onRescheduled
 
               <div className="mt-2 flex flex-wrap items-center gap-3 text-[11px] text-cream-muted">
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-block h-3 w-3 rounded border border-forest-700/80 bg-forest-950/60" />
+                  <span className="inline-block h-3 w-3 rounded border border-neutral-700 bg-neutral-950/60" />
                   Available
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-block h-3 w-3 rounded border border-brand-blue-400 bg-brand-blue-500" />
+                  <span className="inline-block h-3 w-3 rounded border border-accent-400 bg-accent-500" />
                   Selected
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-block h-3 w-3 rounded border border-forest-800 bg-forest-950/30" />
+                  <span className="inline-block h-3 w-3 rounded border border-neutral-800 bg-neutral-950/30" />
                   Already booked
                 </span>
               </div>
@@ -387,7 +387,7 @@ export function RescheduleBookingModal({ isOpen, booking, onClose, onRescheduled
                 ? 'border-purple-500/40 bg-purple-500/10'
                 : projectedBalance > 0
                 ? 'border-amber-500/40 bg-amber-500/10'
-                : 'border-forest-700/80 bg-forest-950/70'
+                : 'border-neutral-700 bg-neutral-950/70'
             }`}
           >
             <div className="flex items-center justify-between text-sm">
@@ -396,7 +396,7 @@ export function RescheduleBookingModal({ isOpen, booking, onClose, onRescheduled
             </div>
             <div className="mt-1 flex items-center justify-between text-sm">
               <span className="text-cream-muted">New total</span>
-              <span className="font-mono font-bold text-brand-blue-300">
+              <span className="font-mono font-bold text-accent-400">
                 {formatCurrency(newTotal)}
               </span>
             </div>
@@ -438,7 +438,7 @@ export function RescheduleBookingModal({ isOpen, booking, onClose, onRescheduled
           </div>
         )}
 
-        <div className="flex flex-col gap-2.5 border-t border-forest-700/80 pt-4 sm:flex-row sm:gap-3">
+        <div className="flex flex-col gap-2.5 border-t border-neutral-700 pt-4 sm:flex-row sm:gap-3">
           <Button fullWidth isLoading={submitting} onClick={handleSubmit} disabled={!hasChanges}>
             Save changes
           </Button>

@@ -1,5 +1,5 @@
 // src/pages/admin/Settings.tsx
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Settings as SettingsIcon,
@@ -9,7 +9,6 @@ import {
   Trash2,
   Save,
   Building2,
-  CreditCard,
   Lock,
   CheckCircle2,
   AlertCircle,
@@ -35,7 +34,7 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useAdminStore } from '@/stores/adminStore';
 import { useAuthStore } from '@/stores/authStore';
 import { adminService } from '@/services/adminService';
-import { courtService } from '@/services/courtService'; // 👈 Added for availability
+import { courtService } from '@/services/courtService';
 import {
   formatDateLong,
   formatTimeRange,
@@ -65,10 +64,19 @@ const ICON_OPTIONS = [
   { value: 'Smartphone', icon: Smartphone },
   { value: 'QrCode', icon: QrCode },
   { value: 'Banknote', icon: Banknote },
-  { value: 'CreditCard', icon: CreditCard },
+  { value: 'CreditCard', icon: CreditCardIcon },
   { value: 'Wallet', icon: Wallet },
   { value: 'Building2', icon: Building2 },
 ];
+
+function CreditCardIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="5" width="20" height="14" rx="2" />
+      <line x1="2" y1="10" x2="22" y2="10" />
+    </svg>
+  );
+}
 
 export function Settings() {
   const { user } = useAuthStore();
@@ -90,7 +98,6 @@ export function Settings() {
   const [blockReason, setBlockReason] = useState('');
   const [isFullDay, setIsFullDay] = useState(true);
 
-  // 👇 NEW: State for visual slot picking
   const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [selectedSlotIds, setSelectedSlotIds] = useState<string[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -196,13 +203,12 @@ export function Settings() {
     }
   }, [selectedCourtId, loadBlockedDates]);
 
-  // 👇 NEW: Fetch slots for the selected date to allow visual picking
   useEffect(() => {
     if (!selectedCourtId || !blockDate) return;
-    
+
     let cancelled = false;
     setLoadingSlots(true);
-    setSelectedSlotIds([]); // Reset selection when date changes
+    setSelectedSlotIds([]);
 
     (async () => {
       try {
@@ -215,7 +221,9 @@ export function Settings() {
       }
     })();
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [selectedCourtId, blockDate]);
 
   useEffect(() => {
@@ -245,7 +253,7 @@ export function Settings() {
             icon: 'Smartphone',
             enabled: true,
             config: {
-              account_name: APP_CONFIG.paymentAccountName || 'CenterCourt Tandag',
+              account_name: APP_CONFIG.paymentAccountName || 'Smash Point Pickle Sports Center',
               account_number: APP_CONFIG.paymentNumber || '09XX XXX XXXX',
             },
             sort_order: 0,
@@ -285,7 +293,7 @@ export function Settings() {
         method: 'POST',
         headers: {
           'X-Client-Subdomain':
-            import.meta.env.VITE_CLIENT_SUBDOMAIN ?? 'picklejoe',
+            import.meta.env.VITE_CLIENT_SUBDOMAIN ?? 'smashpoint',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: uploadData,
@@ -443,7 +451,6 @@ export function Settings() {
     setMethodMsg(null);
   };
 
-  // 👇 NEW: Slot toggle logic for blocking
   const toggleSlot = (slotId: string) => {
     setSelectedSlotIds((prev) =>
       prev.includes(slotId) ? prev.filter((id) => id !== slotId) : [...prev, slotId]
@@ -453,9 +460,8 @@ export function Settings() {
   const handleAddBlock = async () => {
     if (!selectedCourtId || !blockDate) return;
 
-    // If not full day, require at least one slot
     if (!isFullDay && selectedSlotIds.length === 0) {
-      alert("Please select at least one time slot to block.");
+      alert('Please select at least one time slot to block.');
       return;
     }
 
@@ -465,19 +471,14 @@ export function Settings() {
       reason: blockReason || 'Maintenance',
     };
 
-    // 👇 NEW: Calculate start/end times based on selected visual slots
     if (!isFullDay && selectedSlotIds.length > 0) {
       const selectedSlots = slots.filter((s) => selectedSlotIds.includes(s.id));
       const sorted = selectedSlots.sort((a, b) => a.start_time.localeCompare(b.start_time));
-      
+
       const first = sorted[0];
       const last = sorted[sorted.length - 1];
 
-      // We pass the exact start of the first slot and end of the last slot
       payload.startTime = first.start_time.slice(0, 5);
-      
-      // If the last slot ends at 00:00 (midnight), we must pass "00:00"
-      // The backend fix we did earlier handles this correctly.
       payload.endTime = last.end_time.slice(0, 5);
     }
 
@@ -487,13 +488,12 @@ export function Settings() {
         await loadBlockedDates(selectedCourtId);
       }
 
-      // Reset form
       setBlockReason('');
       setSelectedSlotIds([]);
       setIsFullDay(true);
     } catch (err) {
-      console.error("Failed to block date:", err);
-      alert("Failed to block date. Please check the console for details.");
+      console.error('Failed to block date:', err);
+      alert('Failed to block date. Please check the console for details.');
     }
   };
 
@@ -549,7 +549,6 @@ export function Settings() {
     }
   };
 
-  // ─── Venue Amenities handlers ───
   const resetDraftAmenity = () => {
     setDraftAmenity({ name: '', icon: 'Sparkles', description: '' });
   };
@@ -563,18 +562,12 @@ export function Settings() {
     }
 
     if (trimmed.includes(',')) {
-      setAmenitiesMsg({
-        type: 'error',
-        text: 'Amenity names cannot contain commas.',
-      });
+      setAmenitiesMsg({ type: 'error', text: 'Amenity names cannot contain commas.' });
       return;
     }
 
     if (amenities.some((a) => a.name.toLowerCase() === trimmed.toLowerCase())) {
-      setAmenitiesMsg({
-        type: 'error',
-        text: `"${trimmed}" is already in the list.`,
-      });
+      setAmenitiesMsg({ type: 'error', text: `"${trimmed}" is already in the list.` });
       return;
     }
 
@@ -654,14 +647,23 @@ export function Settings() {
   const selectedCourt = courts.find((c) => c.id === selectedCourtId);
   const Layout = user?.role === 'staff' ? StaffLayout : AdminLayout;
 
-  // Helper to render the visual grid inside the block date form
   const renderSlotGrid = () => {
-    if (loadingSlots) return <div className="py-6 text-center text-xs text-cream-muted"><Loader2 className="mx-auto h-5 w-5 animate-spin" /></div>;
-    if (slots.length === 0) return <p className="text-xs text-cream-muted py-2">No slots available for this court.</p>;
+    if (loadingSlots)
+      return (
+        <div className="py-6 text-center text-xs text-cream-muted">
+          <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+        </div>
+      );
+    if (slots.length === 0)
+      return <p className="text-xs text-cream-muted py-2">No slots available for this court.</p>;
 
-    const morning = slots.filter(s => parseInt(s.start_time.split(':')[0]) < 12);
-    const afternoon = slots.filter(s => parseInt(s.start_time.split(':')[0]) >= 12 && parseInt(s.start_time.split(':')[0]) < 17);
-    const evening = slots.filter(s => parseInt(s.start_time.split(':')[0]) >= 17);
+    const morning = slots.filter((s) => parseInt(s.start_time.split(':')[0]) < 12);
+    const afternoon = slots.filter(
+      (s) =>
+        parseInt(s.start_time.split(':')[0]) >= 12 &&
+        parseInt(s.start_time.split(':')[0]) < 17
+    );
+    const evening = slots.filter((s) => parseInt(s.start_time.split(':')[0]) >= 17);
 
     const renderGroup = (title: string, icon: React.ReactNode, group: TimeSlot[]) => {
       if (group.length === 0) return null;
@@ -669,11 +671,13 @@ export function Settings() {
         <div className="mb-3">
           <div className="mb-1.5 flex items-center gap-2">
             {icon}
-            <span className="text-[10px] font-bold uppercase tracking-wider text-brand-blue-300">{title}</span>
-            <div className="h-px flex-1 bg-forest-700/60" />
+            <span className="text-[10px] font-bold uppercase tracking-wider text-primary-300">
+              {title}
+            </span>
+            <div className="h-px flex-1 bg-neutral-700/60" />
           </div>
           <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-4">
-            {group.map(slot => {
+            {group.map((slot) => {
               const isSelected = selectedSlotIds.includes(slot.id);
               return (
                 <button
@@ -681,9 +685,9 @@ export function Settings() {
                   type="button"
                   onClick={() => toggleSlot(slot.id)}
                   className={`rounded-lg border p-1.5 text-[11px] font-semibold transition-all ${
-                    isSelected 
-                      ? 'border-brand-blue-400 bg-brand-blue-500 text-white shadow-glow-blue' 
-                      : 'border-forest-700 bg-forest-950/60 text-cream-muted hover:border-brand-blue-400/50 hover:text-cream'
+                    isSelected
+                      ? 'border-primary-400 bg-primary-500 text-white shadow-glow-blue'
+                      : 'border-neutral-700 bg-neutral-950/60 text-cream-muted hover:border-primary-400/50 hover:text-cream'
                   }`}
                 >
                   {formatTimeRange(slot.start_time, slot.end_time)}
@@ -696,10 +700,10 @@ export function Settings() {
     };
 
     return (
-      <div className="rounded-xl border border-forest-700/80 bg-forest-950/40 p-3">
-        {renderGroup('Morning', <CloudSun className="h-3.5 w-3.5 text-court-300" />, morning)}
-        {renderGroup('Afternoon', <Sun className="h-3.5 w-3.5 text-court-300" />, afternoon)}
-        {renderGroup('Evening', <Moon className="h-3.5 w-3.5 text-court-300" />, evening)}
+      <div className="rounded-xl border border-neutral-700 bg-neutral-950/40 p-3">
+        {renderGroup('Morning', <CloudSun className="h-3.5 w-3.5 text-primary-300" />, morning)}
+        {renderGroup('Afternoon', <Sun className="h-3.5 w-3.5 text-primary-300" />, afternoon)}
+        {renderGroup('Evening', <Moon className="h-3.5 w-3.5 text-primary-300" />, evening)}
       </div>
     );
   };
@@ -721,9 +725,9 @@ export function Settings() {
         ) : (
           <div className="space-y-5 sm:space-y-6">
             {/* ─── Account Info ─── */}
-            <div className="card rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
+            <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
               <h2 className="mb-4 flex items-center gap-2 font-display text-base font-bold text-cream sm:text-lg">
-                <SettingsIcon className="h-5 w-5 text-brand-blue-300" />
+                <SettingsIcon className="h-5 w-5 text-primary-300" />
                 Account Profile
               </h2>
 
@@ -750,7 +754,7 @@ export function Settings() {
                 <div
                   className={`mt-4 flex items-center gap-2 rounded-xl border p-3 text-xs font-semibold ${
                     profileMsg.type === 'success'
-                      ? 'border-accentGreen-400/40 bg-accentGreen-500/15 text-accentGreen-300'
+                      ? 'border-accent-400/40 bg-accent-500/15 text-accent-300'
                       : 'border-error/40 bg-error/15 text-error'
                   }`}
                 >
@@ -763,7 +767,7 @@ export function Settings() {
                 </div>
               )}
 
-              <div className="mt-5 border-t border-forest-700/80 pt-4">
+              <div className="mt-5 border-t border-neutral-700 pt-4">
                 <Button
                   leftIcon={<Save className="h-4 w-4" />}
                   isLoading={savingProfile}
@@ -775,9 +779,9 @@ export function Settings() {
             </div>
 
             {/* ─── Change Password ─── */}
-            <div className="card rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
+            <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
               <h2 className="mb-4 flex items-center gap-2 font-display text-base font-bold text-cream sm:text-lg">
-                <Lock className="h-5 w-5 text-brand-blue-300" />
+                <Lock className="h-5 w-5 text-primary-300" />
                 Change Password
               </h2>
 
@@ -807,7 +811,7 @@ export function Settings() {
                 <div
                   className={`mt-4 flex items-center gap-2 rounded-xl border p-3 text-xs font-semibold ${
                     passwordMsg.type === 'success'
-                      ? 'border-accentGreen-400/40 bg-accentGreen-500/15 text-accentGreen-300'
+                      ? 'border-accent-400/40 bg-accent-500/15 text-accent-300'
                       : 'border-error/40 bg-error/15 text-error'
                   }`}
                 >
@@ -820,7 +824,7 @@ export function Settings() {
                 </div>
               )}
 
-              <div className="mt-5 border-t border-forest-700/80 pt-4">
+              <div className="mt-5 border-t border-neutral-700 pt-4">
                 <Button
                   variant="secondary"
                   leftIcon={<Save className="h-4 w-4" />}
@@ -834,10 +838,10 @@ export function Settings() {
 
             {/* ─── Venue Amenities ─── */}
             {isAdmin && (
-              <div className="card rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
+              <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
                 <div className="mb-4">
                   <h2 className="flex items-center gap-2 font-display text-base font-bold text-cream sm:text-lg">
-                    <Sparkles className="h-5 w-5 text-brand-blue-300" />
+                    <Sparkles className="h-5 w-5 text-primary-300" />
                     Venue Amenities
                   </h2>
                   <p className="mt-0.5 text-xs text-cream-muted sm:text-sm">
@@ -847,14 +851,10 @@ export function Settings() {
                 </div>
 
                 {amenities.length === 0 ? (
-                  <div className="rounded-xl border border-forest-700/80 bg-forest-950/60 py-8 text-center">
+                  <div className="rounded-xl border border-neutral-700 bg-neutral-950/60 py-8 text-center">
                     <Sparkles className="mx-auto h-10 w-10 text-cream-muted/30" />
-                    <p className="mt-3 text-sm font-semibold text-cream-muted">
-                      No amenities yet.
-                    </p>
-                    <p className="mt-0.5 text-xs text-cream-muted/70">
-                      Add your first one below.
-                    </p>
+                    <p className="mt-3 text-sm font-semibold text-cream-muted">No amenities yet.</p>
+                    <p className="mt-0.5 text-xs text-cream-muted/70">Add your first one below.</p>
                   </div>
                 ) : (
                   <div className="space-y-2.5">
@@ -865,7 +865,7 @@ export function Settings() {
                       return (
                         <div
                           key={`${amenity.name}-${idx}`}
-                          className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-3"
+                          className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-3"
                         >
                           {isEditing ? (
                             <div className="space-y-3">
@@ -873,9 +873,7 @@ export function Settings() {
                                 <Input
                                   label="Name"
                                   value={amenity.name}
-                                  onChange={(e) =>
-                                    updateAmenity(idx, { name: e.target.value })
-                                  }
+                                  onChange={(e) => updateAmenity(idx, { name: e.target.value })}
                                 />
                                 <div>
                                   <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-cream-muted">
@@ -883,17 +881,11 @@ export function Settings() {
                                   </label>
                                   <select
                                     value={amenity.icon}
-                                    onChange={(e) =>
-                                      updateAmenity(idx, { icon: e.target.value })
-                                    }
-                                    className="w-full rounded-xl border border-forest-700/80 bg-forest-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-brand-blue-400 focus:outline-none focus:ring-2 focus:ring-brand-blue-500/20"
+                                    onChange={(e) => updateAmenity(idx, { icon: e.target.value })}
+                                    className="w-full rounded-xl border border-neutral-700 bg-neutral-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                                   >
                                     {LUCIDE_ICON_OPTIONS.map((opt) => (
-                                      <option
-                                        key={opt.value}
-                                        value={opt.value}
-                                        className="bg-forest-900"
-                                      >
+                                      <option key={opt.value} value={opt.value} className="bg-neutral-900">
                                         {opt.label}
                                       </option>
                                     ))}
@@ -906,17 +898,11 @@ export function Settings() {
                                 rows={2}
                                 placeholder="e.g. Pro-grade silica surface, low dust, all-weather"
                                 value={amenity.description ?? ''}
-                                onChange={(e) =>
-                                  updateAmenity(idx, { description: e.target.value })
-                                }
+                                onChange={(e) => updateAmenity(idx, { description: e.target.value })}
                               />
 
                               <div className="flex justify-end gap-2">
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => setEditingAmenityIdx(null)}
-                                >
+                                <Button size="sm" variant="ghost" onClick={() => setEditingAmenityIdx(null)}>
                                   Done
                                 </Button>
                                 <Button
@@ -931,7 +917,7 @@ export function Settings() {
                             </div>
                           ) : (
                             <div className="flex items-center gap-3">
-                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-blue-400/30 bg-brand-blue-500/15 text-brand-blue-300">
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-primary-400/30 bg-primary-500/15 text-primary-300">
                                 <Icon className="h-5 w-5" />
                               </div>
                               <div className="min-w-0 flex-1">
@@ -952,7 +938,7 @@ export function Settings() {
                                 <button
                                   type="button"
                                   onClick={() => setEditingAmenityIdx(idx)}
-                                  className="rounded-lg border border-forest-600 bg-forest-800/80 p-2 text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300 active:scale-95"
+                                  className="rounded-lg border border-neutral-600 bg-neutral-800/80 p-2 text-cream-muted transition hover:border-primary-400 hover:text-primary-300 active:scale-95"
                                   title="Edit"
                                 >
                                   <Edit3 className="h-4 w-4" />
@@ -960,7 +946,7 @@ export function Settings() {
                                 <button
                                   type="button"
                                   onClick={() => removeAmenity(idx)}
-                                  className="rounded-lg border border-forest-600 bg-forest-800/80 p-2 text-cream-muted transition hover:border-error hover:text-error active:scale-95"
+                                  className="rounded-lg border border-neutral-600 bg-neutral-800/80 p-2 text-cream-muted transition hover:border-error hover:text-error active:scale-95"
                                   title="Remove"
                                 >
                                   <Trash2 className="h-4 w-4" />
@@ -974,9 +960,8 @@ export function Settings() {
                   </div>
                 )}
 
-                {/* Add new amenity */}
-                <div className="mt-4 space-y-3 rounded-xl border border-dashed border-forest-700/80 bg-forest-950/40 p-3">
-                  <p className="text-xs font-bold uppercase tracking-wider text-brand-blue-300">
+                <div className="mt-4 space-y-3 rounded-xl border border-dashed border-neutral-700 bg-neutral-950/40 p-3">
+                  <p className="text-xs font-bold uppercase tracking-wider text-primary-300">
                     Add new amenity
                   </p>
 
@@ -985,9 +970,7 @@ export function Settings() {
                       label="Name"
                       placeholder="e.g. Air Conditioned, Lockers, Pro Shop"
                       value={draftAmenity.name}
-                      onChange={(e) =>
-                        setDraftAmenity({ ...draftAmenity, name: e.target.value })
-                      }
+                      onChange={(e) => setDraftAmenity({ ...draftAmenity, name: e.target.value })}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                           e.preventDefault();
@@ -1001,17 +984,11 @@ export function Settings() {
                       </label>
                       <select
                         value={draftAmenity.icon}
-                        onChange={(e) =>
-                          setDraftAmenity({ ...draftAmenity, icon: e.target.value })
-                        }
-                        className="w-full rounded-xl border border-forest-700/80 bg-forest-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-brand-blue-400 focus:outline-none focus:ring-2 focus:ring-brand-blue-500/20"
+                        onChange={(e) => setDraftAmenity({ ...draftAmenity, icon: e.target.value })}
+                        className="w-full rounded-xl border border-neutral-700 bg-neutral-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                       >
                         {LUCIDE_ICON_OPTIONS.map((opt) => (
-                          <option
-                            key={opt.value}
-                            value={opt.value}
-                            className="bg-forest-900"
-                          >
+                          <option key={opt.value} value={opt.value} className="bg-neutral-900">
                             {opt.label}
                           </option>
                         ))}
@@ -1046,7 +1023,7 @@ export function Settings() {
                   <div
                     className={`mt-3 flex items-center gap-2 rounded-xl border p-3 text-xs font-semibold ${
                       amenitiesMsg.type === 'success'
-                        ? 'border-accentGreen-400/40 bg-accentGreen-500/15 text-accentGreen-300'
+                        ? 'border-accent-400/40 bg-accent-500/15 text-accent-300'
                         : 'border-error/40 bg-error/15 text-error'
                     }`}
                   >
@@ -1059,7 +1036,7 @@ export function Settings() {
                   </div>
                 )}
 
-                <div className="mt-4 flex justify-end border-t border-forest-700/80 pt-4">
+                <div className="mt-4 flex justify-end border-t border-neutral-700 pt-4">
                   <Button
                     size="md"
                     isLoading={savingAmenities}
@@ -1074,10 +1051,10 @@ export function Settings() {
 
             {/* ─── Booking Window ─── */}
             {isAdmin && (
-              <div className="card rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
+              <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
                 <div className="mb-4">
                   <h2 className="flex items-center gap-2 font-display text-base font-bold text-cream sm:text-lg">
-                    <CalendarDays className="h-5 w-5 text-brand-blue-300" />
+                    <CalendarDays className="h-5 w-5 text-primary-300" />
                     Booking Window
                   </h2>
                   <p className="mt-0.5 text-xs text-cream-muted sm:text-sm">
@@ -1102,7 +1079,8 @@ export function Settings() {
                 </div>
 
                 <p className="mt-3 text-xs text-cream-muted">
-                  Currently: <span className="font-semibold text-brand-blue-300">
+                  Currently:{' '}
+                  <span className="font-semibold text-primary-300">
                     {describeAdvanceWindow(maxAdvanceDays)}
                   </span>
                   {maxAdvanceDays > 0 && (
@@ -1119,7 +1097,7 @@ export function Settings() {
                   <div
                     className={`mt-4 flex items-center gap-2 rounded-xl border p-3 text-xs font-semibold ${
                       bookingWindowMsg.type === 'success'
-                        ? 'border-accentGreen-400/40 bg-accentGreen-500/15 text-accentGreen-300'
+                        ? 'border-accent-400/40 bg-accent-500/15 text-accent-300'
                         : 'border-error/40 bg-error/15 text-error'
                     }`}
                   >
@@ -1132,7 +1110,7 @@ export function Settings() {
                   </div>
                 )}
 
-                <div className="mt-4 flex justify-end border-t border-forest-700/80 pt-4">
+                <div className="mt-4 flex justify-end border-t border-neutral-700 pt-4">
                   <Button
                     size="md"
                     isLoading={savingBookingWindow}
@@ -1147,11 +1125,11 @@ export function Settings() {
 
             {/* ─── Payment Methods ─── */}
             {isAdmin && (
-              <div className="card rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
+              <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
                 <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <h2 className="flex items-center gap-2 font-display text-base font-bold text-cream sm:text-lg">
-                      <Wallet className="h-5 w-5 text-brand-blue-300" />
+                      <Wallet className="h-5 w-5 text-primary-300" />
                       Checkout Payment Options
                     </h2>
                     <p className="mt-0.5 text-xs text-cream-muted sm:text-sm">
@@ -1174,7 +1152,7 @@ export function Settings() {
                 {loadingPaymentMethods ? (
                   <LoadingSpinner className="py-8" />
                 ) : paymentMethods.length === 0 ? (
-                  <div className="rounded-xl border border-forest-700/80 bg-forest-950/60 py-8 text-center">
+                  <div className="rounded-xl border border-neutral-700 bg-neutral-950/60 py-8 text-center">
                     <Wallet className="mx-auto h-10 w-10 text-cream-muted/30" />
                     <p className="mt-3 text-sm font-semibold text-cream-muted">
                       No payment methods configured.
@@ -1192,10 +1170,10 @@ export function Settings() {
                         return (
                           <div
                             key={method.id}
-                            className="flex flex-col gap-3 rounded-xl border border-forest-700/80 bg-forest-950/70 p-4 sm:flex-row sm:items-center sm:justify-between"
+                            className="flex flex-col gap-3 rounded-xl border border-neutral-700 bg-neutral-950/70 p-4 sm:flex-row sm:items-center sm:justify-between"
                           >
                             <div className="flex min-w-0 items-center gap-3.5">
-                              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-brand-blue-400/30 bg-brand-blue-500/20 text-brand-blue-300 shadow-inner">
+                              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-primary-400/30 bg-primary-500/20 text-primary-300 shadow-inner">
                                 <IconComponent className="h-5 w-5" />
                               </div>
 
@@ -1207,7 +1185,7 @@ export function Settings() {
                                   <span
                                     className={`rounded-full px-2.5 py-0.5 text-[9px] font-bold ${
                                       method.enabled
-                                        ? 'border border-accentGreen-400/40 bg-accentGreen-500/20 text-accentGreen-300'
+                                        ? 'border border-accent-400/40 bg-accent-500/20 text-accent-300'
                                         : 'border border-error/40 bg-error/20 text-error'
                                     }`}
                                   >
@@ -1221,7 +1199,7 @@ export function Settings() {
                                     <span> · {method.config.account_name}</span>
                                   )}
                                   {method.config?.account_number && (
-                                    <span className="font-mono ml-1 text-brand-blue-300">
+                                    <span className="font-mono ml-1 text-primary-300">
                                       ({method.config.account_number})
                                     </span>
                                   )}
@@ -1237,12 +1215,12 @@ export function Settings() {
                                   onChange={() => handleToggleMethod(method.id)}
                                   className="peer sr-only"
                                 />
-                                <div className="peer h-6 w-11 rounded-full border border-forest-600 bg-forest-800 transition-all after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all peer-checked:bg-accentGreen-500 peer-checked:after:translate-x-full peer-focus:outline-none" />
+                                <div className="peer h-6 w-11 rounded-full border border-neutral-600 bg-neutral-800 transition-all after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all peer-checked:bg-accent-500 peer-checked:after:translate-x-full peer-focus:outline-none" />
                               </label>
 
                               <button
                                 onClick={() => handleEditClick(method)}
-                                className="rounded-lg border border-forest-600 bg-forest-800/80 p-2 text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300 active:scale-95"
+                                className="rounded-lg border border-neutral-600 bg-neutral-800/80 p-2 text-cream-muted transition hover:border-primary-400 hover:text-primary-300 active:scale-95"
                                 title="Edit Method"
                               >
                                 <Edit3 className="h-4 w-4" />
@@ -1250,7 +1228,7 @@ export function Settings() {
 
                               <button
                                 onClick={() => handleDeleteMethod(method.id)}
-                                className="rounded-lg border border-forest-600 bg-forest-800/80 p-2 text-cream-muted transition hover:border-error hover:text-error active:scale-95"
+                                className="rounded-lg border border-neutral-600 bg-neutral-800/80 p-2 text-cream-muted transition hover:border-error hover:text-error active:scale-95"
                                 title="Delete Method"
                               >
                                 <Trash2 className="h-4 w-4" />
@@ -1266,9 +1244,9 @@ export function Settings() {
 
             {/* ─── Blocked Dates ─── */}
             {isAdmin && (
-              <div className="card rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
+              <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
                 <h2 className="mb-2 flex items-center gap-2 font-display text-base font-bold text-cream sm:text-lg">
-                  <CalendarOff className="h-5 w-5 text-brand-blue-300" />
+                  <CalendarOff className="h-5 w-5 text-primary-300" />
                   Blocked Dates & Maintenance
                 </h2>
 
@@ -1293,8 +1271,8 @@ export function Settings() {
                           }}
                           className={`flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition ${
                             isSelected
-                              ? 'border-brand-blue-400 bg-brand-blue-500 text-white shadow-glow-blue'
-                              : 'border-forest-700/80 bg-forest-950/70 text-cream-muted hover:border-brand-blue-400/50 hover:text-cream'
+                              ? 'border-primary-400 bg-primary-500 text-white shadow-glow-blue'
+                              : 'border-neutral-700 bg-neutral-950/70 text-cream-muted hover:border-primary-400/50 hover:text-cream'
                           }`}
                         >
                           <Building2 className="h-3.5 w-3.5" />
@@ -1315,17 +1293,15 @@ export function Settings() {
                   />
 
                   <div className="flex items-end">
-                    <label className="flex w-full items-center gap-2 rounded-xl border border-forest-700/80 bg-forest-950/70 px-3.5 py-2.5 text-xs font-semibold text-cream cursor-pointer">
+                    <label className="flex w-full items-center gap-2 rounded-xl border border-neutral-700 bg-neutral-950/70 px-3.5 py-2.5 text-xs font-semibold text-cream cursor-pointer">
                       <input
                         type="checkbox"
                         checked={isFullDay}
                         onChange={(e) => {
                           setIsFullDay(e.target.checked);
-                          if (e.target.checked) {
-                            setSelectedSlotIds([]); // clear specific times if switching to full day
-                          }
+                          if (e.target.checked) setSelectedSlotIds([]);
                         }}
-                        className="h-4 w-4 rounded border-forest-600 bg-forest-950 accent-brand-blue-500 cursor-pointer"
+                        className="h-4 w-4 rounded border-neutral-600 bg-neutral-950 accent-primary-500 cursor-pointer"
                       />
                       <span>Full Day Block</span>
                     </label>
@@ -1360,13 +1336,13 @@ export function Settings() {
                   </Button>
                 </div>
 
-                <div className="space-y-2.5 border-t border-forest-700/80 pt-4">
-                  <p className="text-xs font-bold uppercase tracking-wider text-brand-blue-300">
+                <div className="space-y-2.5 border-t border-neutral-700 pt-4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-primary-300">
                     {selectedCourt ? `${selectedCourt.name} — ` : ''}Active Blocks
                   </p>
 
                   {filteredBlocked.length === 0 ? (
-                    <div className="rounded-xl border border-forest-700/60 bg-forest-950/40 py-6 text-center">
+                    <div className="rounded-xl border border-neutral-700 bg-neutral-950/40 py-6 text-center">
                       <CalendarOff className="mx-auto h-8 w-8 text-cream-muted/30" />
                       <p className="mt-2 text-xs font-semibold text-cream-muted">
                         No blocked dates scheduled for this court.
@@ -1380,13 +1356,13 @@ export function Settings() {
                           initial={{ opacity: 0, y: 5 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, x: 10 }}
-                          className="flex items-center justify-between gap-3 rounded-xl border border-forest-700/70 bg-forest-950/70 p-3.5"
+                          className="flex items-center justify-between gap-3 rounded-xl border border-neutral-700 bg-neutral-950/70 p-3.5"
                         >
                           <div className="min-w-0">
                             <p className="text-sm font-bold text-cream">
                               {formatDateLong(block.date)}
                               {(block as any).startTime && (block as any).endTime && (
-                                <span className="ml-2 font-mono text-xs font-semibold text-brand-blue-300">
+                                <span className="ml-2 font-mono text-xs font-semibold text-primary-300">
                                   {(block as any).startTime} – {(block as any).endTime}
                                 </span>
                               )}
@@ -1398,7 +1374,7 @@ export function Settings() {
 
                           <button
                             onClick={() => removeBlockedDate(block.id)}
-                            className="rounded-lg border border-forest-600 bg-forest-800/60 p-2 text-cream-muted transition hover:border-error hover:text-error active:scale-95"
+                            className="rounded-lg border border-neutral-600 bg-neutral-800/60 p-2 text-cream-muted transition hover:border-error hover:text-error active:scale-95"
                             title="Remove block"
                           >
                             <Trash2 className="h-4 w-4" />
@@ -1415,20 +1391,20 @@ export function Settings() {
             {isAdmin && <StaffManagement />}
 
             {/* ─── App Info ─── */}
-            <div className="card rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
+            <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
               <h2 className="mb-4 font-display text-base font-bold text-cream sm:text-lg">
                 System Information
               </h2>
 
               <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-4">
+                <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-4">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-cream-muted">
                     Platform
                   </p>
                   <p className="mt-1 text-sm font-bold text-cream">{APP_CONFIG.name}</p>
                 </div>
 
-                <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-4">
+                <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-4">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-cream-muted">
                     Established
                   </p>
@@ -1437,7 +1413,7 @@ export function Settings() {
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-forest-700/80 bg-forest-950/70 p-4">
+                <div className="rounded-xl border border-neutral-700 bg-neutral-950/70 p-4">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-cream-muted">
                     Built By
                   </p>
@@ -1480,10 +1456,10 @@ export function Settings() {
                 onChange={(e) =>
                   setFormData({ ...formData, type: e.target.value as PaymentMethod['type'] })
                 }
-                className="w-full rounded-xl border border-forest-700/80 bg-forest-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-brand-blue-400 focus:outline-none focus:ring-2 focus:ring-brand-blue-500/20"
+                className="w-full rounded-xl border border-neutral-700 bg-neutral-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               >
                 {PAYMENT_TYPE_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value} className="bg-forest-900">
+                  <option key={opt.value} value={opt.value} className="bg-neutral-900">
                     {opt.icon} {opt.label}
                   </option>
                 ))}
@@ -1497,10 +1473,10 @@ export function Settings() {
               <select
                 value={formData.icon || 'Smartphone'}
                 onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                className="w-full rounded-xl border border-forest-700/80 bg-forest-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-brand-blue-400 focus:outline-none focus:ring-2 focus:ring-brand-blue-500/20"
+                className="w-full rounded-xl border border-neutral-700 bg-neutral-950/70 px-3.5 py-2.5 text-sm text-cream transition focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               >
                 {ICON_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value} className="bg-forest-900">
+                  <option key={opt.value} value={opt.value} className="bg-neutral-900">
                     {opt.value}
                   </option>
                 ))}
@@ -1508,14 +1484,14 @@ export function Settings() {
             </div>
           </div>
 
-          <div className="border-t border-forest-700/80 pt-4 space-y-3.5">
-            <p className="text-xs font-bold uppercase tracking-wider text-brand-blue-300">
+          <div className="border-t border-neutral-700 pt-4 space-y-3.5">
+            <p className="text-xs font-bold uppercase tracking-wider text-primary-300">
               Account Credentials
             </p>
 
             <Input
               label="Account Holder Name"
-              placeholder="e.g. CenterCourt Tandag"
+              placeholder="e.g. Smash Point Pickle Sports Center"
               value={formData.config?.account_name || ''}
               onChange={(e) =>
                 setFormData({
@@ -1544,22 +1520,20 @@ export function Settings() {
                 <label className="block text-xs font-semibold uppercase tracking-wider text-cream-muted">
                   QR Code Image
                   {uploadingQR && (
-                    <Loader2 className="ml-2 inline h-4 w-4 animate-spin text-brand-blue-300" />
+                    <Loader2 className="ml-2 inline h-4 w-4 animate-spin text-primary-300" />
                   )}
                 </label>
 
                 {formData.config?.qr_image_url ? (
-                  <div className="rounded-xl border border-forest-700/80 bg-forest-950/80 p-4">
+                  <div className="rounded-xl border border-neutral-700 bg-neutral-950/80 p-4">
                     <div className="flex flex-col items-center gap-3 sm:flex-row">
                       <img
                         src={formData.config.qr_image_url}
                         alt="QR Code"
-                        className="h-24 w-24 rounded-lg border border-forest-700 object-contain bg-white p-1"
+                        className="h-24 w-24 rounded-lg border border-neutral-700 object-contain bg-white p-1"
                       />
                       <div className="min-w-0 text-center sm:text-left">
-                        <p className="text-xs font-bold text-accentGreen-300">
-                          QR Code Linked ✓
-                        </p>
+                        <p className="text-xs font-bold text-accent-300">QR Code Linked ✓</p>
                         <button
                           type="button"
                           onClick={() =>
@@ -1576,13 +1550,13 @@ export function Settings() {
                     </div>
                   </div>
                 ) : (
-                  <div className="rounded-xl border-2 border-dashed border-forest-700/80 bg-forest-950/40 p-5 text-center transition hover:border-brand-blue-400/50">
+                  <div className="rounded-xl border-2 border-dashed border-neutral-700 bg-neutral-950/40 p-5 text-center transition hover:border-primary-400/50">
                     <ImageIcon className="mx-auto h-8 w-8 text-cream-muted/40" />
                     <p className="mt-2 text-xs text-cream-muted">
                       Upload QR code for instant client scans
                     </p>
                     <label className="mt-3 inline-block cursor-pointer">
-                      <span className="rounded-xl border border-brand-blue-400/40 bg-brand-blue-500/20 px-3.5 py-1.5 text-xs font-semibold text-brand-blue-300 transition hover:bg-brand-blue-500 hover:text-white">
+                      <span className="rounded-xl border border-primary-400/40 bg-primary-500/20 px-3.5 py-1.5 text-xs font-semibold text-primary-300 transition hover:bg-primary-500 hover:text-white">
                         {uploadingQR ? 'Uploading...' : 'Choose QR Image'}
                       </span>
                       <input
@@ -1622,7 +1596,7 @@ export function Settings() {
                 type="checkbox"
                 checked={formData.enabled !== undefined ? formData.enabled : true}
                 onChange={(e) => setFormData({ ...formData, enabled: e.target.checked })}
-                className="h-4 w-4 rounded border-forest-600 bg-forest-950 accent-brand-blue-500 cursor-pointer"
+                className="h-4 w-4 rounded border-neutral-600 bg-neutral-950 accent-primary-500 cursor-pointer"
               />
               Active (Visible during client checkout)
             </label>
@@ -1632,7 +1606,7 @@ export function Settings() {
             <div
               className={`flex items-center gap-2 rounded-xl border p-3 text-xs font-semibold ${
                 methodMsg.type === 'success'
-                  ? 'border-accentGreen-400/40 bg-accentGreen-500/15 text-accentGreen-300'
+                  ? 'border-accent-400/40 bg-accent-500/15 text-accent-300'
                   : 'border-error/40 bg-error/15 text-error'
               }`}
             >
@@ -1645,7 +1619,7 @@ export function Settings() {
             </div>
           )}
 
-          <div className="sticky bottom-0 -mx-4 -mb-4 mt-5 border-t border-forest-700/80 bg-forest-900/95 p-4 backdrop-blur-sm sm:static sm:mx-0 sm:mb-0 sm:bg-transparent sm:p-0 sm:pt-4">
+          <div className="sticky bottom-0 -mx-4 -mb-4 mt-5 border-t border-neutral-700 bg-neutral-900/95 p-4 backdrop-blur-sm sm:static sm:mx-0 sm:mb-0 sm:bg-transparent sm:p-0 sm:pt-4">
             <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
               <Button
                 size="md"

@@ -33,7 +33,7 @@ export function PaymentPolicy() {
       <div className="container-page pt-24 pb-16">
         <Link
           to="/"
-          className="mb-6 inline-flex items-center gap-1.5 text-xs font-semibold text-cream-muted transition hover:text-brand-blue-300"
+          className="mb-6 inline-flex items-center gap-1.5 text-xs font-semibold text-cream-muted transition hover:text-primary-300"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Back to Home
@@ -41,8 +41,8 @@ export function PaymentPolicy() {
 
         <div className="mx-auto max-w-3xl">
           <div className="mb-8 flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-court-400/30 bg-court-600/30">
-              <Wallet className="h-6 w-6 text-court-300" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-primary-400/30 bg-primary-600/30">
+              <Wallet className="h-6 w-6 text-primary-300" />
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-cream sm:text-3xl">
@@ -60,9 +60,9 @@ export function PaymentPolicy() {
           </div>
 
           <div className="space-y-8">
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <Search className="h-5 w-5 shrink-0 text-court-300" />
+                <Search className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">How Payment Verification Works</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
@@ -71,9 +71,9 @@ export function PaymentPolicy() {
                   <strong className="text-cream">manual payment verification</strong>. This means a
                   real person on our staff checks your payment before confirming your booking.
                 </p>
-                <div className="rounded-xl border border-forest-700/60 bg-forest-950/60 p-4">
+                <div className="rounded-xl border border-neutral-700 bg-neutral-950/60 p-4">
                   <div className="flex items-center gap-2">
-                    <ListChecks className="h-4 w-4 shrink-0 text-court-300" />
+                    <ListChecks className="h-4 w-4 shrink-0 text-primary-300" />
                     <h3 className="font-semibold text-cream">The verification process:</h3>
                   </div>
                   <ol className="mt-2 list-inside list-decimal space-y-1.5 pl-2">
@@ -85,7 +85,7 @@ export function PaymentPolicy() {
                   </ol>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Clock className="mt-0.5 h-4 w-4 shrink-0 text-court-300" />
+                  <Clock className="mt-0.5 h-4 w-4 shrink-0 text-primary-300" />
                   <p>
                     <strong className="text-cream">Verification time:</strong> During business
                     hours, verification typically takes 1-4 hours. Bookings submitted outside
@@ -95,9 +95,9 @@ export function PaymentPolicy() {
               </div>
             </section>
 
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <ListChecks className="h-5 w-5 shrink-0 text-court-300" />
+                <ListChecks className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">Payment Rules</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
@@ -125,13 +125,13 @@ export function PaymentPolicy() {
               </div>
             </section>
 
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <FileWarning className="h-5 w-5 shrink-0 text-court-300" />
+                <FileWarning className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">Common Payment Issues</h2>
               </div>
               <div className="space-y-4 text-sm leading-relaxed text-cream-muted">
-                <div className="rounded-xl border border-forest-700/60 bg-forest-950/60 p-4">
+                <div className="rounded-xl border border-neutral-700 bg-neutral-950/60 p-4">
                   <div className="flex items-center gap-2">
                     <XCircle className="h-4 w-4 shrink-0 text-amber-400" />
                     <h3 className="font-semibold text-cream">Reference number doesn't match</h3>
@@ -143,7 +143,7 @@ export function PaymentPolicy() {
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-forest-700/60 bg-forest-950/60 p-4">
+                <div className="rounded-xl border border-neutral-700 bg-neutral-950/60 p-4">
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 shrink-0 text-amber-400" />
                     <h3 className="font-semibold text-cream">Wrong amount sent</h3>
@@ -158,7 +158,7 @@ export function PaymentPolicy() {
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-forest-700/60 bg-forest-950/60 p-4">
+                <div className="rounded-xl border border-neutral-700 bg-neutral-950/60 p-4">
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 shrink-0 text-amber-400" />
                     <h3 className="font-semibold text-cream">
@@ -196,9 +196,9 @@ export function PaymentPolicy() {
               </div>
             </section>
 
-            <section className="rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 sm:p-6">
+            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <Banknote className="h-5 w-5 shrink-0 text-court-300" />
+                <Banknote className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">Accepted Payment Methods</h2>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
@@ -215,9 +215,9 @@ export function PaymentPolicy() {
               </div>
             </section>
 
-            <section className="rounded-2xl border border-court-400/30 bg-court-600/20 p-5 sm:p-6">
+            <section className="rounded-2xl border border-primary-400/30 bg-primary-600/20 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
-                <HelpCircle className="h-5 w-5 shrink-0 text-court-300" />
+                <HelpCircle className="h-5 w-5 shrink-0 text-primary-300" />
                 <h2 className="text-lg font-bold text-cream">Need Help?</h2>
               </div>
               <p className="text-sm leading-relaxed text-cream-muted">
@@ -225,8 +225,8 @@ export function PaymentPolicy() {
               </p>
               <ul className="mt-3 space-y-2 text-sm text-cream-muted">
                 <li className="flex items-center gap-2.5">
-                  <Mail className="h-4 w-4 shrink-0 text-court-300" />
-                  <span>centercourttandag@gmail.com</span>
+                  <Mail className="h-4 w-4 shrink-0 text-primary-300" />
+                  <span>smashpoint@gmail.com</span>
                 </li>
               </ul>
             </section>

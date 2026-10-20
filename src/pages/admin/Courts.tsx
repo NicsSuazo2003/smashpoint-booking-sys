@@ -36,7 +36,7 @@ export function Courts() {
       await updateCourt(editing);
       setEditing(null);
     } catch {
-      // Keep the modal open so the user can retry. Store surfaces the error.
+      // Store surfaces the error.
     } finally {
       setSaving(false);
     }
@@ -61,7 +61,7 @@ export function Courts() {
             Manage court details, operating hours, and images. Pricing is on the{' '}
             <Link
               to="/admin/pricing"
-              className="text-brand-blue-300 underline hover:text-brand-blue-200"
+              className="text-accent-400 underline hover:text-accent-300"
             >
               Pricing page
             </Link>
@@ -72,7 +72,7 @@ export function Courts() {
         {loadingCourts ? (
           <LoadingSpinner className="py-16" />
         ) : courts.length === 0 ? (
-          <div className="card rounded-2xl border border-forest-700/80 bg-forest-900/60 py-12 text-center shadow-xl backdrop-blur-sm">
+          <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/60 py-12 text-center shadow-xl backdrop-blur-sm">
             <Building2 className="mx-auto h-12 w-12 text-cream-muted/40" />
             <p className="mt-4 text-sm font-medium text-cream-muted">No courts found.</p>
             <p className="text-xs text-cream-muted/60">
@@ -90,7 +90,7 @@ export function Courts() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="card rounded-2xl border border-forest-700/80 bg-forest-900/80 overflow-hidden shadow-xl backdrop-blur-sm transition-all hover:border-brand-blue-400/50 flex flex-col justify-between"
+                  className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 overflow-hidden shadow-xl backdrop-blur-sm transition-all hover:border-primary-400/50 flex flex-col justify-between"
                 >
                   <div>
                     <div className="relative h-40 overflow-hidden sm:h-44">
@@ -103,18 +103,18 @@ export function Courts() {
                             'https://images.pexels.com/photos/17299530/pexels-photo-17299530.jpeg?auto=compress&cs=tinysrgb&w=1200';
                         }}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-forest-950 via-forest-950/40 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent" />
                       <div className="absolute bottom-3 left-3">
                         <span
                           className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
                             court?.is_active
-                              ? 'border border-accentGreen-400/40 bg-accentGreen-500/20 text-accentGreen-300'
+                              ? 'border border-accent-400/40 bg-accent-500/20 text-accent-300'
                               : 'border border-red-500/40 bg-red-500/20 text-red-400'
                           }`}
                         >
                           <span
                             className={`h-1.5 w-1.5 rounded-full ${
-                              court?.is_active ? 'bg-accentGreen-400' : 'bg-red-400'
+                              court?.is_active ? 'bg-accent-400' : 'bg-red-400'
                             }`}
                           />
                           {court?.is_active ? 'Active' : 'Inactive'}
@@ -130,11 +130,11 @@ export function Courts() {
                         {court?.description || 'No description provided.'}
                       </p>
 
-                      <div className="mt-4 rounded-xl border border-forest-700/60 bg-forest-950/40 p-3">
+                      <div className="mt-4 rounded-xl border border-neutral-700 bg-neutral-950/40 p-3">
                         <p className="text-[10px] font-bold uppercase tracking-wider text-cream-muted">
                           Current Rates
                         </p>
-                        <p className="mt-1 text-sm font-extrabold text-brand-blue-300">
+                        <p className="mt-1 text-sm font-extrabold text-accent-400">
                           {formatCurrency(court?.price_per_hour || 0)}
                           <span className="text-[10px] font-normal text-cream-muted">
                             /hr base
@@ -142,7 +142,7 @@ export function Courts() {
                         </p>
                         <Link
                           to="/admin/pricing"
-                          className="mt-1.5 inline-block text-[10px] text-brand-blue-300 underline hover:text-brand-blue-200"
+                          className="mt-1.5 inline-block text-[10px] text-accent-400 underline hover:text-accent-300"
                         >
                           Edit on Pricing page →
                         </Link>
@@ -176,7 +176,6 @@ export function Courts() {
         )}
       </div>
 
-      {/* ─────────────────────── Edit Court Modal ─────────────────────── */}
       {editing && (
         <Modal
           isOpen={!!editing}
@@ -232,10 +231,8 @@ export function Courts() {
                 <input
                   type="checkbox"
                   checked={editing?.is_indoor || false}
-                  onChange={(e) =>
-                    setEditing({ ...editing, is_indoor: e.target.checked })
-                  }
-                  className="h-4 w-4 rounded border-forest-600 bg-forest-950 accent-brand-blue-500 cursor-pointer"
+                  onChange={(e) => setEditing({ ...editing, is_indoor: e.target.checked })}
+                  className="h-4 w-4 rounded border-neutral-600 bg-neutral-950 accent-primary-500 cursor-pointer"
                 />
                 Indoor Court
               </label>
@@ -243,28 +240,26 @@ export function Courts() {
                 <input
                   type="checkbox"
                   checked={editing?.is_active || false}
-                  onChange={(e) =>
-                    setEditing({ ...editing, is_active: e.target.checked })
-                  }
-                  className="h-4 w-4 rounded border-forest-600 bg-forest-950 accent-brand-blue-500 cursor-pointer"
+                  onChange={(e) => setEditing({ ...editing, is_active: e.target.checked })}
+                  className="h-4 w-4 rounded border-neutral-600 bg-neutral-950 accent-primary-500 cursor-pointer"
                 />
                 Active (Bookable by public)
               </label>
             </div>
 
-            <div className="rounded-xl border border-brand-blue-500/30 bg-brand-blue-500/10 p-3 text-xs text-cream-muted">
-              <strong className="text-brand-blue-200">Pricing is not edited here.</strong>{' '}
+            <div className="rounded-xl border border-primary-500/30 bg-primary-500/10 p-3 text-xs text-cream-muted">
+              <strong className="text-primary-200">Pricing is not edited here.</strong>{' '}
               To change rates or add day-based rules, go to the{' '}
               <Link
                 to="/admin/pricing"
-                className="font-semibold text-brand-blue-300 underline hover:text-brand-blue-200"
+                className="font-semibold text-primary-300 underline hover:text-primary-200"
               >
                 Pricing page
               </Link>
               .
             </div>
 
-            <div className="sticky bottom-0 -mx-4 -mb-4 mt-5 border-t border-forest-700/80 bg-forest-900/95 p-4 backdrop-blur-sm sm:static sm:mx-0 sm:mb-0 sm:bg-transparent sm:p-0 sm:pt-4">
+            <div className="sticky bottom-0 -mx-4 -mb-4 mt-5 border-t border-neutral-700 bg-neutral-900/95 p-4 backdrop-blur-sm sm:static sm:mx-0 sm:mb-0 sm:bg-transparent sm:p-0 sm:pt-4">
               <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
                 <Button
                   size="md"

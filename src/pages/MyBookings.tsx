@@ -60,7 +60,6 @@ export function MyBookings() {
     };
   }, []);
 
-  // ✅ Get all court names for the booking
   const courtNames = useMemo(() => {
     if (!booking || !booking.slots) return booking?.court_name || '';
     const ids = Array.from(new Set(booking.slots.map(s => s.court_id).filter(Boolean)));
@@ -121,13 +120,13 @@ export function MyBookings() {
             </div>
 
             {/* Booking details */}
-            <div className="card rounded-2xl border border-forest-700/70 bg-forest-900/80 p-5 shadow-xl">
+            <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 shadow-xl">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-wider text-cream-muted">
                     Reference
                   </p>
-                  <p className="font-mono text-sm font-bold text-brand-blue-300">
+                  <p className="font-mono text-sm font-bold text-primary-300">
                     {booking.reference_code}
                   </p>
                 </div>
@@ -135,21 +134,21 @@ export function MyBookings() {
                   <span className="rounded-full border border-amber-500/40 bg-amber-500/15 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-300">
                     Upload receipt
                   </span>
-                  <span className="rounded-full border border-forest-700/80 bg-forest-950/60 px-3 py-0.5 text-[10px] font-bold text-cream-muted">
+                  <span className="rounded-full border border-neutral-700 bg-neutral-950/60 px-3 py-0.5 text-[10px] font-bold text-cream-muted">
                     {booking.slots.length} slot{booking.slots.length !== 1 && 's'}
                   </span>
                 </div>
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-center justify-between gap-3 border-b border-forest-700/60 pb-3">
+                <div className="flex items-center justify-between gap-3 border-b border-neutral-700 pb-3">
                   <div>
                     <p className="text-sm font-bold text-cream">{courtNames}</p>
                     <p className="text-xs text-cream-muted">
                       {formatDateLong(booking.date)}
                     </p>
                   </div>
-                  <p className="text-sm font-bold text-brand-blue-300">
+                  <p className="text-sm font-bold text-accent-400">
                     {formatCurrency(booking.total_amount)}
                   </p>
                 </div>
@@ -158,15 +157,15 @@ export function MyBookings() {
                   {booking.slots.map((slot) => (
                     <div
                       key={slot.id}
-                      className="flex items-center justify-between rounded-lg bg-forest-800/70 px-3 py-2 text-xs"
+                      className="flex items-center justify-between rounded-lg bg-neutral-800/70 px-3 py-2 text-xs"
                     >
                       <div className="flex items-center gap-2">
-                        <Clock className="h-3.5 w-3.5 text-brand-blue-300" />
+                        <Clock className="h-3.5 w-3.5 text-primary-300" />
                         <span className="text-cream">
                           {formatTimeRange(slot.start_time, slot.end_time)}
                         </span>
                       </div>
-                      <span className="font-bold text-brand-blue-300">
+                      <span className="font-bold text-accent-400">
                         {formatCurrency(slot.price)}
                       </span>
                     </div>
@@ -177,14 +176,14 @@ export function MyBookings() {
 
             <p className="text-center text-xs text-cream-muted">
               Booking on a different device?{' '}
-              <Link to="/track" className="font-semibold text-brand-blue-300 underline">
+              <Link to="/track" className="font-semibold text-primary-300 underline">
                 Look it up with your reference code
               </Link>
               .
             </p>
           </div>
         ) : (
-          <div className="rounded-2xl border border-forest-700/60 bg-forest-900/60 p-10 text-center">
+          <div className="rounded-2xl border border-neutral-700 bg-neutral-900/60 p-10 text-center">
             <Wallet className="mx-auto h-10 w-10 text-cream-muted/40" />
             <p className="mt-4 text-sm font-semibold text-cream">
               No pending bookings on this device

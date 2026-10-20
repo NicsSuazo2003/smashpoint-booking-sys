@@ -32,7 +32,6 @@ const monthNames = [
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
 
-// Adjust if your admin bookings route is different.
 const ADMIN_BOOKINGS_PATH = '/admin/bookings';
 const LIST_PAGE_SIZE = 20;
 
@@ -45,11 +44,10 @@ const STATUS_FILTERS: { key: StatusFilter; label: string }[] = [
   { key: 'cancelled', label: 'Cancelled' },
 ];
 
-// One place that defines status colors, used by chips, dots and the legend.
 const STATUS_STYLE: Record<string, { chip: string; dot: string; label: string }> = {
   confirmed: {
-    chip: 'bg-accentGreen-500/25 text-accentGreen-300 border border-accentGreen-400/30',
-    dot: 'bg-accentGreen-400',
+    chip: 'bg-accent-500/25 text-accent-300 border border-accent-400/30',
+    dot: 'bg-accent-400',
     label: 'Confirmed',
   },
   pending_payment: {
@@ -64,8 +62,8 @@ const STATUS_STYLE: Record<string, { chip: string; dot: string; label: string }>
   },
 };
 const DEFAULT_STATUS_STYLE = {
-  chip: 'bg-brand-blue-500/25 text-brand-blue-200 border border-brand-blue-400/30',
-  dot: 'bg-brand-blue-300',
+  chip: 'bg-primary-500/25 text-primary-200 border border-primary-400/30',
+  dot: 'bg-primary-300',
   label: 'Other',
 };
 const statusStyle = (status: string) => STATUS_STYLE[status] ?? DEFAULT_STATUS_STYLE;
@@ -135,7 +133,6 @@ export function Dashboard() {
       existing.push(b);
       map.set(b.date, existing);
     });
-    // Earliest first, so the day drawer reads like a schedule.
     map.forEach((list) => list.sort((a, b) => firstStart(a).localeCompare(firstStart(b))));
     return map;
   }, [bookings]);
@@ -171,15 +168,15 @@ export function Dashboard() {
       label: 'Total Bookings',
       value: analytics?.total_bookings ?? 0,
       icon: CalendarDays,
-      color: 'text-brand-blue-300',
-      bg: 'bg-brand-blue-500/20 border border-brand-blue-400/30',
+      color: 'text-primary-300',
+      bg: 'bg-primary-500/20 border border-primary-400/30',
     },
     {
       label: 'Total Revenue',
       value: formatCurrency(analytics?.total_revenue ?? 0),
       icon: PhilippinePeso,
-      color: 'text-accentGreen-300',
-      bg: 'bg-accentGreen-500/20 border border-accentGreen-400/30',
+      color: 'text-accent-300',
+      bg: 'bg-accent-500/20 border border-accent-400/30',
     },
     {
       label: 'Completed Bookings',
@@ -245,8 +242,8 @@ export function Dashboard() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className={`card rounded-2xl border bg-forest-900/80 p-4 sm:p-5 shadow-xl backdrop-blur-sm ${
-                  stat.needsAction ? 'border-amber-500/40' : 'border-forest-700/80'
+                className={`card rounded-2xl border bg-neutral-900/80 p-4 sm:p-5 shadow-xl backdrop-blur-sm ${
+                  stat.needsAction ? 'border-amber-500/40' : 'border-neutral-700'
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -268,10 +265,10 @@ export function Dashboard() {
         </div>
 
         {revenueDays.length > 0 && (
-          <div className="mb-6 card rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 shadow-xl backdrop-blur-sm sm:mb-8 sm:p-6">
+          <div className="mb-6 card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 shadow-xl backdrop-blur-sm sm:mb-8 sm:p-6">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-brand-blue-300" />
+                <TrendingUp className="h-5 w-5 text-primary-300" />
                 <h2 className="font-display text-base font-bold text-cream sm:text-lg">
                   Revenue Trend
                   <span className="ml-1.5 text-xs font-medium text-cream-muted sm:text-sm">
@@ -287,14 +284,14 @@ export function Dashboard() {
                       day: 'numeric',
                     })}
                     :{' '}
-                    <span className="font-bold text-brand-blue-200">
+                    <span className="font-bold text-primary-200">
                       {formatCurrency(activeDay.revenue)}
                     </span>
                   </>
                 ) : (
                   <>
                     Period total:{' '}
-                    <span className="font-bold text-brand-blue-200">{formatCurrency(periodTotal)}</span>
+                    <span className="font-bold text-primary-200">{formatCurrency(periodTotal)}</span>
                     <span className="hidden sm:inline"> · tap a bar for details</span>
                   </>
                 )}
@@ -319,13 +316,13 @@ export function Dashboard() {
                       aria-label={`${dayLabel}: ${formatCurrency(day.revenue)}`}
                       className="flex min-w-[52px] flex-1 flex-col items-center gap-1.5"
                     >
-                      <span className="hidden text-[11px] font-bold text-brand-blue-200 whitespace-nowrap sm:block">
+                      <span className="hidden text-[11px] font-bold text-primary-200 whitespace-nowrap sm:block">
                         {day.revenue > 0 ? formatCurrency(day.revenue) : '—'}
                       </span>
                       <div className="flex w-full flex-1 items-end">
                         <div
-                          className={`w-full rounded-t-lg bg-gradient-to-t from-brand-blue-600 via-brand-blue-500 to-brand-blue-400 transition-all shadow-sm ${
-                            isActive ? 'ring-2 ring-white/70' : 'hover:from-brand-blue-500 hover:to-brand-blue-300'
+                          className={`w-full rounded-t-lg bg-gradient-to-t from-primary-600 via-primary-500 to-primary-400 transition-all shadow-sm ${
+                            isActive ? 'ring-2 ring-white/70' : 'hover:from-primary-500 hover:to-primary-300'
                           }`}
                           style={{ height: `${Math.max(heightPct, 3)}%` }}
                         />
@@ -341,7 +338,7 @@ export function Dashboard() {
           </div>
         )}
 
-        <div className="card rounded-2xl border border-forest-700/80 bg-forest-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
+        <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
           <div className="mb-4 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="font-display text-base font-bold text-cream sm:text-lg">
               Bookings {view === 'calendar' ? 'Calendar' : 'List'}
@@ -351,7 +348,7 @@ export function Dashboard() {
                 <div className="mr-1 flex items-center gap-1 sm:mr-2">
                   <button
                     onClick={() => setCalendarDate(new Date(year, month - 1, 1))}
-                    className="rounded-lg border border-forest-600 bg-forest-800/80 p-1.5 text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300"
+                    className="rounded-lg border border-neutral-700 bg-neutral-800/80 p-1.5 text-cream-muted transition hover:border-primary-400 hover:text-primary-300"
                     aria-label="Previous month"
                   >
                     <ChevronLeft className="h-4 w-4" />
@@ -361,27 +358,27 @@ export function Dashboard() {
                   </span>
                   <button
                     onClick={() => setCalendarDate(new Date(year, month + 1, 1))}
-                    className="rounded-lg border border-forest-600 bg-forest-800/80 p-1.5 text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300"
+                    className="rounded-lg border border-neutral-700 bg-neutral-800/80 p-1.5 text-cream-muted transition hover:border-primary-400 hover:text-primary-300"
                     aria-label="Next month"
                   >
                     <ChevronRight className="h-4 w-4" />
                   </button>
                   <button
                     onClick={goToToday}
-                    className="ml-1 rounded-lg border border-forest-600 bg-forest-800/80 px-2.5 py-1.5 text-xs font-semibold text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300"
+                    className="ml-1 rounded-lg border border-neutral-700 bg-neutral-800/80 px-2.5 py-1.5 text-xs font-semibold text-cream-muted transition hover:border-primary-400 hover:text-primary-300"
                   >
                     Today
                   </button>
                 </div>
               )}
-              <div className="flex rounded-xl border border-forest-700 bg-forest-950/60 p-1" role="group" aria-label="Switch view">
+              <div className="flex rounded-xl border border-neutral-700 bg-neutral-950/60 p-1" role="group" aria-label="Switch view">
                 <button
                   onClick={() => setView('calendar')}
                   aria-label="Calendar view"
                   aria-pressed={view === 'calendar'}
                   className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
                     view === 'calendar'
-                      ? 'bg-brand-blue-500 text-white shadow-glow-blue'
+                      ? 'bg-primary-500 text-white shadow-glow-blue'
                       : 'text-cream-muted hover:text-cream'
                   }`}
                 >
@@ -394,7 +391,7 @@ export function Dashboard() {
                   aria-pressed={view === 'list'}
                   className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
                     view === 'list'
-                      ? 'bg-brand-blue-500 text-white shadow-glow-blue'
+                      ? 'bg-primary-500 text-white shadow-glow-blue'
                       : 'text-cream-muted hover:text-cream'
                   }`}
                 >
@@ -451,26 +448,26 @@ export function Dashboard() {
                       }${hasPending ? ', has pending payments' : ''}`}
                       className={`min-h-[56px] rounded-xl border p-1 text-left transition sm:min-h-24 sm:p-2 ${
                         isSelected
-                          ? 'border-brand-blue-400 bg-brand-blue-500/20 shadow-glow-blue'
+                          ? 'border-primary-400 bg-primary-500/20 shadow-glow-blue'
                           : isCurrentMonth
                             ? hasPending
-                              ? 'border-amber-500/40 bg-forest-950/60 hover:border-amber-400/70'
-                              : 'border-forest-700/80 bg-forest-950/60 hover:border-brand-blue-400/50 hover:bg-forest-800/60'
-                            : 'border-forest-800/50 bg-forest-950/20 opacity-50'
+                              ? 'border-amber-500/40 bg-neutral-950/60 hover:border-amber-400/70'
+                              : 'border-neutral-700 bg-neutral-950/60 hover:border-primary-400/50 hover:bg-neutral-800/60'
+                            : 'border-neutral-800/50 bg-neutral-950/20 opacity-50'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <span
                           className={`text-xs font-bold ${
                             isToday
-                              ? 'flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue-500 text-white font-black'
+                              ? 'flex h-5 w-5 items-center justify-center rounded-full bg-primary-500 text-white font-black'
                               : 'text-cream'
                           }`}
                         >
                           {day.getDate()}
                         </span>
                         {activeBookings.length > 0 && (
-                          <span className="rounded-full border border-brand-blue-400/40 bg-brand-blue-500/30 px-1.5 text-[10px] font-black text-brand-blue-200">
+                          <span className="rounded-full border border-primary-400/40 bg-primary-500/30 px-1.5 text-[10px] font-black text-primary-200">
                             {activeBookings.length}
                           </span>
                         )}
@@ -496,7 +493,7 @@ export function Dashboard() {
                           );
                         })}
                         {dayBookings.length > 2 && (
-                          <div className="pl-0.5 text-[10px] font-semibold text-brand-blue-300">
+                          <div className="pl-0.5 text-[10px] font-semibold text-primary-300">
                             +{dayBookings.length - 2} more
                           </div>
                         )}
@@ -509,9 +506,9 @@ export function Dashboard() {
               {selectedDate && (
                 <div
                   ref={drawerRef}
-                  className="mt-5 scroll-mt-20 border-t border-forest-700/80 pt-4 sm:mt-6 sm:pt-5"
+                  className="mt-5 scroll-mt-20 border-t border-neutral-700 pt-4 sm:mt-6 sm:pt-5"
                 >
-                  <h3 className="mb-3 text-sm font-bold text-brand-blue-300">
+                  <h3 className="mb-3 text-sm font-bold text-primary-300">
                     {formatDate(selectedDate)}
                     <span className="ml-2 font-medium text-cream-muted">
                       {selectedDateBookings.length} booking
@@ -548,8 +545,8 @@ export function Dashboard() {
                       aria-pressed={active}
                       className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
                         active
-                          ? 'border-brand-blue-400 bg-brand-blue-500 text-white'
-                          : 'border-forest-600 bg-forest-800/80 text-cream-muted hover:text-cream'
+                          ? 'border-primary-400 bg-primary-500 text-white'
+                          : 'border-neutral-600 bg-neutral-800/80 text-cream-muted hover:text-cream'
                       }`}
                     >
                       {f.label} <span className="opacity-70">({count})</span>
@@ -576,7 +573,7 @@ export function Dashboard() {
                 <div className="mt-4 text-center">
                   <button
                     onClick={() => setVisibleCount((c) => c + LIST_PAGE_SIZE)}
-                    className="rounded-xl border border-forest-600 bg-forest-800/80 px-4 py-2 text-xs font-semibold text-cream-muted transition hover:border-brand-blue-400 hover:text-brand-blue-300"
+                    className="rounded-xl border border-neutral-600 bg-neutral-800/80 px-4 py-2 text-xs font-semibold text-cream-muted transition hover:border-primary-400 hover:text-primary-300"
                   >
                     Show more ({filteredList.length - visibleCount} left)
                   </button>
@@ -590,10 +587,6 @@ export function Dashboard() {
   );
 }
 
-// --------------------------------------------------------
-// SUB-COMPONENTS
-// --------------------------------------------------------
-
 function BookingRow({
   booking: b,
   showDate,
@@ -603,10 +596,8 @@ function BookingRow({
   showDate: boolean;
   showReference?: boolean;
 }) {
-  // 👇 Access the courts store to resolve the actual court names
   const courts = useAdminStore((state) => state.courts);
 
-  // 👇 Group the slots by court to get all names
   const courtNames = useMemo(() => {
     if (!b || !b.slots) return b?.court_name || '';
     const ids = Array.from(new Set(b.slots.map((s: any) => s.court_id).filter(Boolean)));
@@ -620,9 +611,9 @@ function BookingRow({
   const slotDisplay = b.slots?.map((s: any) => formatSlotTime(s)).join(', ') || 'No slots';
 
   return (
-    <div className="flex flex-col gap-2 rounded-xl border border-forest-700/70 bg-forest-950/70 p-3.5 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-2 rounded-xl border border-neutral-700 bg-neutral-950/70 p-3.5 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 items-center gap-3">
-        <div className="flex h-10 min-w-[3.5rem] shrink-0 items-center justify-center rounded-xl border border-brand-blue-400/30 bg-brand-blue-500/20 px-2 text-xs font-black text-brand-blue-200">
+        <div className="flex h-10 min-w-[3.5rem] shrink-0 items-center justify-center rounded-xl border border-primary-400/30 bg-primary-500/20 px-2 text-xs font-black text-primary-200">
           {firstStart(b) ? formatTimeShort(firstStart(b)) : 'N/A'}
         </div>
         <div className="min-w-0">
@@ -630,17 +621,16 @@ function BookingRow({
           <p className="truncate text-xs text-cream-muted">
             {showReference && (
               <>
-                <span className="font-mono text-brand-blue-300">{b.reference_code || 'No ref'}</span> ·{' '}
+                <span className="font-mono text-primary-300">{b.reference_code || 'No ref'}</span> ·{' '}
               </>
             )}
             {showDate && <>{formatDate(b.date)} · </>}
-            {/* 👇 Now shows all courts */}
             {courtNames} · {slotDisplay}
           </p>
         </div>
       </div>
       <div className="flex items-center justify-between gap-3 sm:justify-end">
-        <span className="text-sm font-bold text-brand-blue-300">
+        <span className="text-sm font-bold text-accent-400">
           {formatCurrency(b.total_amount || 0)}
         </span>
         <StatusBadge status={b.status} size="sm" />
