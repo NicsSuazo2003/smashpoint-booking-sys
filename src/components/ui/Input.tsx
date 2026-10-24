@@ -18,7 +18,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-cream-muted"
           >
             {label}
-            {props.required && <span className="ml-1 text-accent-400">*</span>}
+            {props.required && <span className="ml-1 text-primary-500">*</span>}
           </label>
         )}
         <div className="relative flex items-center">
@@ -30,13 +30,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             id={inputId}
-            className={`w-full rounded-xl border border-neutral-700 bg-neutral-950/60 px-4 py-2.5 text-sm text-cream placeholder-cream-muted/40 transition-all focus:border-primary-400 focus:bg-neutral-900/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20 disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`w-full rounded-xl border border-neutral-800 bg-neutral-950/80 px-4 py-2.5 text-sm text-cream placeholder-cream-muted/40 transition-all focus:border-primary-500 focus:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-500/25 disabled:cursor-not-allowed disabled:opacity-50 ${
               leftIcon ? 'pl-10' : ''
-            } ${error ? 'border-error/80 focus:border-error focus:ring-error/20' : ''} ${className}`}
+            } ${error ? 'border-primary-500 focus:border-primary-500 focus:ring-primary-500/30' : ''} ${className}`}
             {...props}
           />
         </div>
-        {error && <p className="mt-1.5 text-xs font-medium text-error">{error}</p>}
+        {error && <p className="mt-1.5 text-xs font-medium text-primary-400">{error}</p>}
         {hint && !error && <p className="mt-1.5 text-xs text-cream-muted/70">{hint}</p>}
       </div>
     );
@@ -62,18 +62,18 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-cream-muted"
           >
             {label}
-            {props.required && <span className="ml-1 text-accent-400">*</span>}
+            {props.required && <span className="ml-1 text-primary-500">*</span>}
           </label>
         )}
         <textarea
           ref={ref}
           id={inputId}
-          className={`w-full rounded-xl border border-neutral-700 bg-neutral-950/60 p-4 text-sm text-cream placeholder-cream-muted/40 transition-all resize-none focus:border-primary-400 focus:bg-neutral-900/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20 disabled:cursor-not-allowed disabled:opacity-50 ${
-            error ? 'border-error/80 focus:border-error focus:ring-error/20' : ''
+          className={`w-full rounded-xl border border-neutral-800 bg-neutral-950/80 p-4 text-sm text-cream placeholder-cream-muted/40 transition-all resize-none focus:border-primary-500 focus:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-500/25 disabled:cursor-not-allowed disabled:opacity-50 ${
+            error ? 'border-primary-500 focus:border-primary-500 focus:ring-primary-500/30' : ''
           } ${className}`}
           {...props}
         />
-        {error && <p className="mt-1.5 text-xs font-medium text-error">{error}</p>}
+        {error && <p className="mt-1.5 text-xs font-medium text-primary-400">{error}</p>}
         {hint && !error && <p className="mt-1.5 text-xs text-cream-muted/70">{hint}</p>}
       </div>
     );

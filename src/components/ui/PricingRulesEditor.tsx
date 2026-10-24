@@ -1,4 +1,3 @@
-// src/components/ui/PricingRulesEditor.tsx
 import { useEffect, useMemo, useState } from 'react';
 import { Plus, Pencil, Trash2, Tag, Clock, CloudSun, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -328,7 +327,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
     try {
       await removePricingRule(courtId, rule.id);
     } catch {
-      // store surfaces error
+      // Store surfaces error
     }
   };
 
@@ -354,10 +353,10 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
       <div key={title}>
         <div className="mb-2 flex items-center gap-2">
           {icon}
-          <span className="text-[11px] font-bold uppercase tracking-wider text-primary-300">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-primary-400">
             {title}
           </span>
-          <div className="h-px flex-1 bg-neutral-700/60" />
+          <div className="h-px flex-1 bg-neutral-800" />
         </div>
         <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
           {intervals.map((it) => {
@@ -369,8 +368,8 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                 onClick={() => handleSlotClick(it)}
                 className={`flex h-9 items-center justify-center rounded-lg border px-1.5 text-[11px] font-semibold tracking-tight transition-all ${
                   active
-                    ? 'border-accent-400 bg-accent-500 text-neutral-950 shadow-glow-lime'
-                    : 'border-neutral-700 bg-neutral-950/60 text-cream-muted hover:border-primary-400/50 hover:text-cream'
+                    ? 'border-accent-400 bg-accent-500 text-neutral-950 shadow-glow-accent'
+                    : 'border-neutral-800 bg-neutral-950/80 text-cream-muted hover:border-primary-500/50 hover:text-cream'
                 }`}
               >
                 {formatTimeShort(it.start_time)}–{formatTimeShort(it.end_time)}
@@ -383,10 +382,10 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
   };
 
   return (
-    <div className="mt-5 border-t border-neutral-700 pt-4">
+    <div className="mt-5 border-t border-neutral-800 pt-4">
       <div className="mb-3 flex items-center justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-wider text-primary-300">
+          <p className="text-xs font-bold uppercase tracking-wider text-primary-400">
             Day-Based Pricing Rules
           </p>
           <p className="text-[11px] text-cream-muted">
@@ -404,8 +403,8 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
       </div>
 
       {rules.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-neutral-700 bg-neutral-950/40 p-4 text-center text-xs text-cream-muted">
-          No rules yet. Base and peak prices above apply to all slots.
+        <div className="rounded-xl border border-dashed border-neutral-800 bg-neutral-950/40 p-4 text-center text-xs text-cream-muted">
+          No rules yet. Base and peak rates above apply to all slots.
         </div>
       ) : (
         <div className="space-y-2">
@@ -415,16 +414,16 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
             .map((rule) => (
               <div
                 key={rule.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-neutral-700 bg-neutral-950/60 px-3.5 py-2.5"
+                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-neutral-800 bg-neutral-950/80 px-3.5 py-2.5 transition hover:border-neutral-700"
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <Tag className="h-3.5 w-3.5 shrink-0 text-primary-300" />
+                    <Tag className="h-3.5 w-3.5 shrink-0 text-primary-500" />
                     <span className="truncate text-sm font-bold text-cream">
                       {rule.label}
                     </span>
                     {rule.priority > 0 && (
-                      <span className="rounded-md border border-primary-400/40 bg-primary-500/20 px-1.5 py-0.5 text-[9px] font-bold text-primary-200">
+                      <span className="rounded-md border border-primary-500/30 bg-primary-500/10 px-1.5 py-0.5 text-[9px] font-bold text-primary-300">
                         P{rule.priority}
                       </span>
                     )}
@@ -436,7 +435,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                 </div>
 
                 <div className="text-right">
-                  <p className="font-display text-base font-bold text-accent-400">
+                  <p className="font-display text-base font-bold text-accent-500">
                     {formatCurrency(rule.price_per_hour)}
                     <span className="text-[10px] font-normal text-cream-muted">/hr</span>
                   </p>
@@ -445,14 +444,14 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                 <div className="flex gap-1">
                   <button
                     onClick={() => openEdit(rule)}
-                    className="rounded-lg border border-neutral-600 bg-neutral-800 p-1.5 text-cream-muted transition hover:border-primary-400 hover:text-primary-300 active:scale-95"
+                    className="rounded-lg border border-neutral-700 bg-neutral-900 p-1.5 text-cream-muted transition hover:border-primary-500 hover:text-primary-400 active:scale-95"
                     title="Edit rule"
                   >
                     <Pencil className="h-3.5 w-3.5" />
                   </button>
                   <button
                     onClick={() => handleDelete(rule)}
-                    className="rounded-lg border border-neutral-600 bg-neutral-800 p-1.5 text-cream-muted transition hover:border-red-400 hover:text-red-400 active:scale-95"
+                    className="rounded-lg border border-neutral-700 bg-neutral-900 p-1.5 text-cream-muted transition hover:border-primary-500 hover:text-primary-400 active:scale-95"
                     title="Delete rule"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -473,7 +472,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
           <div className="space-y-4">
             <Input
               label="Label"
-              placeholder='e.g. "Saturday All Day", "Weekday Peak"'
+              placeholder='e.g. "Weekend All Day", "Weekday Peak"'
               value={form.label}
               onChange={(e) => setForm({ ...form, label: e.target.value })}
             />
@@ -487,7 +486,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                   <button
                     type="button"
                     onClick={selectEveryDay}
-                    className="text-primary-300 underline hover:text-primary-200"
+                    className="text-primary-400 underline hover:text-primary-300"
                   >
                     Every day
                   </button>
@@ -510,8 +509,8 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                       onClick={() => toggleDay(d.key)}
                       className={`min-w-[52px] rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition ${
                         isSelected
-                          ? 'border-primary-400 bg-primary-500 text-white'
-                          : 'border-neutral-700 bg-neutral-950/60 text-cream-muted hover:border-primary-400/40 hover:text-cream'
+                          ? 'border-primary-500 bg-primary-500 text-white shadow-glow-primary'
+                          : 'border-neutral-800 bg-neutral-950/80 text-cream-muted hover:border-primary-500/40 hover:text-cream'
                       }`}
                     >
                       {d.label}
@@ -520,7 +519,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                 })}
               </div>
               <p className="mt-1.5 text-[11px] text-cream-muted">
-                Leave all off to apply this rule to <strong>every day</strong>.
+                Leave all unselected to apply this rule to <strong>every day</strong>.
               </p>
             </div>
 
@@ -532,15 +531,15 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                 <button
                   type="button"
                   onClick={() => setManualMode((m) => !m)}
-                  className="text-[11px] text-primary-300 underline hover:text-primary-200"
+                  className="text-[11px] text-primary-400 underline hover:text-primary-300"
                 >
                   {manualMode ? 'Pick from slots' : 'Enter manually'}
                 </button>
               </div>
 
-              <div className="mb-3 rounded-lg border border-primary-500/30 bg-primary-500/10 p-3">
+              <div className="mb-3 rounded-lg border border-primary-500/20 bg-primary-500/5 p-3">
                 <div className="flex items-center gap-2 text-xs">
-                  <Clock className="h-3.5 w-3.5 shrink-0 text-primary-300" />
+                  <Clock className="h-3.5 w-3.5 shrink-0 text-primary-400" />
                   {form.start_time && form.end_time ? (
                     <span className="font-semibold text-cream">
                       {formatRange(form.start_time, form.end_time)}
@@ -557,7 +556,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                     <button
                       type="button"
                       onClick={selectWholeDay}
-                      className="rounded-lg border border-primary-400/40 bg-primary-500/15 px-2.5 py-1 text-[11px] font-semibold text-primary-200 transition hover:bg-primary-500/25"
+                      className="rounded-lg border border-primary-500/30 bg-primary-500/10 px-2.5 py-1 text-[11px] font-semibold text-primary-300 transition hover:bg-primary-500/20"
                     >
                       Whole day
                     </button>
@@ -565,7 +564,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                       <button
                         type="button"
                         onClick={selectMorning}
-                        className="rounded-lg border border-neutral-700 bg-neutral-950/60 px-2.5 py-1 text-[11px] text-cream-muted transition hover:border-primary-400/40 hover:text-cream"
+                        className="rounded-lg border border-neutral-800 bg-neutral-950/80 px-2.5 py-1 text-[11px] text-cream-muted transition hover:border-primary-500/40 hover:text-cream"
                       >
                         Morning
                       </button>
@@ -574,7 +573,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                       <button
                         type="button"
                         onClick={selectAfternoon}
-                        className="rounded-lg border border-neutral-700 bg-neutral-950/60 px-2.5 py-1 text-[11px] text-cream-muted transition hover:border-primary-400/40 hover:text-cream"
+                        className="rounded-lg border border-neutral-800 bg-neutral-950/80 px-2.5 py-1 text-[11px] text-cream-muted transition hover:border-primary-500/40 hover:text-cream"
                       >
                         Afternoon
                       </button>
@@ -583,7 +582,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                       <button
                         type="button"
                         onClick={selectEvening}
-                        className="rounded-lg border border-neutral-700 bg-neutral-950/60 px-2.5 py-1 text-[11px] text-cream-muted transition hover:border-primary-400/40 hover:text-cream"
+                        className="rounded-lg border border-neutral-800 bg-neutral-950/80 px-2.5 py-1 text-[11px] text-cream-muted transition hover:border-primary-500/40 hover:text-cream"
                       >
                         Evening
                       </button>
@@ -591,7 +590,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                     <button
                       type="button"
                       onClick={clearRange}
-                      className="rounded-lg border border-neutral-700 bg-neutral-950/60 px-2.5 py-1 text-[11px] text-cream-muted transition hover:text-error"
+                      className="rounded-lg border border-neutral-800 bg-neutral-950/80 px-2.5 py-1 text-[11px] text-cream-muted transition hover:text-primary-400"
                     >
                       Clear
                     </button>
@@ -615,35 +614,35 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                   />
                 </div>
               ) : loadingSlots ? (
-                <div className="rounded-xl border border-neutral-700 bg-neutral-950/40 py-6 text-center">
+                <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 py-6 text-center">
                   <LoadingSpinner />
                 </div>
               ) : allIntervals.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-neutral-700 bg-neutral-950/40 p-4 text-center text-xs text-cream-muted">
+                <div className="rounded-xl border border-dashed border-neutral-800 bg-neutral-950/40 p-4 text-center text-xs text-cream-muted">
                   No time slots found for this court.{' '}
                   <button
                     type="button"
                     onClick={() => setManualMode(true)}
-                    className="text-primary-300 underline"
+                    className="text-primary-400 underline"
                   >
                     Enter manually
                   </button>
                 </div>
               ) : (
-                <div className="space-y-4 rounded-xl border border-neutral-700 bg-neutral-950/40 p-3.5">
+                <div className="space-y-4 rounded-xl border border-neutral-800 bg-neutral-950/40 p-3.5">
                   {renderSlotGroup(
                     'Morning',
-                    <CloudSun className="h-3.5 w-3.5 text-primary-300" />,
+                    <CloudSun className="h-3.5 w-3.5 text-primary-400" />,
                     morning
                   )}
                   {renderSlotGroup(
                     'Afternoon',
-                    <Sun className="h-3.5 w-3.5 text-primary-300" />,
+                    <Sun className="h-3.5 w-3.5 text-primary-400" />,
                     afternoon
                   )}
                   {renderSlotGroup(
                     'Evening',
-                    <Moon className="h-3.5 w-3.5 text-primary-300" />,
+                    <Moon className="h-3.5 w-3.5 text-primary-400" />,
                     evening
                   )}
                 </div>
@@ -665,7 +664,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
                   });
                 }}
                 onFocus={(e) => e.target.select()}
-                leftIcon={<span className="text-xs font-bold text-accent-400">₱</span>}
+                leftIcon={<span className="text-xs font-bold text-accent-500">₱</span>}
               />
               <Input
                 label="Priority"
@@ -686,7 +685,7 @@ export function PricingRulesEditor({ courtId }: { courtId: string }) {
             </div>
 
             {localError && (
-              <div className="rounded-xl border border-error/30 bg-error/10 p-2.5 text-xs text-error">
+              <div className="rounded-xl border border-primary-500/30 bg-primary-500/10 p-2.5 text-xs text-primary-400 font-medium">
                 {localError}
               </div>
             )}

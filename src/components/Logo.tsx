@@ -11,18 +11,17 @@ export function Logo({ size = 'md', withText = true, to = '/' }: LogoProps) {
   const [imageFailed, setImageFailed] = useState(false);
 
   const sizes = {
-    sm: { image: 40, text: 'text-lg' },
-    md: { image: 50, text: 'text-xl' },
-    nav: { image: 64, text: 'text-xl' },
-    lg: { image: 65, text: 'text-3xl' },
-    xl: { image: 80, text: 'text-4xl' },
-    '2xl': { image: 120, text: 'text-5xl' },
+    sm: { image: 36, text: 'text-lg' },
+    md: { image: 46, text: 'text-xl' },
+    nav: { image: 56, text: 'text-xl' },
+    lg: { image: 64, text: 'text-3xl' },
+    xl: { image: 78, text: 'text-4xl' },
+    '2xl': { image: 110, text: 'text-5xl' },
   };
   const s = sizes[size];
 
   const content = (
-    <div className="flex items-center gap-2.5">
-      {/* ✅ Only render <img> if it hasn't failed yet — no broken-image icon */}
+    <div className="flex items-center gap-2.5 select-none">
       {!imageFailed && (
         <img
           src="/images/SP.png"
@@ -34,9 +33,9 @@ export function Logo({ size = 'md', withText = true, to = '/' }: LogoProps) {
         />
       )}
       {withText && (
-        <span className={`font-display ${s.text} font-bold tracking-tight`}>
-          <span className="text-cream">Smash</span>{' '}
-          <span className="text-accent-400">Point</span>
+        <span className={`font-display ${s.text} font-black italic uppercase tracking-wider`}>
+          <span className="text-white">Smash</span>{' '}
+          <span className="text-primary-500">Point</span>
         </span>
       )}
     </div>
@@ -44,7 +43,7 @@ export function Logo({ size = 'md', withText = true, to = '/' }: LogoProps) {
 
   if (to) {
     return (
-      <Link to={to} aria-label="Smash Point home">
+      <Link to={to} aria-label="Smash Point home" className="inline-block transition-opacity hover:opacity-90">
         {content}
       </Link>
     );

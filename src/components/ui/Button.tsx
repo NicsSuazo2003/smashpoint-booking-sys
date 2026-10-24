@@ -1,7 +1,7 @@
 import { forwardRef, type ButtonHTMLAttributes } from 'react';
 import { Link } from 'react-router-dom';
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'success';
+type Variant = 'primary' | 'secondary' | 'accent' | 'ghost' | 'danger' | 'success';
 type Size = 'sm' | 'md' | 'lg';
 
 interface BaseProps {
@@ -27,25 +27,29 @@ type LinkButtonProps = BaseProps & {
 type Props = ButtonProps | LinkButtonProps;
 
 const variants: Record<Variant, string> = {
-  // Primary: Solid Court Blue with crisp border + glow
+  // Primary: Championship Red CTA with subtle outer glow
   primary:
-    'bg-primary-600 text-white hover:bg-primary-500 active:bg-primary-700 shadow-glow-court font-semibold border border-primary-400/50',
+    'bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700 shadow-glow-primary font-bold border border-primary-400/40 uppercase tracking-wide',
 
-  // Secondary: High-contrast outlined surface on dark navy
+  // Secondary: Carbon pitch tile with hairline border
   secondary:
-    'border border-neutral-600 bg-neutral-800 text-cream hover:border-primary-400 hover:bg-neutral-700 hover:text-white active:bg-neutral-600 font-medium shadow-sm',
+    'border border-neutral-700 bg-neutral-900 text-cream hover:border-neutral-500 hover:bg-neutral-800 hover:text-white active:bg-neutral-700 font-medium shadow-sm',
 
-  // Ghost: Subtle flat button for tertiary actions
+  // Accent: Optic Gold for high-urgency reservations & live bookings
+  accent:
+    'bg-accent-500 text-neutral-950 hover:bg-accent-400 active:bg-accent-600 shadow-glow-accent font-bold border border-accent-300/40 uppercase tracking-wide',
+
+  // Ghost: Quiet slate button for inline controls
   ghost:
-    'text-cream-muted hover:text-cream hover:bg-neutral-800/60 active:bg-neutral-700/60 font-medium',
+    'text-cream-muted hover:text-white hover:bg-neutral-800/60 active:bg-neutral-700/60 font-medium',
 
-  // Danger: Red tinted pill — destructive actions
+  // Danger: Red wash for cancellations & destructive triggers
   danger:
-    'bg-error/20 text-red-300 border border-error/40 hover:bg-error hover:text-white active:bg-error/90 font-semibold',
+    'bg-primary-500/15 text-primary-300 border border-primary-500/30 hover:bg-primary-500 hover:text-white active:bg-primary-600 font-semibold',
 
-  // Success: Lime tinted pill — confirm/approve actions
+  // Success: Emerald green for confirmations
   success:
-    'bg-accent-500/20 text-accent-300 border border-accent-500/40 hover:bg-accent-500 hover:text-neutral-950 active:bg-accent-500/90 font-semibold',
+    'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500 hover:text-white active:bg-emerald-600 font-semibold',
 };
 
 const sizes: Record<Size, string> = {
@@ -87,7 +91,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
     },
     ref
   ) => {
-    const classes = `inline-flex items-center justify-center select-none transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 disabled:opacity-40 disabled:pointer-events-none active:scale-[0.98] ${variants[variant]} ${sizes[size]} ${fullWidth ? 'w-full' : ''} ${className}`;
+    const classes = `inline-flex items-center justify-center select-none transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 disabled:opacity-40 disabled:pointer-events-none active:scale-[0.98] ${variants[variant]} ${sizes[size]} ${fullWidth ? 'w-full' : ''} ${className}`;
 
     if ('to' in rest && rest.to) {
       return (
