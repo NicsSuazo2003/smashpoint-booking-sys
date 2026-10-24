@@ -24,10 +24,12 @@ import {
   CloudSun,
   Sun,
   Moon,
+  Power,                                  // ⭐ NEW
 } from 'lucide-react';
 
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { StaffLayout } from '@/components/layout/StaffLayout';
+import { useClientStore } from '@/stores/clientStore';   // ⭐ NEW
 import { Button } from '@/components/ui/Button';
 import { Input, Textarea } from '@/components/ui/Input';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
@@ -157,6 +159,14 @@ export function Settings() {
     text: string;
   } | null>(null);
 
+  // ─── Bookings Enabled toggle ─── ⭐ NEW
+  const [bookingsEnabled, setBookingsEnabled] = useState<boolean>(true);
+  const [savingBookingsEnabled, setSavingBookingsEnabled] = useState(false);
+  const [bookingsEnabledMsg, setBookingsEnabledMsg] = useState<{
+    type: 'success' | 'error';
+    text: string;
+  } | null>(null);
+
   // ─── QR upload ───
   const [uploadingQR, setUploadingQR] = useState(false);
 
@@ -189,6 +199,7 @@ export function Settings() {
         setClientSettings(settings);
         setAmenities(settings.available_amenities ?? []);
         setMaxAdvanceDays(settings.max_advance_booking_days ?? 90);
+        setBookingsEnabled(settings.bookings_enabled ?? true);   // ⭐ NEW
       } catch (err) {
         console.error('Failed to load client settings:', err);
       } finally {
@@ -1046,6 +1057,94 @@ export function Settings() {
                     Save Amenities
                   </Button>
                 </div>
+              </div>
+            )}
+
+            {/* ─── Booking System Toggle ─── ⭐ NEW */}
+            {isAdmin && (
+              <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 shadow-xl backdrop-blur-sm sm:p-6">
+                <div className="mb-4 flex items-start justify-between gap-4">
+                  <div>
+                    <h2 className="flex items-center gap-2 font-display text-base font-bold text-cream sm:text-lg">
+                      <Power className="h-5 w-5 text-primary-300" />
+                      Booking System
+                    </h2>
+                    <p className="mt-0.5 text-xs text-cream-muted sm:text-sm">
+                      Turn customer-facing online bookings on or off. When off, the landing page
+                      shows a &quot;Bookings temporarily closed&quot; banner and customer bookings are
+                      rejected. Staff can still create manual bookings. Existing bookings are not
+                      affected.
+                    </p>
+                  </div>
+
+                  <label className="relative inline-flex shrink-0 cursor-pointer items-center">
+                    <input
+                      type="checkbox"
+                      checked={bookingsEnabled}
+                      onChange={async (e) => {
+                        const next = e.target.checked;
+                        const prev = bookingsEnabled;
+                        setBookingsEnabled(next);
+                        setSavingBookingsEnabled(true);
+                        setBookingsEnabledMsg(null);
+                        try {
+                          await adminService.updateSettings({ bookings_enabled: next });
+                          // Keep public client store in sync across open tabs
+                          useClientStore.getState().setBookingsEnabled(next);
+                          setBookingsEnabledMsg({
+                            type: 'success',
+                            text: next ? 'Bookings are now OPEN.' : 'Bookings are now CLOSED.',
+                          });
+                        } catch (err) {
+                          setBookingsEnabled(prev);
+                          setBookingsEnabledMsg({
+                            type: 'error',
+                            text: err instanceof Error ? err.message : 'Failed to update.',
+                          });
+                        } finally {
+                          setSavingBookingsEnabled(false);
+                        }
+                      }}
+                      className="peer sr-only"
+                      disabled={savingBookingsEnabled}
+                    />
+                    <div className="peer h-7 w-12 rounded-full border border-neutral-600 bg-neutral-800 transition-all after:absolute after:top-[2px] after:left-[2px] after:h-6 after:w-6 after:rounded-full after:bg-white after:transition-all peer-checked:bg-accent-500 peer-checked:after:translate-x-5" />
+                  </label>
+                </div>
+
+                <div
+                  className={`flex items-center gap-2 rounded-xl border p-3 text-xs font-semibold ${
+                    bookingsEnabled
+                      ? 'border-accent-400/40 bg-accent-500/15 text-accent-300'
+                      : 'border-error/40 bg-error/15 text-error'
+                  }`}
+                >
+                  {bookingsEnabled ? (
+                    <CheckCircle2 className="h-4 w-4 shrink-0" />
+                  ) : (
+                    <AlertCircle className="h-4 w-4 shrink-0" />
+                  )}
+                  {bookingsEnabled
+                    ? 'Customers can currently book courts online. Staff manual bookings are always available.'
+                    : 'Online customer bookings are CLOSED. Staff can still create manual bookings.'}
+                </div>
+
+                {bookingsEnabledMsg && (
+                  <div
+                    className={`mt-3 flex items-center gap-2 rounded-xl border p-3 text-xs font-semibold ${
+                      bookingsEnabledMsg.type === 'success'
+                        ? 'border-accent-400/40 bg-accent-500/15 text-accent-300'
+                        : 'border-error/40 bg-error/15 text-error'
+                    }`}
+                  >
+                    {bookingsEnabledMsg.type === 'success' ? (
+                      <CheckCircle2 className="h-4 w-4 shrink-0" />
+                    ) : (
+                      <AlertCircle className="h-4 w-4 shrink-0" />
+                    )}
+                    {bookingsEnabledMsg.text}
+                  </div>
+                )}
               </div>
             )}
 

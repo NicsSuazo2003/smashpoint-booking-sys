@@ -6,6 +6,7 @@ interface ClientStoreState {
   settings: ClientSettings | null;
   loading: boolean;
   loadSettings: () => Promise<void>;
+  setBookingsEnabled: (enabled: boolean) => void;   // ⭐ NEW
 }
 
 export const useClientStore = create<ClientStoreState>((set, get) => ({
@@ -23,4 +24,12 @@ export const useClientStore = create<ClientStoreState>((set, get) => ({
       set({ loading: false });
     }
   },
+
+  // ⭐ NEW — optimistic, cross-tab friendly update used by Settings.tsx
+  setBookingsEnabled: (enabled) =>
+    set((s) =>
+      s.settings
+        ? { settings: { ...s.settings, bookings_enabled: enabled } }
+        : {}
+    ),
 }));

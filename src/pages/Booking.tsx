@@ -16,6 +16,7 @@ import {
   Phone,
   Timer,
   ShieldCheck,
+  AlertCircle,
 } from 'lucide-react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -23,11 +24,11 @@ import { Button } from '@/components/ui/Button';
 import { Input, Textarea } from '@/components/ui/Input';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useBookingStore, getSelectedSlotItems, getSelectedTotal } from '@/stores/bookingStore';
+import { useClientStore } from '@/stores/clientStore';              // ⭐ NEW
 import { formatTimeRange, formatCurrency, formatDateLong } from '@/utils/format';
 import { FIXED_SLOT, APP_CONFIG } from '@/utils/constants';
 import type { CustomerDetails } from '@/types';
 
-// Normalize PH mobile: strip spaces/dashes/parens, convert +63/63 → 0
 const normalizePhone = (value: string) =>
   value
     .replace(/[\s\-()]/g, '')
@@ -107,6 +108,11 @@ export function Booking() {
     slots,
     refreshSlots,
   } = useBookingStore();
+
+  // ⭐ NEW — master online-bookings switch
+  const bookingsEnabled = useClientStore(
+    (state) => state.settings?.bookings_enabled ?? true
+  );
 
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -199,6 +205,28 @@ export function Booking() {
   const handleSummaryButtonClick = () => {
     handleSubmit(onSubmit, onInvalid)();
   };
+
+  // ⭐ NEW — closed state short-circuits the whole flow
+  if (!bookingsEnabled) {
+    return (
+      <div className="min-h-screen bg-charcoal">
+        <Navbar />
+        <div className="container-page flex flex-col items-center justify-center gap-4 pt-32 pb-24 text-center">
+          <AlertCircle className="h-10 w-10 text-amber-400" />
+          <div>
+            <h1 className="text-lg font-bold text-cream">Online bookings are closed</h1>
+            <p className="mt-1 text-sm text-cream-muted">
+              Please check back soon or contact the venue directly. Existing bookings are unaffected.
+            </p>
+          </div>
+          <Button size="md" to="/" leftIcon={<ArrowLeft className="h-4 w-4" />}>
+            Back to Home
+          </Button>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (loadingCourts && courts.length === 0) {
     return (
@@ -553,6 +581,7 @@ export function Booking() {
                   isLoading={submitting}
                   onClick={handleSummaryButtonClick}
                   rightIcon={<ArrowRight className="h-5 w-5" />}
+                  disabled={!bookingsEnabled}                     // ⭐ NEW
                 >
                   Continue to Payment
                 </Button>
@@ -616,6 +645,7 @@ export function Booking() {
             onClick={handleSummaryButtonClick}
             rightIcon={<ArrowRight className="h-4 w-4" />}
             className="shrink-0 px-6"
+            disabled={!bookingsEnabled}                           // ⭐ NEW
           >
             Continue
           </Button>

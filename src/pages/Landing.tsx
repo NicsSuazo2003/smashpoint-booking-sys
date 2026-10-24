@@ -189,6 +189,11 @@ export function Landing() {
   const availableAmenities: AmenityItem[] =
     useClientStore((state) => state.settings?.available_amenities) ?? EMPTY_AMENITIES;
 
+  // ⭐ NEW — master online-bookings switch
+  const bookingsEnabled = useClientStore(
+    (state) => state.settings?.bookings_enabled ?? true
+  );
+
   const maxAdvanceDays = useClientStore(
     (state) => state.settings?.max_advance_booking_days ?? APP_CONFIG.defaultMaxAdvanceBookingDays
   );
@@ -544,8 +549,9 @@ export function Landing() {
                 size="lg"
                 onClick={scrollToBooking}
                 leftIcon={<CalendarPlus className="h-5 w-5" />}
+                disabled={!bookingsEnabled}
               >
-                Book a Court
+                {bookingsEnabled ? 'Book a Court' : 'Bookings Closed'}
               </Button>
               <Button
                 size="lg"
@@ -689,6 +695,21 @@ export function Landing() {
         </section>
       )}
 
+      {/* ⭐ NEW — Bookings closed banner */}
+      {!bookingsEnabled && (
+        <section className="border-y border-amber-500/40 bg-amber-950/40 py-4">
+          <div className="container-page flex items-start gap-3 text-amber-200">
+            <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-400" />
+            <div>
+              <p className="text-sm font-bold">Online bookings are temporarily closed</p>
+              <p className="mt-0.5 text-xs text-amber-200/80">
+                Please check back soon or contact the venue directly. Existing bookings are unaffected.
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Booking Section */}
       <div ref={bookingSectionRef}>
         <section className="relative z-20 border-y border-neutral-800 bg-neutral-950 py-8 md:py-16">
@@ -712,6 +733,19 @@ export function Landing() {
               </div>
 
               <div className="p-4 pb-24 sm:p-6 sm:pb-24 md:p-8 md:pb-8">
+                {/* ⭐ NEW — closed state replaces the whole booking UI */}
+                {!bookingsEnabled ? (
+                  <div className="rounded-2xl border border-amber-500/40 bg-amber-500/10 p-8 text-center">
+                    <AlertCircle className="mx-auto h-10 w-10 text-amber-400" />
+                    <p className="mt-3 text-sm font-semibold text-cream">
+                      Online bookings are temporarily closed
+                    </p>
+                    <p className="mt-1 text-xs text-cream-muted">
+                      Please check back soon, or contact the venue directly to book.
+                    </p>
+                  </div>
+                ) : (
+                  <>
                 <div className="mb-6 md:mb-10">
                   <div className="mb-3 flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
@@ -1006,20 +1040,22 @@ export function Landing() {
                     <Button
                       size="md"
                       onClick={() => navigate('/booking')}
-                      disabled={selectedSlotIds.length === 0}
+                      disabled={selectedSlotIds.length === 0 || !bookingsEnabled}
                       rightIcon={<ArrowRight className="h-5 w-5" />}
                     >
                       Proceed to Reservation
                     </Button>
                   </div>
                 </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </section>
       </div>
 
-      {selectedSlotIds.length > 0 && (
+      {selectedSlotIds.length > 0 && bookingsEnabled && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-700 bg-charcoal/95 p-3.5 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-md sm:hidden">
           <div className="flex items-center gap-3">
             <div className="min-w-0 flex-1">
@@ -1313,17 +1349,13 @@ function SlotPill({
   const isAvailable = slot.is_available;
   const isPending = (slot as unknown as { is_pending?: boolean }).is_pending;
 
-  // Available slots default to dynamic electric blue accents
   let styleClasses = `${accent.border} ${accent.bg} ${accent.text} ${accent.hoverBorder} ${accent.hoverBg} cursor-pointer`;
 
   if (!isAvailable) {
-    // Booked slots: neutral slate dark mode state without any red
     styleClasses = 'border-neutral-800/80 bg-neutral-900/60 text-neutral-500/70 line-through cursor-not-allowed';
   } else if (isPending) {
-    // Pending slots: subtle amber indicator
     styleClasses = 'border-amber-500/40 bg-amber-500/10 text-amber-300/80 cursor-not-allowed';
   } else if (isSelected) {
-    // Selected state: Optic Gold highlight
     styleClasses = 'border-accent-400 bg-accent-500 text-neutral-950 font-bold shadow-[0_0_16px_rgba(255,183,3,0.35)]';
   }
 

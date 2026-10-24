@@ -54,6 +54,12 @@ export function Checkout() {
   const { currentBooking, reset } = useBookingStore();
   const settings = useClientStore((state) => state.settings);
   const loadSettings = useClientStore((state) => state.loadSettings);
+
+  // ⭐ NEW — informational only; do NOT block existing pending payments
+  const bookingsEnabled = useClientStore(
+    (state) => state.settings?.bookings_enabled ?? true
+  );
+
   const paymentMethods = settings?.payment_methods ?? [];
 
   const [restoring, setRestoring] = useState(true);
@@ -82,7 +88,6 @@ export function Checkout() {
     loadSettings();
   }, [loadSettings]);
 
-  // Restore a pending booking when the store is empty.
   useEffect(() => {
     if (currentBooking) {
       setRestoring(false);
@@ -315,6 +320,17 @@ export function Checkout() {
                   You&apos;re viewing this in {getInAppBrowserName() ?? 'an in-app'} browser. Tap{' '}
                   <strong>⋯</strong> (top right) and choose{' '}
                   <strong>&quot;Open in Browser&quot;</strong> for easier payment and receipt upload.
+                </span>
+              </div>
+            )}
+
+            {/* ⭐ NEW — informational banner for existing pending bookings */}
+            {!bookingsEnabled && (
+              <div className="flex items-start gap-2.5 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs text-amber-200">
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+                <span>
+                  Online bookings are currently closed for new reservations, but your existing
+                  hold is still valid — please complete your payment before the timer runs out.
                 </span>
               </div>
             )}
