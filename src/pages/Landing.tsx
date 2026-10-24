@@ -42,42 +42,43 @@ import type { TimeSlot, Court, OpenPlaySession, Booking } from '@/types';
 
 const EMPTY_AMENITIES: AmenityItem[] = [];
 
+// Non-red, athletic blue & cyan variants for each court column
 const COURT_ACCENTS = [
   {
-    header: 'text-primary-200',
-    dot: 'bg-primary-400',
-    border: 'border-primary-500/40',
-    bg: 'bg-primary-600/20',
-    text: 'text-primary-100',
-    hoverBorder: 'hover:border-primary-300',
-    hoverBg: 'hover:bg-primary-600/35',
+    header: 'text-sky-300',
+    dot: 'bg-sky-400',
+    border: 'border-sky-500/40',
+    bg: 'bg-sky-950/40',
+    text: 'text-sky-200',
+    hoverBorder: 'hover:border-sky-300',
+    hoverBg: 'hover:bg-sky-900/50',
   },
   {
-    header: 'text-accent-200',
-    dot: 'bg-accent-400',
-    border: 'border-accent-500/40',
-    bg: 'bg-accent-600/20',
-    text: 'text-accent-100',
-    hoverBorder: 'hover:border-accent-300',
-    hoverBg: 'hover:bg-accent-600/35',
+    header: 'text-cyan-300',
+    dot: 'bg-cyan-400',
+    border: 'border-cyan-500/40',
+    bg: 'bg-cyan-950/40',
+    text: 'text-cyan-200',
+    hoverBorder: 'hover:border-cyan-300',
+    hoverBg: 'hover:bg-cyan-900/50',
   },
   {
-    header: 'text-primary-300',
-    dot: 'bg-primary-300',
-    border: 'border-primary-400/40',
-    bg: 'bg-primary-500/20',
-    text: 'text-primary-50',
-    hoverBorder: 'hover:border-primary-200',
-    hoverBg: 'hover:bg-primary-500/35',
+    header: 'text-blue-300',
+    dot: 'bg-blue-400',
+    border: 'border-blue-500/40',
+    bg: 'bg-blue-950/40',
+    text: 'text-blue-200',
+    hoverBorder: 'hover:border-blue-300',
+    hoverBg: 'hover:bg-blue-900/50',
   },
   {
-    header: 'text-accent-300',
-    dot: 'bg-accent-300',
-    border: 'border-accent-400/40',
-    bg: 'bg-accent-700/30',
-    text: 'text-accent-100',
-    hoverBorder: 'hover:border-accent-200',
-    hoverBg: 'hover:bg-accent-700/45',
+    header: 'text-indigo-300',
+    dot: 'bg-indigo-400',
+    border: 'border-indigo-500/40',
+    bg: 'bg-indigo-950/40',
+    text: 'text-indigo-200',
+    hoverBorder: 'hover:border-indigo-300',
+    hoverBg: 'hover:bg-indigo-900/50',
   },
 ];
 
@@ -152,10 +153,10 @@ function isSlotPast(slotStartTime: string, isViewingToday: boolean): boolean {
 }
 
 const SKILL_BADGE: Record<string, string> = {
-  Beginner: 'bg-accent-500/25 text-accent-200 border border-accent-400/30',
-  Intermediate: 'bg-primary-600/30 text-primary-200 border border-primary-400/40',
-  Advanced: 'bg-brand-red/20 text-brand-red border border-brand-red/40',
-  'All Levels': 'bg-primary-500/25 text-primary-100 border border-primary-400/30',
+  Beginner: 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30',
+  Intermediate: 'bg-sky-500/20 text-sky-300 border border-sky-500/40',
+  Advanced: 'bg-purple-500/20 text-purple-300 border border-purple-500/40',
+  'All Levels': 'bg-blue-500/20 text-blue-200 border border-blue-500/30',
 };
 
 export function Landing() {
@@ -197,7 +198,6 @@ export function Landing() {
   const weekStart = addDays(new Date(), weekOffset * 7);
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
-  // Dynamic operating hours fallback
   const getOperatingHours = () => {
     if (!courts || courts.length === 0) return '7AM - 12AM';
     const earliestOpen = courts.reduce((earliest, court) =>
@@ -272,9 +272,7 @@ export function Landing() {
       loadAllCourtsSlots();
     }
 
-    // Poll for updates every 60 seconds
     const interval = setInterval(() => {
-      // Only refresh if the user is not in the middle of selecting
       const selectedCount = useBookingStore.getState().selectedSlotIds.length;
       if (selectedCount === 0) {
         loadAllCourtsSlots();
@@ -470,36 +468,29 @@ export function Landing() {
       )}
 
       {/* Hero Section */}
-<section className="relative flex min-h-[85vh] items-start pt-28 sm:min-h-screen sm:items-center sm:pt-20 overflow-hidden">
-  <div className="absolute inset-0">
-    {/* ✅ Fallback background: verified pickleball photo (Unsplash premium).
-        Bumped to w=2400 for crisp retina hero rendering.
-        Will be overridden automatically once /images/bg.jpg exists. */}
-    <img
-  src="https://plus.unsplash.com/premium_photo-1709048991125-7d01a4666f79?q=80&w=2400&auto=format&fit=crop&ixlib=rb-4.1.0"
-  alt=""
-  className="absolute inset-0 h-full w-full object-cover object-right md:object-[75%_center] scale-x-[-1]"
-  aria-hidden
-  referrerPolicy="no-referrer"
-/>
+      <section className="relative flex min-h-[85vh] items-start pt-28 sm:min-h-screen sm:items-center sm:pt-20 overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="https://plus.unsplash.com/premium_photo-1709048991125-7d01a4666f79?q=80&w=2400&auto=format&fit=crop&ixlib=rb-4.1.0"
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover object-right md:object-[75%_center] scale-x-[-1]"
+            aria-hidden
+            referrerPolicy="no-referrer"
+          />
 
-    {/* ✅ Client hero image — layered ON TOP.
-        If it loads, it covers the Unsplash fallback.
-        If it 404s, onError hides this element so the fallback stays visible. */}
-    <img
-      src="/images/bg.jpg"
-      alt="Smash Point"
-      className="absolute inset-0 h-full w-full object-cover object-right md:object-[75%_center]"
-      onError={(e) => {
-        (e.currentTarget as HTMLImageElement).style.display = 'none';
-      }}
-    />
+          <img
+            src="/images/bg.jpg"
+            alt="Smash Point"
+            className="absolute inset-0 h-full w-full object-cover object-right md:object-[75%_center]"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).style.display = 'none';
+            }}
+          />
 
-    {/* Gradients + grid overlays (always visible, on top of image/fallback) */}
-    <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/95 sm:via-neutral-950/85 to-neutral-950/30" />
-    <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent" />
-    <div className="absolute inset-0 bg-grid opacity-20" />
-  </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/95 sm:via-neutral-950/85 to-neutral-950/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-grid opacity-20" />
+        </div>
 
         <div className="container-page relative z-10 py-8 sm:py-20">
           <motion.div
@@ -514,14 +505,14 @@ export function Landing() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15, duration: 0.5 }}
                 onClick={() => navigate('/open-play')}
-                className="mb-4 flex w-full items-center gap-2 rounded-full border border-primary-400/40 bg-primary-600/35 px-3 py-2 backdrop-blur-md transition hover:border-primary-300 hover:bg-primary-600/50 sm:mb-5 sm:w-auto sm:px-4 shadow-sm"
+                className="mb-4 flex w-full items-center gap-2 rounded-full border border-sky-400/40 bg-sky-950/60 px-3 py-2 backdrop-blur-md transition hover:border-sky-300 hover:bg-sky-900/50 sm:mb-5 sm:w-auto sm:px-4 shadow-sm"
               >
                 <span className="relative flex h-2 w-2 shrink-0">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-400 opacity-75"></span>
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary-300"></span>
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-sky-300"></span>
                 </span>
-                <Users className="h-4 w-4 shrink-0 text-primary-300" />
-                <span className="truncate text-xs font-semibold text-primary-100 sm:text-sm">
+                <Users className="h-4 w-4 shrink-0 text-sky-300" />
+                <span className="truncate text-xs font-semibold text-sky-100 sm:text-sm">
                   Open Play{' '}
                   {nextSession.status === 'active'
                     ? 'happening now'
@@ -530,7 +521,7 @@ export function Landing() {
                       : 'soon'}{' '}
                   · {nextSession.current_players}/{nextSession.max_players} joined
                 </span>
-                <ArrowRight className="h-4 w-4 shrink-0 text-primary-300" />
+                <ArrowRight className="h-4 w-4 shrink-0 text-sky-300" />
               </motion.button>
             )}
 
@@ -586,8 +577,8 @@ export function Landing() {
           <div className="container-page">
             <div className="mb-5 flex flex-wrap items-end justify-between gap-3 sm:mb-6">
               <div>
-                <span className="mb-1.5 inline-flex items-center gap-1.5 rounded-full border border-primary-400/30 bg-primary-600/30 px-3 py-1 text-xs font-semibold text-primary-200">
-                  <Users className="h-3.5 w-3.5 text-primary-300" />
+                <span className="mb-1.5 inline-flex items-center gap-1.5 rounded-full border border-sky-400/30 bg-sky-950/60 px-3 py-1 text-xs font-semibold text-sky-200">
+                  <Users className="h-3.5 w-3.5 text-sky-300" />
                   Open Play
                 </span>
                 <h2 className="text-xl font-bold tracking-tight text-cream sm:text-2xl md:text-3xl">
@@ -625,7 +616,7 @@ export function Landing() {
                   >
                     <div className="card flex h-full flex-col p-4">
                       <div className="mb-2 flex items-center justify-between gap-2">
-                        <span className="inline-flex items-center rounded-full border border-primary-400/30 bg-primary-600/25 px-2.5 py-0.5 text-xs font-bold text-primary-200">
+                        <span className="inline-flex items-center rounded-full border border-sky-400/30 bg-sky-950/50 px-2.5 py-0.5 text-xs font-bold text-sky-200">
                           {isToday
                             ? 'TODAY'
                             : formatDateLong(session.date).split(',')[0].toUpperCase()}
@@ -645,17 +636,17 @@ export function Landing() {
 
                       <div className="mt-2 space-y-1.5 text-xs text-cream-muted">
                         <div className="flex items-center gap-2">
-                          <Clock className="h-3.5 w-3.5 text-primary-300" />
+                          <Clock className="h-3.5 w-3.5 text-sky-300" />
                           {formatTimeRangeShort(session.start_time, session.end_time)}
                         </div>
                         <div className="flex items-center gap-2">
-                          <Users className="h-3.5 w-3.5 text-primary-300" />
+                          <Users className="h-3.5 w-3.5 text-sky-300" />
                           {session.current_players}/{session.max_players} · {spotsLeft}{' '}
                           spot{spotsLeft === 1 ? '' : 's'} left
                         </div>
                         {session.host_name && (
                           <div className="flex items-center gap-2">
-                            <UserCircle2 className="h-3.5 w-3.5 text-primary-300" />
+                            <UserCircle2 className="h-3.5 w-3.5 text-sky-300" />
                             <span className="truncate">Hosted by {session.host_name}</span>
                           </div>
                         )}
@@ -713,21 +704,18 @@ export function Landing() {
                     <p className="mt-0.5 text-xs text-cream-muted sm:text-sm">
                       {BOOKING_COPY.bookingInstructions}
                     </p>
-                   
                   </div>
-                  <div className="hidden rounded-xl border border-primary-500/40 bg-primary-600/20 p-2.5 text-primary-300 sm:block md:p-3">
+                  <div className="hidden rounded-xl border border-sky-500/40 bg-sky-950/40 p-2.5 text-sky-300 sm:block md:p-3">
                     <CalendarDays className="h-5 w-5 md:h-6 md:w-6" />
                   </div>
                 </div>
-
-                
               </div>
 
               <div className="p-4 pb-24 sm:p-6 sm:pb-24 md:p-8 md:pb-8">
                 <div className="mb-6 md:mb-10">
                   <div className="mb-3 flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full border border-primary-400/50 bg-primary-600 text-xs font-bold text-white shadow-sm">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full border border-sky-400/50 bg-sky-600 text-xs font-bold text-white shadow-sm">
                         1
                       </div>
                       <h3 className="text-sm font-bold text-cream sm:text-base">
@@ -736,7 +724,7 @@ export function Landing() {
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      <div className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-primary-400/50 bg-primary-600/30 text-primary-200 transition hover:border-primary-300 hover:bg-primary-600/50 active:scale-95">
+                      <div className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-sky-400/50 bg-sky-950/50 text-sky-200 transition hover:border-sky-300 hover:bg-sky-900/50 active:scale-95">
                         <CalendarDays className="pointer-events-none h-4 w-4" />
                         <input
                           type="date"
@@ -753,7 +741,7 @@ export function Landing() {
                         <button
                           onClick={() => setWeekOffset((w) => Math.max(0, w - 1))}
                           disabled={weekOffset === 0}
-                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-800 text-cream-muted transition hover:border-primary-400/60 hover:text-primary-200 disabled:opacity-30 active:scale-95"
+                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-800 text-cream-muted transition hover:border-sky-400/60 hover:text-sky-200 disabled:opacity-30 active:scale-95"
                           aria-label="Previous week"
                         >
                           <ChevronLeft className="h-4 w-4" />
@@ -761,7 +749,7 @@ export function Landing() {
                         <button
                           onClick={() => setWeekOffset((w) => w + 1)}
                           disabled={isNextWeekDisabled}
-                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-800 text-cream-muted transition hover:border-primary-400/60 hover:text-primary-200 disabled:opacity-30 active:scale-95"
+                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-800 text-cream-muted transition hover:border-sky-400/60 hover:text-sky-200 disabled:opacity-30 active:scale-95"
                           aria-label="Next week"
                         >
                           <ChevronRight className="h-4 w-4" />
@@ -775,7 +763,7 @@ export function Landing() {
                       <button
                         onClick={() => setWeekOffset((w) => Math.max(0, w - 1))}
                         disabled={weekOffset === 0}
-                        className="hidden h-14 w-10 shrink-0 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-cream-muted transition hover:border-primary-400/60 hover:text-primary-200 disabled:opacity-30 sm:flex"
+                        className="hidden h-14 w-10 shrink-0 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-cream-muted transition hover:border-sky-400/60 hover:text-sky-200 disabled:opacity-30 sm:flex"
                         aria-label="Previous week"
                       >
                         <ChevronLeft className="h-5 w-5" />
@@ -804,8 +792,8 @@ export function Landing() {
                                 beyondLimit
                                   ? 'cursor-not-allowed border-neutral-800/50 bg-neutral-950/50 opacity-40 text-cream-muted/50'
                                   : isSelected
-                                    ? 'border-primary-400 bg-primary-600 text-white font-bold shadow-glow-blue'
-                                    : 'border-neutral-700/80 bg-neutral-800/90 text-cream-muted hover:border-primary-400/50 hover:text-cream'
+                                    ? 'border-sky-400 bg-sky-600 text-white font-bold shadow-[0_0_16px_rgba(56,189,248,0.3)]'
+                                    : 'border-neutral-700/80 bg-neutral-800/90 text-cream-muted hover:border-sky-400/50 hover:text-cream'
                               }`}
                             >
                               {isToday && (
@@ -813,7 +801,7 @@ export function Landing() {
                                   className={`absolute -top-2 rounded-full px-1.5 py-[1px] text-[8px] font-black tracking-wider ${
                                     isSelected
                                       ? 'bg-neutral-950 text-accent-400'
-                                      : 'bg-primary-500 text-white'
+                                      : 'bg-sky-500 text-white'
                                   }`}
                                 >
                                   TODAY
@@ -834,7 +822,7 @@ export function Landing() {
 
                               <span
                                 className={`text-[9px] uppercase font-medium ${
-                                  isSelected ? 'text-primary-200' : 'text-cream-muted/70'
+                                  isSelected ? 'text-sky-200' : 'text-cream-muted/70'
                                 }`}
                               >
                                 {monthName}
@@ -856,7 +844,7 @@ export function Landing() {
                         onClick={() => setWeekOffset((w) => w + 1)}
                         disabled={isNextWeekDisabled}
                         title={isNextWeekDisabled ? `Bookings open up to ${maxAdvanceDays} days ahead` : undefined}
-                        className="hidden h-14 w-10 shrink-0 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-cream-muted transition hover:border-primary-400/60 hover:text-primary-200 disabled:opacity-30 sm:flex"
+                        className="hidden h-14 w-10 shrink-0 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-cream-muted transition hover:border-sky-400/60 hover:text-sky-200 disabled:opacity-30 sm:flex"
                         aria-label="Next week"
                       >
                         <ChevronRight className="h-5 w-5" />
@@ -868,7 +856,7 @@ export function Landing() {
                 <div>
                   <div className="mb-3.5 flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full border border-primary-400/50 bg-primary-600 text-xs font-bold text-white shadow-sm">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full border border-sky-400/50 bg-sky-600 text-xs font-bold text-white shadow-sm">
                         2
                       </div>
                       <h3 className="text-sm font-bold text-cream sm:text-base">
@@ -876,7 +864,7 @@ export function Landing() {
                       </h3>
                     </div>
 
-                    <span className="rounded-full border border-primary-400/40 bg-primary-600/30 px-3 py-1 text-xs font-semibold text-primary-200 shadow-sm">
+                    <span className="rounded-full border border-sky-400/40 bg-sky-950/50 px-3 py-1 text-xs font-semibold text-sky-200 shadow-sm">
                       <span className="sm:hidden">
                         {new Date(`${selectedDate}T00:00:00`).toLocaleDateString('en-US', {
                           weekday: 'short',
@@ -888,9 +876,10 @@ export function Landing() {
                     </span>
                   </div>
 
+                  {/* Red-free status legend */}
                   <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-b border-neutral-800 pb-3 text-[11px] text-cream-muted">
                     <div className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full border border-primary-400/80 bg-primary-500/30" />
+                      <span className="h-2 w-2 rounded-full border border-sky-400 bg-sky-500/40" />
                       <span>Available</span>
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -898,7 +887,7 @@ export function Landing() {
                       <span>Pending</span>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full bg-red-400" />
+                      <span className="h-2 w-2 rounded-full bg-neutral-600" />
                       <span>Booked</span>
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -910,14 +899,14 @@ export function Landing() {
                   {loadingSlots || loadingCourts || loadingOpenPlay ? (
                     <LoadingSpinner className="py-12 md:py-20" />
                   ) : error ? (
-                    <div className="py-8 text-center font-medium text-red-400 md:py-16">{error}</div>
+                    <div className="py-8 text-center font-medium text-amber-400 md:py-16">{error}</div>
                   ) : courts.length === 0 ? (
                     <div className="py-8 text-center text-sm font-medium text-cream-muted md:py-16">
                       No courts found.
                     </div>
                   ) : allPeriodsEmpty ? (
                     <div className="rounded-2xl border border-neutral-700 bg-neutral-950/40 p-8 text-center">
-                      <Clock className="mx-auto h-8 w-8 text-primary-300/50" />
+                      <Clock className="mx-auto h-8 w-8 text-sky-400/50" />
                       <p className="mt-3 text-sm font-semibold text-cream">
                         {selectedDate === todayISO()
                           ? BOOKING_COPY.emptyState.titleToday
@@ -932,7 +921,7 @@ export function Landing() {
                       <div className="max-h-[75vh] overflow-y-auto overflow-x-auto rounded-2xl border border-neutral-700 bg-neutral-950/40">
                         <div className="w-full p-4 sm:min-w-[580px]">
                           <div
-                            className="sticky top-0 z-30 -mx-4 -mt-4 mb-4 border-b border-neutral-700 bg-neutral-900 px-4 py-3 text-center text-xs font-extrabold uppercase tracking-wider text-primary-300 shadow-md backdrop-blur-md"
+                            className="sticky top-0 z-30 -mx-4 -mt-4 mb-4 border-b border-neutral-700 bg-neutral-900 px-4 py-3 text-center text-xs font-extrabold uppercase tracking-wider text-cream shadow-md backdrop-blur-md"
                             style={{
                               display: 'grid',
                               gridTemplateColumns: `repeat(${courts.length}, minmax(90px, 1fr))`,
@@ -957,7 +946,7 @@ export function Landing() {
                             {morningTimes.length > 0 && (
                               <DesktopPeriodSection
                                 title="MORNING"
-                                icon={<CloudSun className="h-4 w-4 text-primary-300" />}
+                                icon={<CloudSun className="h-4 w-4 text-sky-300" />}
                                 courts={courts}
                                 timeIntervals={morningTimes}
                                 getSlotForCourtAndTime={getSlotForCourtAndTime}
@@ -970,7 +959,7 @@ export function Landing() {
                             {afternoonTimes.length > 0 && (
                               <DesktopPeriodSection
                                 title="AFTERNOON"
-                                icon={<Sun className="h-4 w-4 text-primary-300" />}
+                                icon={<Sun className="h-4 w-4 text-sky-300" />}
                                 courts={courts}
                                 timeIntervals={afternoonTimes}
                                 getSlotForCourtAndTime={getSlotForCourtAndTime}
@@ -983,7 +972,7 @@ export function Landing() {
                             {eveningTimes.length > 0 && (
                               <DesktopPeriodSection
                                 title="EVENING"
-                                icon={<Moon className="h-4 w-4 text-primary-300" />}
+                                icon={<Moon className="h-4 w-4 text-sky-300" />}
                                 courts={courts}
                                 timeIntervals={eveningTimes}
                                 getSlotForCourtAndTime={getSlotForCourtAndTime}
@@ -1001,7 +990,7 @@ export function Landing() {
 
                   <div className="mt-8 hidden items-center justify-between gap-4 rounded-xl border border-neutral-700 bg-neutral-800/90 p-5 sm:flex">
                     <div>
-                      <span className="text-xs font-semibold uppercase tracking-wider text-primary-300">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-sky-300">
                         Selected Slots
                       </span>
                       <div className="text-lg font-bold text-cream">
@@ -1067,17 +1056,17 @@ export function Landing() {
           </div>
 
           <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-neutral-700 bg-neutral-900/80 shadow-xl">
-           <div className="relative w-full aspect-[4/3] sm:aspect-auto sm:h-[500px]">
-  <iframe
-    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d471.3511219998887!2d126.20822543155269!3d9.053675087552323!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sph!4v1792488214672!5m2!1sen!2sph"
-    style={{ border: 0 }}
-    allowFullScreen
-    loading="lazy"
-    referrerPolicy="strict-origin-when-cross-origin"
-    title="Smash Point Pickle Sports Center Location"
-    className="absolute inset-0 h-full w-full"
-  />
-</div>
+            <div className="relative w-full aspect-[4/3] sm:aspect-auto sm:h-[500px]">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d471.3511219998887!2d126.20822543155269!3d9.053675087552323!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sph!4v1792488214672!5m2!1sen!2sph"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
+                title="Smash Point Pickle Sports Center Location"
+                className="absolute inset-0 h-full w-full"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -1118,10 +1107,10 @@ export function Landing() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: idx * 0.05 }}
-                    className="flex flex-col items-center rounded-2xl border border-neutral-700 bg-neutral-800/80 p-3.5 text-center transition hover:border-primary-400/40 hover:bg-neutral-800 sm:p-6"
+                    className="flex flex-col items-center rounded-2xl border border-neutral-700 bg-neutral-800/80 p-3.5 text-center transition hover:border-sky-400/40 hover:bg-neutral-800 sm:p-6"
                   >
-                    <div className="mb-2.5 flex h-11 w-11 items-center justify-center rounded-xl border border-primary-400/30 bg-primary-600/30 shadow-inner sm:mb-3 sm:h-12 sm:w-12">
-                      <Icon className="h-5 w-5 text-primary-300 sm:h-6 sm:w-6" />
+                    <div className="mb-2.5 flex h-11 w-11 items-center justify-center rounded-xl border border-sky-400/30 bg-sky-950/50 shadow-inner sm:mb-3 sm:h-12 sm:w-12">
+                      <Icon className="h-5 w-5 text-sky-300 sm:h-6 sm:w-6" />
                     </div>
                     <h3 className="text-xs font-bold leading-tight text-cream sm:text-base">
                       {amenity.name}
@@ -1164,7 +1153,7 @@ export function Landing() {
                 transition={{ delay: i * 0.1 }}
                 className="relative"
               >
-                <div className="mb-3 font-display text-4xl font-extrabold tracking-tight text-primary-400/40 sm:mb-4 sm:text-5xl">
+                <div className="mb-3 font-display text-4xl font-extrabold tracking-tight text-sky-400/30 sm:mb-4 sm:text-5xl">
                   {item.step}
                 </div>
 
@@ -1172,7 +1161,7 @@ export function Landing() {
                 <p className="mt-2 text-xs leading-relaxed text-cream-muted sm:text-sm">{item.desc}</p>
 
                 {i < 3 && (
-                  <div className="mt-6 hidden h-px bg-gradient-to-r from-primary-400/40 via-primary-400/10 to-transparent md:block" />
+                  <div className="mt-6 hidden h-px bg-gradient-to-r from-sky-400/40 via-sky-400/10 to-transparent md:block" />
                 )}
               </motion.div>
             ))}
@@ -1215,7 +1204,7 @@ function DesktopPeriodSection({
     <div>
       <div className="mb-3 flex items-center gap-2">
         <span className="h-4 w-4">{icon}</span>
-        <span className="text-xs font-bold uppercase tracking-wider text-primary-300">
+        <span className="text-xs font-bold uppercase tracking-wider text-sky-300">
           {title}
         </span>
         <div className="h-px flex-1 bg-neutral-700/80" />
@@ -1288,16 +1277,16 @@ function OpenPlayPill({
   return (
     <button
       onClick={onClick}
-      className="group relative flex h-11 w-full items-center justify-between rounded-xl border-2 border-primary-400 bg-primary-600/35 px-3 font-bold transition-all hover:bg-primary-600/55 hover:shadow-[0_0_20px_-4px_rgba(37,99,235,0.6)] active:scale-95"
+      className="group relative flex h-11 w-full items-center justify-between rounded-xl border-2 border-accent-400 bg-accent-500/15 px-3 font-bold transition-all hover:bg-accent-500/25 hover:shadow-[0_0_20px_-4px_rgba(255,183,3,0.5)] active:scale-95"
       title={`Open Play: ${session.current_players}/${session.max_players} players · ${session.skill_level}`}
     >
-      <span className="text-xs font-black text-primary-300">OP</span>
-      <span className="text-xs font-semibold text-primary-100">
+      <span className="text-xs font-black text-accent-400">OP</span>
+      <span className="text-xs font-semibold text-accent-200">
         {session.current_players}/{session.max_players} joined
       </span>
 
       <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-xs text-cream shadow-xl group-hover:block">
-        <p className="font-semibold text-primary-300">Open Play Session</p>
+        <p className="font-semibold text-accent-400">Open Play Session</p>
         <p className="text-[11px] text-cream-muted">
           {session.current_players}/{session.max_players} players · {session.skill_level}
         </p>
@@ -1324,14 +1313,18 @@ function SlotPill({
   const isAvailable = slot.is_available;
   const isPending = (slot as unknown as { is_pending?: boolean }).is_pending;
 
+  // Available slots default to dynamic electric blue accents
   let styleClasses = `${accent.border} ${accent.bg} ${accent.text} ${accent.hoverBorder} ${accent.hoverBg} cursor-pointer`;
 
   if (!isAvailable) {
-    styleClasses = 'border-red-500/30 bg-red-500/10 text-red-400/75 line-through cursor-not-allowed';
+    // Booked slots: neutral slate dark mode state without any red
+    styleClasses = 'border-neutral-800/80 bg-neutral-900/60 text-neutral-500/70 line-through cursor-not-allowed';
   } else if (isPending) {
-    styleClasses = 'border-amber-500/30 bg-amber-500/10 text-amber-300/80 cursor-not-allowed';
+    // Pending slots: subtle amber indicator
+    styleClasses = 'border-amber-500/40 bg-amber-500/10 text-amber-300/80 cursor-not-allowed';
   } else if (isSelected) {
-    styleClasses = 'border-accent-400 bg-accent-500 text-neutral-950 font-bold shadow-glow-lime';
+    // Selected state: Optic Gold highlight
+    styleClasses = 'border-accent-400 bg-accent-500 text-neutral-950 font-bold shadow-[0_0_16px_rgba(255,183,3,0.35)]';
   }
 
   return (
