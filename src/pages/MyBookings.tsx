@@ -1,4 +1,3 @@
-// src/pages/MyBookings.tsx
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
@@ -91,8 +90,8 @@ export function MyBookings() {
           <LoadingSpinner className="py-16" />
         ) : booking ? (
           <div className="space-y-5">
-            {/* Unpaid banner */}
-            <div className="rounded-2xl border border-amber-500/50 bg-amber-500/10 p-5">
+            {/* Unpaid Banner: Warm amber / gold notice */}
+            <div className="rounded-2xl border border-amber-500/40 bg-amber-500/10 p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-amber-500/40 bg-amber-500/20 text-amber-300">
@@ -119,14 +118,14 @@ export function MyBookings() {
               </div>
             </div>
 
-            {/* Booking details */}
+            {/* Booking Details */}
             <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 shadow-xl">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-wider text-cream-muted">
                     Reference
                   </p>
-                  <p className="font-mono text-sm font-bold text-primary-300">
+                  <p className="font-mono text-sm font-bold text-sky-300">
                     {booking.reference_code}
                   </p>
                 </div>
@@ -160,7 +159,7 @@ export function MyBookings() {
                       className="flex items-center justify-between rounded-lg bg-neutral-800/70 px-3 py-2 text-xs"
                     >
                       <div className="flex items-center gap-2">
-                        <Clock className="h-3.5 w-3.5 text-primary-300" />
+                        <Clock className="h-3.5 w-3.5 text-sky-300" />
                         <span className="text-cream">
                           {formatTimeRange(slot.start_time, slot.end_time)}
                         </span>
@@ -176,7 +175,7 @@ export function MyBookings() {
 
             <p className="text-center text-xs text-cream-muted">
               Booking on a different device?{' '}
-              <Link to="/track" className="font-semibold text-primary-300 underline">
+              <Link to="/track" className="font-semibold text-sky-300 underline hover:text-sky-200">
                 Look it up with your reference code
               </Link>
               .

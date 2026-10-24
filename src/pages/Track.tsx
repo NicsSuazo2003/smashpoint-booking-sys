@@ -1,4 +1,3 @@
-// src/pages/Track.tsx
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -140,11 +139,6 @@ export function Track() {
   };
 
   const canUploadPayment = booking && (booking.status === 'pending_payment' || booking.status === 'payment_submitted');
-  const formatSlotTime = (slot: { startTime?: string; endTime?: string; start_time?: string; end_time?: string }): string => {
-    const start = slot.startTime || slot.start_time || '';
-    const end = slot.endTime || slot.end_time || '';
-    return formatTimeRange(start, end);
-  };
   const hasPaymentScreenshot = booking?.payment_screenshot_url;
   const canSearch = reference.trim().length > 0 || email.trim().length > 0;
 
@@ -229,7 +223,7 @@ export function Track() {
           </form>
 
           {error && (
-            <div className="mt-4 flex items-start gap-2 rounded-xl border border-error/30 bg-error/10 p-3.5 text-xs text-error font-medium">
+            <div className="mt-4 flex items-start gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs text-amber-300 font-medium">
               <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
@@ -244,16 +238,16 @@ export function Track() {
                   <h2 className="text-sm font-bold text-cream sm:text-base">Bookings Needing Payment Action ({summaries.length})</h2>
                   <p className="text-[11px] text-cream-muted">Confirmed or completed bookings won't appear here. Use your reference code to see them.</p>
                 </div>
-                <button onClick={() => { setSummaries([]); setEmail(''); }} className="shrink-0 text-[11px] text-cream-muted underline hover:text-error">
+                <button onClick={() => { setSummaries([]); setEmail(''); }} className="shrink-0 text-[11px] text-cream-muted underline hover:text-white">
                   Clear
                 </button>
               </div>
 
               {summaries.map((s) => (
-                <motion.button key={s.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} onClick={() => handleSummaryClick(s)} className="w-full cursor-pointer rounded-2xl border border-neutral-700 bg-neutral-900/80 p-4 text-left shadow-xl backdrop-blur-sm transition hover:border-primary-400/60">
+                <motion.button key={s.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} onClick={() => handleSummaryClick(s)} className="w-full cursor-pointer rounded-2xl border border-neutral-700 bg-neutral-900/80 p-4 text-left shadow-xl backdrop-blur-sm transition hover:border-sky-400/60">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="min-w-0">
-                      <p className="font-mono text-sm font-extrabold tracking-wider text-primary-300">
+                      <p className="font-mono text-sm font-extrabold tracking-wider text-sky-300">
                         {s.reference_code}
                       </p>
                       <p className="mt-0.5 text-xs text-cream-muted">
@@ -276,14 +270,14 @@ export function Track() {
                   <div className="flex flex-col gap-3 border-b border-neutral-700 pb-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <p className="text-[10px] font-semibold uppercase tracking-wider text-cream-muted">Reference Code</p>
-                      <p className="font-mono text-xl font-extrabold tracking-wider text-primary-300 sm:text-2xl">{booking.reference_code}</p>
+                      <p className="font-mono text-xl font-extrabold tracking-wider text-sky-300 sm:text-2xl">{booking.reference_code}</p>
                     </div>
                     <StatusBadge status={booking.status} size="md" />
                   </div>
 
                   <div className="mt-4 grid gap-3 sm:grid-cols-2 sm:gap-4">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-950/70 text-primary-300">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-950/70 text-sky-300">
                         <MapPin className="h-4 w-4" />
                       </div>
                       <div>
@@ -292,7 +286,7 @@ export function Track() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-950/70 text-primary-300">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-950/70 text-sky-300">
                         <Calendar className="h-4 w-4" />
                       </div>
                       <div>
@@ -303,7 +297,7 @@ export function Track() {
                   </div>
 
                   <div className="mt-4">
-                    <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-primary-300">Time Slots</p>
+                    <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-sky-300">Time Slots</p>
                     <div className="space-y-3">
                       {groupedSlots.map((group, idx) => (
                         <div key={idx} className="rounded-xl border border-neutral-700 bg-neutral-800/80 p-3">
@@ -311,7 +305,7 @@ export function Track() {
                           <div className="space-y-1">
                             {group.times.map((t, i) => (
                               <div key={i} className="flex items-center gap-2 text-xs text-cream-muted">
-                                <Clock className="h-3.5 w-3.5 text-primary-300" />
+                                <Clock className="h-3.5 w-3.5 text-sky-300" />
                                 <span>{formatTimeRange(t.start_time, t.end_time)}</span>
                               </div>
                             ))}
@@ -331,22 +325,22 @@ export function Track() {
                   <h3 className="mb-3.5 font-display text-base font-bold text-cream">Customer Details</h3>
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="flex items-center gap-2 text-xs sm:text-sm">
-                      <User className="h-4 w-4 shrink-0 text-primary-300" />
+                      <User className="h-4 w-4 shrink-0 text-sky-300" />
                       <span className="text-cream-muted">Name:</span>
                       <span className="truncate font-medium text-cream">{booking.customer.name}</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs sm:text-sm">
-                      <Mail className="h-4 w-4 shrink-0 text-primary-300" />
+                      <Mail className="h-4 w-4 shrink-0 text-sky-300" />
                       <span className="text-cream-muted">Email:</span>
                       <span className="truncate font-medium text-cream">{booking.customer.email}</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs sm:text-sm">
-                      <Phone className="h-4 w-4 shrink-0 text-primary-300" />
+                      <Phone className="h-4 w-4 shrink-0 text-sky-300" />
                       <span className="text-cream-muted">Phone:</span>
                       <span className="font-medium text-cream">{booking.customer.phone}</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs sm:text-sm">
-                      <Calendar className="h-4 w-4 shrink-0 text-primary-300" />
+                      <Calendar className="h-4 w-4 shrink-0 text-sky-300" />
                       <span className="text-cream-muted">Booked:</span>
                       <span className="font-medium text-cream">{formatDateTime(booking.created_at)}</span>
                     </div>
@@ -363,12 +357,12 @@ export function Track() {
                 {canUploadPayment && !hasPaymentScreenshot && (
                   <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6 shadow-xl backdrop-blur-sm">
                     <h3 className="mb-2 flex items-center gap-2 font-display text-base font-bold text-cream">
-                      <Wallet className="h-5 w-5 text-primary-300" />
+                      <Wallet className="h-5 w-5 text-sky-300" />
                       Complete Payment
                     </h3>
                     <p className="mb-3.5 text-xs text-cream-muted sm:text-sm">
                       Send {formatCurrency(booking.total_amount)} to our payment account{' '}
-                      <span className="font-bold text-primary-300">{displayNumber}</span> and
+                      <span className="font-bold text-sky-300">{displayNumber}</span> and
                       upload your receipt below.
                     </p>
 
@@ -385,7 +379,7 @@ export function Track() {
                             const file = e.dataTransfer.files[0];
                             if (file) handleFile(file);
                           }}
-                          className="rounded-xl border-2 border-dashed border-neutral-700 bg-neutral-950/40 p-4 text-center transition-all hover:border-primary-400/60 sm:p-6"
+                          className="rounded-xl border-2 border-dashed border-neutral-700 bg-neutral-950/40 p-4 text-center transition-all hover:border-sky-400/60 sm:p-6"
                         >
                           {screenshot ? (
                             <div className="space-y-2">
@@ -396,7 +390,7 @@ export function Track() {
                               />
                               <button
                                 onClick={() => setScreenshot(null)}
-                                className="text-xs text-cream-muted underline hover:text-error transition"
+                                className="text-xs text-cream-muted underline hover:text-white transition"
                               >
                                 Change image
                               </button>
@@ -406,7 +400,7 @@ export function Track() {
                               <ImageIcon className="mx-auto h-8 w-8 text-cream-muted/40" />
                               <p className="mt-2 text-xs text-cream-muted">
                                 Drag receipt screenshot or{' '}
-                                <label className="cursor-pointer font-semibold text-primary-300 underline hover:text-primary-200">
+                                <label className="cursor-pointer font-semibold text-sky-300 underline hover:text-sky-200">
                                   browse
                                   <input
                                     type="file"
@@ -431,7 +425,7 @@ export function Track() {
                                 value={paymentRef}
                                 onChange={(e) => setPaymentRef(e.target.value)}
                                 placeholder="Payment reference number"
-                                className="w-full rounded-xl border border-neutral-700 bg-neutral-950/60 px-4 py-2.5 text-sm text-cream placeholder-cream-muted/40 transition-all focus:border-primary-400 focus:bg-neutral-900/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                                className="w-full rounded-xl border border-neutral-700 bg-neutral-950/60 px-4 py-2.5 text-sm text-cream placeholder-cream-muted/40 transition-all focus:border-sky-400 focus:bg-neutral-900/60 focus:outline-none focus:ring-2 focus:ring-sky-500/20"
                               />
                             </div>
                             <Button
@@ -471,7 +465,7 @@ export function Track() {
                     {booking.payment_reference && (
                       <p className="mt-2.5 text-xs text-cream-muted">
                         Reference Number:{' '}
-                        <span className="font-mono font-bold text-primary-300">
+                        <span className="font-mono font-bold text-sky-300">
                           {booking.payment_reference}
                         </span>
                       </p>
@@ -479,24 +473,24 @@ export function Track() {
                   </div>
                 )}
 
-                {/* Status Callouts */}
+                {/* Status Callouts - Red free */}
                 {booking.status === 'confirmed' && (
-                  <div className="rounded-xl border border-accent-500/40 bg-accent-500/10 p-4 text-center text-xs font-semibold text-accent-300 sm:text-sm">
+                  <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-center text-xs font-semibold text-emerald-300 sm:text-sm">
                     Your booking is confirmed! See you on the court.
                   </div>
                 )}
                 {booking.status === 'completed' && (
-                  <div className="rounded-xl border border-primary-500/40 bg-primary-500/10 p-4 text-center text-xs font-semibold text-primary-300 sm:text-sm">
+                  <div className="rounded-xl border border-slate-600 bg-slate-800/40 p-4 text-center text-xs font-semibold text-slate-300 sm:text-sm">
                     Thanks for playing with us! We hope to see you again soon.
                   </div>
                 )}
                 {booking.status === 'cancelled' && (
-                  <div className="rounded-xl border border-error/30 bg-error/10 p-4 text-center text-xs font-semibold text-error sm:text-sm">
+                  <div className="rounded-xl border border-neutral-700 bg-neutral-900 p-4 text-center text-xs font-semibold text-neutral-400 sm:text-sm">
                     This booking has been cancelled.
                   </div>
                 )}
                 {booking.status === 'rejected' && (
-                  <div className="rounded-xl border border-error/30 bg-error/10 p-4 text-center text-xs font-semibold text-error sm:text-sm">
+                  <div className="rounded-xl border border-zinc-700 bg-zinc-900 p-4 text-center text-xs font-semibold text-zinc-300 sm:text-sm">
                     Your payment could not be verified. Please contact court administration.
                   </div>
                 )}
