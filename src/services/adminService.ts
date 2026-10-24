@@ -14,6 +14,28 @@ import type {
 import { apiRequest } from './api';
 import { normalizeCourt, buildCourtPayload } from './courtService';
 
+// ─── Security events (admin log viewer) ───
+export type SecuritySeverity = 'info' | 'warning' | 'critical';
+
+export interface SecurityEvent {
+  id: string;
+  occurred_at: string;
+  event_type: string;
+  severity: SecuritySeverity;
+  message: string;
+  actor_email?: string | null;
+  ip_hash?: string | null;
+  resource?: string | null;
+  success: boolean;
+  error_code?: string | null;
+}
+
+export interface SecurityEventFilters {
+  severity?: SecuritySeverity;
+  eventType?: string;
+  limit?: number;
+}
+
 function normalizeAmenity(raw: any): AmenityItem {
   if (typeof raw === 'string') {
     return { name: raw, icon: 'Sparkles', description: '' };
@@ -32,8 +54,8 @@ function normalizeClientSettings(raw: any): ClientSettings {
     name: data.name || '',
     subdomain: data.subdomain || '',
     logo_url: data.logoUrl ?? data.logo_url ?? null,
-    primary_color: data.primaryColor ?? data.primary_color ?? '#1A2E1A',
-    accent_color: data.accentColor ?? data.accent_color ?? '#C9A94E',
+    primary_color: data.primaryColor ?? data.primary_color ?? '#2563EB',
+    accent_color: data.accentColor ?? data.accent_color ?? '#A3E635',
     gcash_number: data.gcashNumber ?? data.gcash_number ?? null,
     gcash_account_name: data.gcashAccountName ?? data.gcash_account_name ?? null,
     payment_methods: data.paymentMethods ?? data.payment_methods ?? [],
@@ -44,6 +66,10 @@ function normalizeClientSettings(raw: any): ClientSettings {
         data.max_advance_booking_days ??
         90
     ),
+    bookings_enabled: (() => {
+      const v = data.bookingsEnabled ?? data.bookings_enabled;
+      return v === undefined || v === null ? true : Boolean(v);
+    })(),
   };
 }
 
@@ -126,6 +152,30 @@ function normalizeBooking(raw: any): Booking {
   };
 }
 
+function normalizeSecurityEvent(raw: any): SecurityEvent {
+  const d = raw ?? {};
+  const rawSeverity = String(d.severity ?? d.Severity ?? 'info').toLowerCase();
+  const severity: SecuritySeverity =
+    rawSeverity === 'warning' || rawSeverity === 'critical' ? rawSeverity : 'info';
+
+  return {
+    id: String(d.id ?? d.Id ?? ''),
+    occurred_at:
+      d.occurredAt ?? d.occurred_at ?? d.OccurredAt ?? new Date().toISOString(),
+    event_type: String(d.eventType ?? d.event_type ?? d.EventType ?? ''),
+    severity,
+    message: String(d.message ?? d.Message ?? ''),
+    actor_email: d.actorEmail ?? d.actor_email ?? d.ActorEmail ?? null,
+    ip_hash: d.ipHash ?? d.ip_hash ?? d.IpHash ?? null,
+    resource: d.resource ?? d.Resource ?? null,
+    success:
+      typeof d.success === 'boolean'
+        ? d.success
+        : d.success === 'true' || d.Success === true,
+    error_code: d.errorCode ?? d.error_code ?? d.ErrorCode ?? null,
+  };
+}
+
 export const adminService = {
   async getAnalytics(): Promise<Analytics> {
     const res = await apiRequest<any>('/api/admin/analytics');
@@ -146,6 +196,7 @@ export const adminService = {
     rcbc_qr_image?: string;
     available_amenities?: AmenityItem[];
     max_advance_booking_days?: number;
+    bookings_enabled?: boolean;
   }): Promise<ClientSettings> {
     const res = await apiRequest<any>('/api/admin/settings', {
       method: 'PUT',
@@ -158,6 +209,7 @@ export const adminService = {
         rcbcQrImage: payload.rcbc_qr_image,
         availableAmenities: payload.available_amenities,
         maxAdvanceBookingDays: payload.max_advance_booking_days,
+        bookingsEnabled: payload.bookings_enabled,
       }),
     });
     return normalizeClientSettings(res?.data ?? res);
@@ -451,5 +503,23 @@ export const adminService = {
     await apiRequest<void>(`/api/admin/pricing-rules/${ruleId}`, {
       method: 'DELETE',
     });
+  },
+
+  // ─── Security Events ───
+  async getSecurityEvents(
+    filters: SecurityEventFilters = {}
+  ): Promise<SecurityEvent[]> {
+    const params = new URLSearchParams();
+    if (filters.severity) params.set('severity', filters.severity);
+    if (filters.eventType) params.set('eventType', filters.eventType);
+    if (filters.limit != null) params.set('limit', String(filters.limit));
+
+    const qs = params.toString();
+    const res = await apiRequest<any>(
+      `/api/admin/security-events${qs ? `?${qs}` : ''}`
+    );
+
+    const rawList = Array.isArray(res) ? res : res?.data ?? res?.events ?? [];
+    return rawList.map((item: any) => normalizeSecurityEvent(item));
   },
 };

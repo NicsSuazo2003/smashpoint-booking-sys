@@ -44,7 +44,8 @@ export interface TimeSlot {
   price: number;
   is_available: boolean;
   is_peak: boolean;
-  
+  is_pending?: boolean;
+  is_blocked?: boolean;
 }
 
 export interface BookingSlotItem {
@@ -177,6 +178,8 @@ export interface ClientSettings {
    * 0 = unlimited. Default 90 (~3 months).
    */
   max_advance_booking_days: number;
+  // 👇 NEW — Master switch for customer-facing online bookings
+  bookings_enabled: boolean;
 }
 
 export type AdminView = 'calendar' | 'list';
