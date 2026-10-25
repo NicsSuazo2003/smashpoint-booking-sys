@@ -41,13 +41,42 @@ export function Success() {
     return names.length > 0 ? names.join(', ') : currentBooking.court_name;
   }, [currentBooking, courts]);
 
-  if (!currentBooking) return null;
+  // Group slots by court to ensure multiple courts display correctly
+  const groupedSlots = useMemo(() => {
+    if (!currentBooking || !currentBooking.slots) return [];
+    const map = new Map<string, { start_time: string; end_time: string }[]>();
+    
+    currentBooking.slots.forEach((s) => {
+      const cid = s.court_id || 'unknown';
+      if (!map.has(cid)) map.set(cid, []);
+      
+      // FIXED: Only use snake_case as defined in BookingSlotItem
+      map.get(cid)!.push({ 
+        start_time: s.start_time || '', 
+        end_time: s.end_time || '' 
+      });
+    });
 
-  const formatSlotTime = (slot: { startTime?: string; endTime?: string; start_time?: string; end_time?: string }): string => {
-    const start = slot.startTime || slot.start_time || '';
-    const end = slot.endTime || slot.end_time || '';
-    return formatTimeRange(start, end);
-  };
+    let unknownIndex = 1;
+    return Array.from(map.entries()).map(([cid, times]) => {
+      let courtName = courts.find((c) => c.id === cid)?.name;
+
+      if (!courtName) {
+        if (cid === 'unknown') {
+          courtName = `Court ${unknownIndex++}`;
+        } else {
+          courtName = currentBooking.court_name || 'Court';
+        }
+      }
+
+      return {
+        courtName,
+        times: times.sort((a, b) => a.start_time.localeCompare(b.start_time)),
+      };
+    });
+  }, [currentBooking, courts]);
+
+  if (!currentBooking) return null;
 
   const totalAmount = typeof currentBooking.total_amount === 'number'
     ? currentBooking.total_amount
@@ -104,7 +133,7 @@ export function Success() {
                   <MapPin className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-cream-muted">Court</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-cream-muted">Court(s)</p>
                   <p className="text-sm font-bold text-cream sm:text-base">{courtNames}</p>
                 </div>
               </div>
@@ -119,15 +148,27 @@ export function Success() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-950/70 text-primary-300">
+              {/* Fixed Time Slots Section - Grouped by Court */}
+              <div className="flex items-start gap-3">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-950/70 text-primary-300 mt-1">
                   <Clock className="h-4 w-4" />
                 </div>
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-cream-muted">Time Slots</p>
-                  <p className="text-sm font-medium text-cream sm:text-base">
-                    {currentBooking.slots.map((s) => formatSlotTime(s)).join(', ')}
-                  </p>
+                <div className="w-full">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-cream-muted mb-1.5">Time Slots</p>
+                  <div className="space-y-2">
+                    {groupedSlots.map((group, idx) => (
+                      <div key={idx} className="rounded-lg border border-neutral-700 bg-neutral-950/50 p-2.5">
+                        <p className="text-xs font-bold text-cream mb-1">{group.courtName}</p>
+                        <div className="space-y-1">
+                          {group.times.map((t, i) => (
+                            <div key={i} className="text-xs text-cream-muted">
+                              {formatTimeRange(t.start_time, t.end_time)}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

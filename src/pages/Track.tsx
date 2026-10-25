@@ -130,25 +130,24 @@ export function Track() {
     }
   };
 
-  const getCourtNames = (b: Booking | null) => {
-    if (!b || !b.slots) return b?.court_name || '';
-    const ids = Array.from(new Set(b.slots.map(s => s.court_id).filter(Boolean)));
-    if (ids.length === 0) return b.court_name;
-    const names = ids.map(id => courts.find(c => c.id === id)?.name).filter(Boolean);
-    return names.length > 0 ? names.join(', ') : b.court_name;
-  };
-
   const canUploadPayment = booking && (booking.status === 'pending_payment' || booking.status === 'payment_submitted');
   const hasPaymentScreenshot = booking?.payment_screenshot_url;
   const canSearch = reference.trim().length > 0 || email.trim().length > 0;
 
+  // Group slots by court to ensure multiple courts display correctly
   const groupedSlots = useMemo(() => {
     if (!booking || !booking.slots) return [];
     const map = new Map<string, { start_time: string; end_time: string }[]>();
+    
     booking.slots.forEach((s) => {
       const cid = s.court_id || 'unknown';
       if (!map.has(cid)) map.set(cid, []);
-      map.get(cid)!.push({ start_time: s.start_time, end_time: s.end_time });
+      
+      // Use strictly snake_case as defined in your types
+      map.get(cid)!.push({ 
+        start_time: s.start_time || '', 
+        end_time: s.end_time || '' 
+      });
     });
 
     let unknownIndex = 1;
@@ -169,6 +168,13 @@ export function Track() {
       };
     });
   }, [booking, courts]);
+
+  // Derive the display names directly from groupedSlots so it perfectly matches the times below
+  const displayCourtNames = useMemo(() => {
+    if (groupedSlots.length === 0) return booking?.court_name || '';
+    const uniqueNames = Array.from(new Set(groupedSlots.map(g => g.courtName)));
+    return uniqueNames.join(', ');
+  }, [groupedSlots, booking]);
 
   return (
     <div className="min-h-screen bg-charcoal text-cream">
@@ -282,7 +288,8 @@ export function Track() {
                       </div>
                       <div>
                         <p className="text-[10px] font-semibold uppercase tracking-wider text-cream-muted">Court</p>
-                        <p className="text-sm font-bold text-cream sm:text-base">{getCourtNames(booking)}</p>
+                        {/* Updated to use displayCourtNames from our grouping */}
+                        <p className="text-sm font-bold text-cream sm:text-base">{displayCourtNames}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
