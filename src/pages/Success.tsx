@@ -42,24 +42,30 @@ export function Success() {
   }, [currentBooking, courts]);
 
   // Group slots by court to ensure multiple courts display correctly
+   // Group slots by court to ensure multiple courts display correctly
   const groupedSlots = useMemo(() => {
     if (!currentBooking || !currentBooking.slots) return [];
-    const map = new Map<string, { start_time: string; end_time: string }[]>();
+    const map = new Map<string, { start_time: string; end_time: string; court_name: string }[]>();
     
     currentBooking.slots.forEach((s) => {
       const cid = s.court_id || 'unknown';
       if (!map.has(cid)) map.set(cid, []);
       
-      // FIXED: Only use snake_case as defined in BookingSlotItem
       map.get(cid)!.push({ 
         start_time: s.start_time || '', 
-        end_time: s.end_time || '' 
+        end_time: s.end_time || '',
+        court_name: s.court_name || '' // ✅ Read from API
       });
     });
 
     let unknownIndex = 1;
     return Array.from(map.entries()).map(([cid, times]) => {
-      let courtName = courts.find((c) => c.id === cid)?.name;
+      // ✅ FIX: Use string | undefined to satisfy TypeScript
+      let courtName: string | undefined = times[0]?.court_name;
+
+      if (!courtName) {
+        courtName = courts.find((c) => c.id === cid)?.name;
+      }
 
       if (!courtName) {
         if (cid === 'unknown') {
@@ -75,6 +81,13 @@ export function Success() {
       };
     });
   }, [currentBooking, courts]);
+
+  // Derive the display names directly from groupedSlots
+  const displayCourtNames = useMemo(() => {
+    if (groupedSlots.length === 0) return currentBooking?.court_name || '';
+    const uniqueNames = Array.from(new Set(groupedSlots.map(g => g.courtName)));
+    return uniqueNames.join(', ');
+  }, [groupedSlots, currentBooking]);
 
   if (!currentBooking) return null;
 
@@ -134,7 +147,7 @@ export function Success() {
                 </div>
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-wider text-cream-muted">Court(s)</p>
-                  <p className="text-sm font-bold text-cream sm:text-base">{courtNames}</p>
+                  <p className="text-sm font-bold text-cream sm:text-base">{displayCourtNames}</p>
                 </div>
               </div>
 
@@ -148,7 +161,6 @@ export function Success() {
                 </div>
               </div>
 
-              {/* Fixed Time Slots Section - Grouped by Court */}
               <div className="flex items-start gap-3">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-950/70 text-primary-300 mt-1">
                   <Clock className="h-4 w-4" />

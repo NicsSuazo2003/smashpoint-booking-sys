@@ -2,24 +2,14 @@
 import type { Booking, BookingSummary, CustomerDetails } from '@/types';
 import { apiRequest } from './api';
 
-/**
- * Normalizes a booking from the API (camelCase or snake_case) into the
- * frontend `Booking` shape.
- *
- * IMPORTANT: every slot keeps its own `court_id` (mapped from `courtId`),
- * which is what the admin UI uses to show multi-court bookings correctly.
- *
- * Exported so the admin store (and anything else that loads bookings)
- * can reuse the exact same mapping instead of rolling its own.
- */
 export function normalizeBooking(raw: any): Booking {
   const rawSlots: any[] = raw.slots ?? raw.Slots ?? raw.bookingSlots ?? raw.booking_slots ?? [];
 
   const slots = rawSlots.map((s: any) => ({
     id: s.id,
     slot_id: s.slotId ?? s.slot_id ?? s.id,
-    // ✅ courtId (camelCase) / court_id (snake_case) / CourtId (PascalCase) / nested court object
     court_id: String(s.courtId ?? s.court_id ?? s.CourtId ?? s.court?.id ?? raw.courtId ?? raw.court_id ?? ''),
+    court_name: s.courtName ?? s.court_name ?? s.CourtName ?? s.court?.name, // ✅ ADDED
     start_time: s.startTime ?? s.start_time ?? s.StartTime,
     end_time: s.endTime ?? s.end_time ?? s.EndTime,
     date: s.date ?? raw.date,
@@ -28,7 +18,6 @@ export function normalizeBooking(raw: any): Booking {
     is_peak: s.isPeak ?? s.is_peak ?? false,
   }));
 
-  // Top-level court_id: use the API value, or fall back to the first slot's court
   const topLevelCourtId = String(raw.courtId ?? raw.court_id ?? slots[0]?.court_id ?? '');
 
   return {
@@ -58,7 +47,6 @@ export function normalizeBooking(raw: any): Booking {
   };
 }
 
-// ✅ Normalizer for the email-only summary endpoint
 function normalizeSummary(raw: any): BookingSummary {
   return {
     id: raw.id,
@@ -73,7 +61,6 @@ function normalizeSummary(raw: any): BookingSummary {
   };
 }
 
-// ✅ Payload supports multiple courts in a single booking
 export interface CreateBookingPayload {
   court_groups: {
     courtId: string;
@@ -84,13 +71,11 @@ export interface CreateBookingPayload {
   total_amount: number;
 }
 
-// Helper to validate GUID format
 function isValidGuid(id: string): boolean {
   const guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   return guidRegex.test(id);
 }
 
-// Helper to generate a valid GUID (for testing/mock data)
 function generateGuid(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     const r = (Math.random() * 16) | 0;
@@ -99,7 +84,6 @@ function generateGuid(): string {
   });
 }
 
-// ✅ Deterministic GUIDs for all courts (keep for your mock data if needed)
 export const MOCK_COURT_GUIDS: Record<string, string> = {
   'court-1': '11111111-1111-4111-a111-111111111111',
   'court-2': '22222222-2222-4222-a222-222222222222',
@@ -109,7 +93,6 @@ export const MOCK_COURT_GUIDS: Record<string, string> = {
   '3': '33333333-3333-4333-a333-333333333333',
 };
 
-// ✅ Resolve court ID to valid GUID
 function resolveCourtId(courtId: string): string {
   if (isValidGuid(courtId)) return courtId;
   if (courtId in MOCK_COURT_GUIDS) return MOCK_COURT_GUIDS[courtId];
@@ -130,7 +113,6 @@ export const bookingService = {
     if (!payload.customer?.email) throw new Error('Customer email is required');
     if (!payload.customer?.phone) throw new Error('Customer phone is required');
 
-    // Resolve all court IDs to valid GUIDs
     const resolvedGroups = payload.court_groups.map((group) => ({
       CourtId: resolveCourtId(group.courtId),
       Slots: group.slots.map((s) => ({
@@ -233,7 +215,7 @@ export const bookingService = {
     }
 
     try {
-          const token = localStorage.getItem('admin_token');
+      const token = localStorage.getItem('admin_token');
       const res = await fetch(
         `${import.meta.env.VITE_API_BASE_URL || 'https://smashpoint-booking-api.onrender.com'}/api/bookings/${bookingId}/upload-payment`,
         {
@@ -301,7 +283,6 @@ export const bookingService = {
   },
 };
 
-// Export helper functions for testing
 export const bookingHelpers = {
   isValidGuid,
   generateGuid,

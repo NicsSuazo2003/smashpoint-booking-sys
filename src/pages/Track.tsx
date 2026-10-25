@@ -1,3 +1,4 @@
+// src/pages/Track.tsx
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -134,25 +135,30 @@ export function Track() {
   const hasPaymentScreenshot = booking?.payment_screenshot_url;
   const canSearch = reference.trim().length > 0 || email.trim().length > 0;
 
-  // Group slots by court to ensure multiple courts display correctly
+    // Group slots by court to ensure multiple courts display correctly
   const groupedSlots = useMemo(() => {
     if (!booking || !booking.slots) return [];
-    const map = new Map<string, { start_time: string; end_time: string }[]>();
+    const map = new Map<string, { start_time: string; end_time: string; court_name: string }[]>();
     
     booking.slots.forEach((s) => {
       const cid = s.court_id || 'unknown';
       if (!map.has(cid)) map.set(cid, []);
       
-      // Use strictly snake_case as defined in your types
       map.get(cid)!.push({ 
         start_time: s.start_time || '', 
-        end_time: s.end_time || '' 
+        end_time: s.end_time || '',
+        court_name: s.court_name || '' // ✅ Read from API
       });
     });
 
     let unknownIndex = 1;
     return Array.from(map.entries()).map(([cid, times]) => {
-      let courtName = courts.find((c) => c.id === cid)?.name;
+      // ✅ FIX: Use string | undefined to satisfy TypeScript
+      let courtName: string | undefined = times[0]?.court_name;
+
+      if (!courtName) {
+        courtName = courts.find((c) => c.id === cid)?.name;
+      }
 
       if (!courtName) {
         if (cid === 'unknown') {
@@ -169,7 +175,6 @@ export function Track() {
     });
   }, [booking, courts]);
 
-  // Derive the display names directly from groupedSlots so it perfectly matches the times below
   const displayCourtNames = useMemo(() => {
     if (groupedSlots.length === 0) return booking?.court_name || '';
     const uniqueNames = Array.from(new Set(groupedSlots.map(g => g.courtName)));
@@ -288,7 +293,6 @@ export function Track() {
                       </div>
                       <div>
                         <p className="text-[10px] font-semibold uppercase tracking-wider text-cream-muted">Court</p>
-                        {/* Updated to use displayCourtNames from our grouping */}
                         <p className="text-sm font-bold text-cream sm:text-base">{displayCourtNames}</p>
                       </div>
                     </div>

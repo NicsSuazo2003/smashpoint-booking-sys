@@ -52,6 +52,7 @@ export interface BookingSlotItem {
   id: string;
   slot_id: string;
   court_id: string;
+  court_name?: string; 
   start_time: string;
   end_time: string;
   date: string;
