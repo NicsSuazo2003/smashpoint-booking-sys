@@ -498,8 +498,10 @@ export function Bookings() {
     });
 
     return [...list].sort((a, b) => {
-      const cmp = toDay(a.date).localeCompare(toDay(b.date));
-      return sortDir === 'asc' ? cmp : -cmp;
+      // ✅ FIX: Sort by created_at instead of booking date so manual inserts show at the top
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+      return sortDir === 'asc' ? dateA - dateB : dateB - dateA;
     });
   }, [bookings, tab, courtFilter, dateFilter, search, sortDir, getCourtNamesForBooking]);
 
