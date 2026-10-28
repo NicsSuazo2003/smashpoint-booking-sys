@@ -1,7 +1,10 @@
 export const APP_CONFIG = {
   name: import.meta.env.VITE_APP_NAME ?? 'Smash Point',
   demoMode: (import.meta.env.VITE_DEMO_MODE ?? 'false') === 'true',
-  apiUrl: import.meta.env.VITE_API_BASE_URL ?? 'https://pickleballcourbookingv2-e064.onrender.com',
+  
+  // ✅ FIXED: Defaults to YOUR Smash Point backend, not the old client's
+  apiUrl: import.meta.env.VITE_API_BASE_URL ?? 'https://smashpoint-booking-api.onrender.com',
+  
   tagline: 'Dink Fast. Smash Hard.',
   established: '2026',
   paymentNumber: '09XX XXX XXXX', // TODO: real GCash number
