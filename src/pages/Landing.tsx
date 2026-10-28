@@ -42,43 +42,43 @@ import type { TimeSlot, Court, OpenPlaySession, Booking } from '@/types';
 
 const EMPTY_AMENITIES: AmenityItem[] = [];
 
-// Non-red, athletic blue & cyan variants for each court column
+// ✅ UPDATED: Matches the requested Red (Court 1 & 3) and Gold (Court 2) theme
 const COURT_ACCENTS = [
   {
-    header: 'text-sky-300',
-    dot: 'bg-sky-400',
-    border: 'border-sky-500/40',
-    bg: 'bg-sky-950/40',
-    text: 'text-sky-200',
-    hoverBorder: 'hover:border-sky-300',
-    hoverBg: 'hover:bg-sky-900/50',
+    header: 'text-[#ED1C24]',
+    dot: 'bg-[#ED1C24]',
+    border: 'border-[#ED1C24]/60',
+    bg: 'bg-[#ED1C24]/10',
+    text: 'text-[#ED1C24]',
+    hoverBorder: 'hover:border-[#ED1C24]',
+    hoverBg: 'hover:bg-[#ED1C24]/20',
   },
   {
-    header: 'text-cyan-300',
-    dot: 'bg-cyan-400',
-    border: 'border-cyan-500/40',
-    bg: 'bg-cyan-950/40',
-    text: 'text-cyan-200',
-    hoverBorder: 'hover:border-cyan-300',
-    hoverBg: 'hover:bg-cyan-900/50',
+    header: 'text-[#FFB703]',
+    dot: 'bg-[#FFB703]',
+    border: 'border-[#FFB703]/60',
+    bg: 'bg-[#FFB703]/10',
+    text: 'text-[#FFB703]',
+    hoverBorder: 'hover:border-[#FFB703]',
+    hoverBg: 'hover:bg-[#FFB703]/20',
   },
   {
-    header: 'text-blue-300',
-    dot: 'bg-blue-400',
-    border: 'border-blue-500/40',
-    bg: 'bg-blue-950/40',
-    text: 'text-blue-200',
-    hoverBorder: 'hover:border-blue-300',
-    hoverBg: 'hover:bg-blue-900/50',
+    header: 'text-[#ED1C24]',
+    dot: 'bg-[#ED1C24]',
+    border: 'border-[#ED1C24]/60',
+    bg: 'bg-[#ED1C24]/10',
+    text: 'text-[#ED1C24]',
+    hoverBorder: 'hover:border-[#ED1C24]',
+    hoverBg: 'hover:bg-[#ED1C24]/20',
   },
   {
-    header: 'text-indigo-300',
-    dot: 'bg-indigo-400',
-    border: 'border-indigo-500/40',
-    bg: 'bg-indigo-950/40',
-    text: 'text-indigo-200',
-    hoverBorder: 'hover:border-indigo-300',
-    hoverBg: 'hover:bg-indigo-900/50',
+    header: 'text-[#FFB703]',
+    dot: 'bg-[#FFB703]',
+    border: 'border-[#FFB703]/60',
+    bg: 'bg-[#FFB703]/10',
+    text: 'text-[#FFB703]',
+    hoverBorder: 'hover:border-[#FFB703]',
+    hoverBg: 'hover:bg-[#FFB703]/20',
   },
 ];
 
@@ -913,7 +913,7 @@ export function Landing() {
                   {/* Red-free status legend */}
                   <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-b border-neutral-800 pb-3 text-[11px] text-cream-muted">
                     <div className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full border border-sky-400 bg-sky-500/40" />
+                      <span className="h-2 w-2 rounded-full border border-[#ED1C24] bg-[#ED1C24]/40" />
                       <span>Available</span>
                     </div>
                     <div className="flex items-center gap-1.5">
