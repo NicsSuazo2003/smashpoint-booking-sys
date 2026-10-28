@@ -110,7 +110,6 @@ function normalizeBooking(raw: any): Booking {
   const slots = rawSlots.map((s: any) => ({
     id: s.id || '',
     slot_id: s.slotId ?? s.slot_id ?? s.id ?? '',
-    // ✅ THE FIX: keep each slot's own court
     court_id: String(
       s.courtId ?? s.court_id ?? s.CourtId ?? s.court?.id ?? data.courtId ?? data.court_id ?? ''
     ),
@@ -177,8 +176,16 @@ function normalizeSecurityEvent(raw: any): SecurityEvent {
 }
 
 export const adminService = {
-  async getAnalytics(): Promise<Analytics> {
-    const res = await apiRequest<any>('/api/admin/analytics');
+  // ✅ UPDATED: Accepts optional startDate and endDate
+  async getAnalytics(startDate?: string, endDate?: string): Promise<Analytics> {
+    const params = new URLSearchParams();
+    if (startDate) params.set('startDate', startDate);
+    if (endDate) params.set('endDate', endDate);
+    
+    const query = params.toString();
+    const url = `/api/admin/analytics${query ? `?${query}` : ''}`;
+    
+    const res = await apiRequest<any>(url);
     return normalizeAnalytics(res?.data ?? res);
   },
 
@@ -265,7 +272,6 @@ export const adminService = {
       return rawList.map((item: any) => ({
         id: item.id || item.Id || '',
         court_id: courtId,
-        // 👇 Handle both 'Date' (Supabase) and 'date' (Frontend)
         date: item.date || item.Date || '',
         reason: item.reason || item.Reason || 'No reason provided',
         startTime: item.startTime || item.StartTime || null,
@@ -278,7 +284,6 @@ export const adminService = {
   },
 
   async addBlockedDate(blocked: Omit<BlockedDate, 'id'>): Promise<BlockedDate> {
-    // Send PascalCase to match ASP.NET Core DTO
     const payload = {
       Date: blocked.date,
       StartTime: blocked.startTime || null,

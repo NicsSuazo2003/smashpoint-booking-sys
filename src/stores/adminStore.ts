@@ -39,7 +39,9 @@ interface AdminStoreState {
   loadingPaymentMethods: boolean;
   error: string | null;
 
-  loadAnalytics: () => Promise<void>;
+  // ✅ UPDATED: loadAnalytics now accepts optional dates
+  loadAnalytics: (startDate?: string, endDate?: string) => Promise<void>;
+  
   loadBookings: (filters?: {
     status?: BookingStatus;
     courtId?: string;
@@ -48,11 +50,12 @@ interface AdminStoreState {
   }) => Promise<void>;
   updateBookingStatus: (bookingId: string, status: BookingStatus) => Promise<void>;
   createManualBooking: (payload: ManualBookingPayload) => Promise<Booking>;
-  // ✅ NEW — reschedule a booking to a different court / date / time
+  
   rescheduleBooking: (
     bookingId: string,
     payload: RescheduleBookingPayload
   ) => Promise<RescheduleBookingResult>;
+  
   loadCourts: () => Promise<void>;
   updateCourt: (court: Court) => Promise<void>;
   loadBlockedDates: (courtId?: string) => Promise<void>;
@@ -61,7 +64,6 @@ interface AdminStoreState {
   loadPaymentMethods: () => Promise<void>;
   updatePaymentMethods: (methods: PaymentMethod[]) => Promise<void>;
 
-  // ✅ Per-court, day-based pricing rules
   loadPricingRules: (courtId: string) => Promise<PricingRule[]>;
   addPricingRule: (
     courtId: string,
@@ -86,10 +88,11 @@ export const useAdminStore = create<AdminStoreState>((set, get) => ({
   loadingPaymentMethods: false,
   error: null,
 
-  loadAnalytics: async () => {
+  // ✅ UPDATED: Implementation accepts dates and passes them to service
+  loadAnalytics: async (startDate, endDate) => {
     set({ loadingAnalytics: true, error: null });
     try {
-      const analytics = await adminService.getAnalytics();
+      const analytics = await adminService.getAnalytics(startDate, endDate);
       set({ analytics, loadingAnalytics: false });
     } catch (err) {
       set({
@@ -137,7 +140,6 @@ export const useAdminStore = create<AdminStoreState>((set, get) => ({
     }
   },
 
-  // ✅ NEW — reschedule a booking to a different court / date / time
   rescheduleBooking: async (bookingId, payload) => {
     try {
       const result = await adminService.rescheduleBooking(bookingId, payload);
@@ -248,10 +250,6 @@ export const useAdminStore = create<AdminStoreState>((set, get) => ({
       throw err;
     }
   },
-
-  // ─────────────────────────────────────────────────────────────
-  // ✅ Pricing Rules (per-court, day-based)
-  // ─────────────────────────────────────────────────────────────
 
   loadPricingRules: async (courtId) => {
     try {

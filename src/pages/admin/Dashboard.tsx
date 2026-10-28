@@ -13,6 +13,7 @@ import {
   LayoutGrid,
   List,
   AlertCircle,
+  Calendar as CalendarIcon,
 } from 'lucide-react';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
@@ -112,6 +113,11 @@ export function Dashboard() {
   const [activeBar, setActiveBar] = useState<string | null>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
 
+  // Date Range State for Analytics
+  const [range, setRange] = useState<'last7' | 'thisMonth' | 'custom'>('last7');
+  const [customStart, setCustomStart] = useState('');
+  const [customEnd, setCustomEnd] = useState('');
+
   useEffect(() => {
     loadAnalytics();
     loadBookings();
@@ -120,6 +126,22 @@ export function Dashboard() {
   useEffect(() => {
     setVisibleCount(LIST_PAGE_SIZE);
   }, [statusFilter]);
+
+  const handleApplyRange = (type: 'last7' | 'thisMonth' | 'custom', start?: string, end?: string) => {
+    setRange(type);
+    if (type === 'custom' && start && end) {
+      setCustomStart(start);
+      setCustomEnd(end);
+      loadAnalytics(start, end);
+    } else if (type === 'thisMonth') {
+      const now = new Date();
+      const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+      const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+      loadAnalytics(firstDay, lastDay);
+    } else {
+      loadAnalytics();
+    }
+  };
 
   const year = calendarDate.getFullYear();
   const month = calendarDate.getMonth();
@@ -203,13 +225,53 @@ export function Dashboard() {
   return (
     <AdminLayout>
       <div className="container-page py-6 sm:py-8 text-cream">
-        <div className="mb-6 sm:mb-8">
-          <h1 className="font-display text-2xl font-bold tracking-tight text-cream sm:text-3xl">
-            Dashboard
-          </h1>
-          <p className="mt-1 text-xs text-cream-muted sm:text-sm">
-            Overview of your court bookings and revenue
-          </p>
+        <div className="mb-6 flex flex-col justify-between gap-4 sm:mb-8 sm:flex-row sm:items-center">
+          <div>
+            <h1 className="font-display text-2xl font-bold tracking-tight text-cream sm:text-3xl">
+              Dashboard
+            </h1>
+            <p className="mt-1 text-xs text-cream-muted sm:text-sm">
+              Overview of your court bookings and revenue
+            </p>
+          </div>
+          
+          {/* Date Range Filter */}
+          <div className="flex flex-wrap items-center gap-2 rounded-xl border border-neutral-700 bg-neutral-900/80 p-1.5 shadow-sm">
+            <CalendarIcon className="ml-2 h-4 w-4 text-primary-300 hidden sm:block" />
+            <button
+              onClick={() => handleApplyRange('last7')}
+              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${range === 'last7' ? 'bg-primary-500 text-white' : 'text-cream-muted hover:text-cream'}`}
+            >
+              Last 7 Days
+            </button>
+            <button
+              onClick={() => handleApplyRange('thisMonth')}
+              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${range === 'thisMonth' ? 'bg-primary-500 text-white' : 'text-cream-muted hover:text-cream'}`}
+            >
+              This Month
+            </button>
+            <div className="flex items-center gap-1 sm:gap-2">
+              <input
+                type="date"
+                value={customStart}
+                onChange={(e) => setCustomStart(e.target.value)}
+                className="rounded-lg border border-neutral-600 bg-neutral-950 px-2 py-1 text-xs text-cream [color-scheme:dark] outline-none focus:border-primary-500"
+              />
+              <span className="text-cream-muted text-xs">-</span>
+              <input
+                type="date"
+                value={customEnd}
+                onChange={(e) => setCustomEnd(e.target.value)}
+                className="rounded-lg border border-neutral-600 bg-neutral-950 px-2 py-1 text-xs text-cream [color-scheme:dark] outline-none focus:border-primary-500"
+              />
+              <button
+                onClick={() => handleApplyRange('custom', customStart, customEnd)}
+                className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${range === 'custom' ? 'bg-accent-500 text-neutral-950' : 'bg-neutral-800 text-cream-muted hover:text-cream'}`}
+              >
+                Apply
+              </button>
+            </div>
+          </div>
         </div>
 
         {pendingCount > 0 && (
@@ -272,7 +334,7 @@ export function Dashboard() {
                 <h2 className="font-display text-base font-bold text-cream sm:text-lg">
                   Revenue Trend
                   <span className="ml-1.5 text-xs font-medium text-cream-muted sm:text-sm">
-                    (last {revenueDays.length} day{revenueDays.length !== 1 ? 's' : ''})
+                    ({revenueDays.length} day{revenueDays.length !== 1 ? 's' : ''})
                   </span>
                 </h2>
               </div>
