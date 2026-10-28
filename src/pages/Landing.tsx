@@ -42,43 +42,42 @@ import type { TimeSlot, Court, OpenPlaySession, Booking } from '@/types';
 
 const EMPTY_AMENITIES: AmenityItem[] = [];
 
-// ✅ UPDATED: Matches the requested Red (Court 1 & 3) and Gold (Court 2) theme
 const COURT_ACCENTS = [
   {
     header: 'text-[#ED1C24]',
     dot: 'bg-[#ED1C24]',
-    border: 'border-[#ED1C24]/60',
-    bg: 'bg-[#ED1C24]/10',
-    text: 'text-[#ED1C24]',
-    hoverBorder: 'hover:border-[#ED1C24]',
-    hoverBg: 'hover:bg-[#ED1C24]/20',
+    border: 'border-[#ED1C24]',
+    bg: 'bg-[#2A0B0D]', // Solid dark red
+    text: 'text-white',
+    hoverBorder: 'hover:border-[#FF3B41]',
+    hoverBg: 'hover:bg-[#3D1114]',
   },
   {
     header: 'text-[#FFB703]',
     dot: 'bg-[#FFB703]',
-    border: 'border-[#FFB703]/60',
-    bg: 'bg-[#FFB703]/10',
-    text: 'text-[#FFB703]',
-    hoverBorder: 'hover:border-[#FFB703]',
-    hoverBg: 'hover:bg-[#FFB703]/20',
+    border: 'border-[#FFB703]',
+    bg: 'bg-[#2A1F0B]', // Solid dark gold
+    text: 'text-white',
+    hoverBorder: 'hover:border-[#FFC533]',
+    hoverBg: 'hover:bg-[#3D2D11]',
   },
   {
     header: 'text-[#ED1C24]',
     dot: 'bg-[#ED1C24]',
-    border: 'border-[#ED1C24]/60',
-    bg: 'bg-[#ED1C24]/10',
-    text: 'text-[#ED1C24]',
-    hoverBorder: 'hover:border-[#ED1C24]',
-    hoverBg: 'hover:bg-[#ED1C24]/20',
+    border: 'border-[#ED1C24]',
+    bg: 'bg-[#2A0B0D]',
+    text: 'text-white',
+    hoverBorder: 'hover:border-[#FF3B41]',
+    hoverBg: 'hover:bg-[#3D1114]',
   },
   {
     header: 'text-[#FFB703]',
     dot: 'bg-[#FFB703]',
-    border: 'border-[#FFB703]/60',
-    bg: 'bg-[#FFB703]/10',
-    text: 'text-[#FFB703]',
-    hoverBorder: 'hover:border-[#FFB703]',
-    hoverBg: 'hover:bg-[#FFB703]/20',
+    border: 'border-[#FFB703]',
+    bg: 'bg-[#2A1F0B]',
+    text: 'text-white',
+    hoverBorder: 'hover:border-[#FFC533]',
+    hoverBg: 'hover:bg-[#3D2D11]',
   },
 ];
 
@@ -1356,7 +1355,8 @@ function SlotPill({
   } else if (isPending) {
     styleClasses = 'border-amber-500/40 bg-amber-500/10 text-amber-300/80 cursor-not-allowed';
   } else if (isSelected) {
-    styleClasses = 'border-accent-400 bg-accent-500 text-neutral-950 font-bold shadow-[0_0_16px_rgba(255,183,3,0.35)]';
+    // Selected state: solid background, white text
+    styleClasses = 'border-white bg-[#ED1C24] text-white font-bold shadow-[0_0_16px_rgba(237,28,36,0.35)]';
   }
 
   return (
