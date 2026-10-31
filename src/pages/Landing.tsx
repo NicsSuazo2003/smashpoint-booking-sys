@@ -1093,7 +1093,7 @@ export function Landing() {
           <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-neutral-700 bg-neutral-900/80 shadow-xl">
             <div className="relative w-full aspect-[4/3] sm:aspect-auto sm:h-[500px]">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d471.3511219998887!2d126.20822543155269!3d9.053675087552323!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sph!4v1792488214672!5m2!1sen!2sph"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d280.2669586700182!2d126.20822932494922!3d9.053797356959693!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x330237000c13b973%3A0xfc62991506f06131!2sSmash%20Point%20Pickle%20Sports%20Center!5e1!3m2!1sen!2sph!4v1793489693612!5m2!1sen!2sph"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
