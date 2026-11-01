@@ -23,7 +23,7 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { bookingService } from '@/services/bookingService';
 import { useClientStore } from '@/stores/clientStore';
-import { useAdminStore } from '@/stores/adminStore';
+import { useBookingStore } from '@/stores/bookingStore';
 import {
   formatTimeRange,
   formatCurrency,
@@ -37,8 +37,8 @@ import type { Booking, BookingSummary } from '@/types';
 export function Track() {
   const settings = useClientStore((state) => state.settings);
   const loadSettings = useClientStore((state) => state.loadSettings);
-  const courts = useAdminStore((state) => state.courts);
-  const loadCourts = useAdminStore((state) => state.loadCourts);
+  const courts = useBookingStore((state) => state.courts);
+const loadCourts = useBookingStore((state) => state.loadCourts);
 
   const displayNumber = settings?.gcash_number || APP_CONFIG.paymentNumber;
 
