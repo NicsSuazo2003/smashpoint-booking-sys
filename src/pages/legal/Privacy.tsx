@@ -181,7 +181,7 @@ export function Privacy() {
                 <li className="flex items-center gap-2.5">
                   <Facebook className="h-4 w-4 shrink-0 text-primary-300" />
                   <a
-                    href="https://www.facebook.com/profile.php?id=61594106069425"
+                    href="https://www.facebook.com/psyche.goyongcocatacte#"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-primary-300 transition"
