@@ -24,7 +24,7 @@ import { Button } from '@/components/ui/Button';
 import { Input, Textarea } from '@/components/ui/Input';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useBookingStore, getSelectedSlotItems, getSelectedTotal } from '@/stores/bookingStore';
-import { useClientStore } from '@/stores/clientStore';              // ⭐ NEW
+import { useClientStore } from '@/stores/clientStore';
 import { formatTimeRange, formatCurrency, formatDateLong } from '@/utils/format';
 import { FIXED_SLOT, APP_CONFIG } from '@/utils/constants';
 import type { CustomerDetails } from '@/types';
@@ -37,10 +37,113 @@ const normalizePhone = (value: string) =>
 const NOTES_MAX = 500;
 const HOLD_MINUTES = Math.round(APP_CONFIG.paymentTimerSeconds / 60);
 
-const isTestString = (val: string) => {
-  const lower = val.toLowerCase();
+// ─── Blocklist: placeholder names that are obviously not real customers ───
+const BLOCKED_NAMES_EXACT = [
+  'juan dela cruz',
+  'juan delacruz',
+  'pedro dela cruz',
+  'john doe',
+  'jane doe',
+  'john smith',
+  'jane smith',
+  'maria santos',
+  'pedro reyes',
+  'jose rizal',
+  'test test',
+  'admin admin',
+  'user user',
+  'asdf',
+  'asdfgh',
+  'qwerty',
+  'aaa',
+  'bbb',
+  'xxx',
+];
+
+// ─── Blocklist: disposable / fake email services ───
+const BLOCKED_EMAIL_DOMAINS = [
+  'test.com',
+  'example.com',
+  'mailinator.com',
+  'tempmail.com',
+  'guerrillamail.com',
+  '10minutemail.com',
+  'yopmail.com',
+  'sharklasers.com',
+  'grr.la',
+  'temp-mail.org',
+  'throwawaymail.com',
+  'dispostable.com',
+  'getnada.com',
+  'trashmail.com',
+];
+
+// ─── Blocklist: fake email local parts (regardless of domain) ───
+const BLOCKED_EMAIL_LOCALPARTS = [
+  'johndoe',
+  'janedoe',
+  'juandelacruz',
+  'juan.delacruz',
+  'admin',
+  'test',
+  'sample',
+  'fake',
+  'asdf',
+  'qwerty',
+  'aaa',
+  'bbb',
+  'xxx',
+];
+
+const isTestString = (val: string): boolean => {
+  const lower = val.toLowerCase().trim();
+  if (lower.length === 0) return true;
+
+  // Substring blocklist (existing behavior)
   const blockedWords = ['test', 'sample', 'testing', 'admin', 'fake'];
-  return blockedWords.some((word) => lower.includes(word));
+  if (blockedWords.some((word) => lower.includes(word))) return true;
+
+  // Exact placeholder names
+  if (BLOCKED_NAMES_EXACT.includes(lower)) return true;
+
+  // Repeated single character: "aaaa", "bbbb", "xxxx"
+  if (/^(.)\1{2,}$/.test(lower.replace(/\s+/g, ''))) return true;
+
+  // Keyboard mashes / sequential patterns
+  if (/^(asdf|qwer|zxcv|1234|abcd)/i.test(lower)) return true;
+
+  return false;
+};
+
+const isFakeEmail = (email: string): boolean => {
+  if (!email || !email.includes('@')) return true;
+
+  const parts = email.toLowerCase().trim().split('@');
+  if (parts.length !== 2) return true;
+
+  const localPart = parts[0];
+  const domain = parts[1];
+
+  if (!localPart || !domain) return true;
+
+  // Blocked disposable email domains
+  if (BLOCKED_EMAIL_DOMAINS.some((d) => domain === d || domain.endsWith('.' + d))) {
+    return true;
+  }
+
+  // RFC-reserved TLDs (test-only, never real inbox)
+  if (/\.(test|invalid|example|localhost)$/i.test(domain)) return true;
+
+  // Blocked local parts (johndoe@*, test@*, etc.)
+  if (BLOCKED_EMAIL_LOCALPARTS.includes(localPart)) return true;
+
+  // Local part containing "test"/"sample"/"fake"/"admin" as whole word
+  if (/\b(test|sample|fake|admin)\b/i.test(localPart)) return true;
+
+  // Repeated single character local part: "aaaa@gmail.com", "xxxx@gmail.com"
+  if (/^(.)\1{2,}$/.test(localPart)) return true;
+
+  return false;
 };
 
 const customerSchema = z.object({
@@ -51,7 +154,7 @@ const customerSchema = z.object({
     .max(80, 'Name is too long')
     .regex(/^[A-Za-zÀ-ÿ.'\-\s]+$/, "Name can only contain letters, spaces, and . ' -")
     .refine((v) => !isTestString(v), {
-      message: 'Please enter your real full name.',
+      message: 'Please enter your real full name (not a placeholder like "Juan Dela Cruz" or "test").',
     }),
 
   email: z
@@ -61,16 +164,9 @@ const customerSchema = z.object({
     .min(1, 'Email is required')
     .email('Enter a valid email address')
     .max(120, 'Email is too long')
-    .refine(
-      (v) => {
-        const blockedDomains = ['test.com', 'example.com', 'mailinator.com', 'tempmail.com'];
-        const domain = v.split('@')[1];
-        return !blockedDomains.includes(domain) && !isTestString(v);
-      },
-      {
-        message: 'Please use a real, active email address.',
-      }
-    ),
+    .refine((v) => !isFakeEmail(v), {
+      message: 'Please use a real, active email address (not a disposable or placeholder inbox).',
+    }),
 
   phone: z
     .string()
@@ -109,7 +205,6 @@ export function Booking() {
     refreshSlots,
   } = useBookingStore();
 
-  // ⭐ NEW — master online-bookings switch
   const bookingsEnabled = useClientStore(
     (state) => state.settings?.bookings_enabled ?? true
   );
@@ -206,7 +301,6 @@ export function Booking() {
     handleSubmit(onSubmit, onInvalid)();
   };
 
-  // ⭐ NEW — closed state short-circuits the whole flow
   if (!bookingsEnabled) {
     return (
       <div className="min-h-screen bg-charcoal">
@@ -281,7 +375,6 @@ export function Booking() {
 
         <div className="grid gap-5 md:gap-6 lg:grid-cols-3">
           <div className="space-y-5 lg:col-span-2">
-            {/* Selection Summary */}
             <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-4 sm:p-5 shadow-xl backdrop-blur-sm">
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary-300">
@@ -379,7 +472,6 @@ export function Booking() {
               </div>
             </div>
 
-            {/* Customer Details Form */}
             <div
               ref={formRef}
               className="card rounded-2xl border border-neutral-700 bg-neutral-900/80 p-4 scroll-mt-24 sm:p-5 shadow-xl backdrop-blur-sm"
@@ -494,7 +586,6 @@ export function Booking() {
             </div>
           </div>
 
-          {/* Right: Booking Summary Sidebar */}
           <div className="hidden lg:col-span-1 lg:block">
             <div className="sticky top-24 space-y-3">
               <div className="card rounded-2xl border border-neutral-700 bg-neutral-900/90 p-5 shadow-xl">
@@ -581,7 +672,7 @@ export function Booking() {
                   isLoading={submitting}
                   onClick={handleSummaryButtonClick}
                   rightIcon={<ArrowRight className="h-5 w-5" />}
-                  disabled={!bookingsEnabled}                     // ⭐ NEW
+                  disabled={!bookingsEnabled}
                 >
                   Continue to Payment
                 </Button>
@@ -625,7 +716,6 @@ export function Booking() {
         </div>
       </div>
 
-      {/* Sticky Mobile Checkout Bar */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-700 bg-neutral-950/95 p-3.5 backdrop-blur-md lg:hidden">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0 flex-1">
@@ -645,7 +735,7 @@ export function Booking() {
             onClick={handleSummaryButtonClick}
             rightIcon={<ArrowRight className="h-4 w-4" />}
             className="shrink-0 px-6"
-            disabled={!bookingsEnabled}                           // ⭐ NEW
+            disabled={!bookingsEnabled}
           >
             Continue
           </Button>
