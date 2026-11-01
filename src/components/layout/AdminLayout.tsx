@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   Users,
+  Shield,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '@/stores/authStore';
@@ -22,6 +23,7 @@ const navItems = [
   { path: '/admin/courts', label: 'Courts', icon: Building2 },
   { path: '/admin/pricing', label: 'Pricing', icon: Tag },
   { path: '/admin/open-play', label: 'Open Play', icon: Users },
+  { path: '/admin/security-logs', label: 'Security Logs', icon: Shield },
   { path: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
@@ -68,7 +70,9 @@ export function AdminSidebar() {
             {(user?.name ?? 'A')[0].toUpperCase()}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-bold text-cream">{user?.name ?? 'Admin'}</p>
+            <p className="truncate text-sm font-bold text-cream">
+              {user?.name ?? 'Admin'}
+            </p>
             <p className="truncate text-xs text-cream-muted">{user?.email}</p>
           </div>
         </div>

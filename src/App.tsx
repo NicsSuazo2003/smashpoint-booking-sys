@@ -8,12 +8,14 @@ import { Success } from '@/pages/Success';
 import { Track } from '@/pages/Track';
 import { MyBookings } from '@/pages/MyBookings';
 import { Login } from '@/pages/Login';
+import { ResetPassword } from '@/pages/ResetPassword';
 import { Dashboard } from '@/pages/admin/Dashboard';
 import { Bookings } from '@/pages/admin/Bookings';
 import { Courts } from '@/pages/admin/Courts';
 import { Pricing } from '@/pages/admin/Pricing';
 import { Settings } from '@/pages/admin/Settings';
 import { OpenPlayManagement } from '@/pages/admin/OpenPlayManagement';
+import { SecurityLogs } from '@/pages/admin/SecurityLogs';
 import { StaffBookings } from '@/pages/staff/StaffBookings';
 import { OpenPlay } from '@/pages/OpenPlay';
 import { Terms, Privacy, RefundPolicy, PaymentPolicy } from '@/pages/legal';
@@ -69,6 +71,7 @@ export default function App() {
         <Route path="/my-bookings" element={<MyBookings />} />
         <Route path="/open-play" element={<OpenPlay />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Legal Pages */}
         <Route path="/terms" element={<Terms />} />
@@ -90,6 +93,7 @@ export default function App() {
           }
         />
         <Route path="/admin/settings" element={<Settings />} />
+        <Route path="/admin/security-logs" element={<SecurityLogs />} />
 
         {/* Staff Routes */}
         <Route path="/staff" element={<Navigate to="/staff/bookings" replace />} />

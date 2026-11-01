@@ -1,22 +1,28 @@
+// src/pages/Login.tsx
 import { useEffect, useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, AlertCircle, ArrowLeft, Shield } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useAuthStore } from '@/stores/authStore';
+import { ApiError } from '@/services/api';
 import { ADMIN_CREDENTIALS, COURT_IMAGES } from '@/utils/constants';
 
 export function Login() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [params] = useSearchParams();
   const { login, loading, error, isAuthenticated, initializing } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
 
-  const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/admin';
+  const from =
+    params.get('next') ??
+    (location.state as { from?: { pathname: string } })?.from?.pathname ??
+    '/admin';
 
   useEffect(() => {
     if (!initializing && isAuthenticated) {
@@ -34,8 +40,14 @@ export function Login() {
     try {
       await login(email, password);
       navigate(from, { replace: true });
-    } catch {
-      setFormError('Invalid email or password');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setFormError(err.userMessage);
+      } else if (err instanceof Error) {
+        setFormError(err.message);
+      } else {
+        setFormError('Invalid email or password');
+      }
     }
   };
 
@@ -74,8 +86,12 @@ export function Login() {
             <div className="flex justify-center">
               <Logo size="2xl" to="" withText={false} />
             </div>
-            <h1 className="mt-3 font-display text-lg font-bold text-cream">Admin Portal</h1>
-            <p className="mt-1 text-xs text-cream-muted">Sign in to manage bookings</p>
+            <h1 className="mt-3 font-display text-lg font-bold text-cream">
+              Admin Portal
+            </h1>
+            <p className="mt-1 text-xs text-cream-muted">
+              Sign in to manage bookings
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
