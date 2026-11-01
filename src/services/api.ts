@@ -14,10 +14,6 @@ export class ApiError extends Error {
     this.retryAfter = retryAfter;
   }
 
-  /**
-   * Best-effort extraction of a human-readable message from the backend.
-   * The API returns `{ message: "..." }` on all error paths.
-   */
   get userMessage(): string {
     const b = this.body as { message?: string } | string | undefined;
     if (typeof b === 'string' && b.trim()) return b;
@@ -36,17 +32,20 @@ export class ApiError extends Error {
 const BASE_URL = APP_CONFIG.apiUrl;
 const CLIENT_SUBDOMAIN = import.meta.env.VITE_CLIENT_SUBDOMAIN ?? 'smashpoint';
 
-// Auth endpoints that must NOT redirect on 401 — a 401 there means "wrong creds",
-// not "your session expired". Redirecting would cause a loop.
-const AUTH_NO_REDIRECT = [
-  '/api/auth/login',
-  '/api/auth/register',
-  '/api/auth/forgot-password',
-  '/api/auth/reset-password',
-];
-
+/**
+ * Only redirect to /login on 401 when the failing call is one that
+ * REQUIRES an authenticated session.
+ *
+ * Public endpoints (/api/courts, /api/open-play, /api/clients/public,
+ * /api/bookings) returning 401 is a backend bug — we do NOT want to
+ * log customers out for a backend problem.
+ */
 function shouldRedirectOn401(path: string): boolean {
-  return !AUTH_NO_REDIRECT.some((p) => path.startsWith(p));
+  return (
+    path.startsWith('/api/admin') ||
+    path.startsWith('/api/auth/change-password') ||
+    path.startsWith('/api/auth/profile')
+  );
 }
 
 export async function apiRequest<T>(
@@ -98,7 +97,7 @@ export async function apiRequest<T>(
         }
       }
 
-      // 401 handler: stale token means re-login, except for auth endpoints
+      // 401 handler: only redirect for auth-required endpoints
       if (res.status === 401 && shouldRedirectOn401(fullPath)) {
         localStorage.removeItem('admin_token');
         if (
