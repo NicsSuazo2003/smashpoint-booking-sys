@@ -86,7 +86,6 @@ export function Navbar() {
 
   const navLinks: NavLink[] = [
     { label: 'Home', path: '/' },
-    { label: 'Open Play', path: '/open-play' },
     { label: 'My Bookings', path: '/my-bookings', badge: hasPending ? 1 : 0 },
     { label: 'Track Booking', path: '/track' },
   ];

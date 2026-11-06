@@ -538,10 +538,10 @@ export function Booking() {
                   <Timer className="mt-0.5 h-4 w-4 shrink-0 text-primary-300" />
                   <p className="text-xs leading-relaxed text-cream-muted">
                     <strong className="font-semibold text-primary-200">
-                      What happens next:
+                      Heads up:
                     </strong>{' '}
-                    your slots are held for {HOLD_MINUTES} minutes once you continue. Pay and submit
-                    your payment reference within that time, or the hold is released.
+                    your slot is held for {HOLD_MINUTES} minutes after you continue. Pay and submit
+                    your reference within that time, or the hold is released.
                   </p>
                 </div>
 
@@ -556,17 +556,16 @@ export function Booking() {
                     htmlFor="termsAccepted"
                     className="cursor-pointer select-none text-xs leading-relaxed text-cream-muted sm:text-sm"
                   >
-                    I acknowledge and agree to the{' '}
+                    I have read and agree to the{' '}
                     <Link
                       to="/terms"
                       target="_blank"
                       rel="noreferrer"
                       className="font-semibold text-primary-300 underline underline-offset-2 hover:text-primary-200"
                     >
-                      Terms and Conditions
-                    </Link>{' '}
-                    on behalf of myself and all players included in this booking, and accept
-                    responsibility for informing them of these terms.
+                      Terms & Conditions
+                    </Link>
+                    .
                   </label>
                 </div>
 
@@ -725,7 +724,7 @@ export function Booking() {
             <p className="text-xl font-extrabold text-accent-400">{formatCurrency(total)}</p>
             {errors.termsAccepted && (
               <p className="mt-0.5 text-[10px] font-medium text-error">
-                ⚠ Agree to Terms &amp; Privacy above
+                ⚠ Agree to Terms above
               </p>
             )}
           </div>

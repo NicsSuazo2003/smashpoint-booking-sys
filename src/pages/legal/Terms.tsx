@@ -2,39 +2,31 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  FileText,
-  ArrowLeft,
-  Mail,
-  Facebook,
-  MapPin,
-  AlertTriangle,
-  CalendarCheck,
-  Ban,
-  ShieldAlert,
-  Users,
-  RefreshCw,
+  FileText, ArrowLeft, Mail, Facebook, MapPin, Ban, ShieldAlert, Users, RefreshCw,
 } from 'lucide-react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { APP_CONFIG } from '@/utils/constants';
+
+const rules = [
+  'Wear non-marking athletic shoes on the court.',
+  'No food or drinks on the playing surface.',
+  'Respect your time slot and vacate the court when it ends.',
+  'Keep noise reasonable, especially at night.',
+  'Pets are allowed only in the waiting area, not on or beside the courts.',
+];
 
 export function Terms() {
   useEffect(() => {
-    document.title = `Terms & Conditions | ${APP_CONFIG.name}`;
+    document.title = 'Terms & Conditions | Smash Point Pickle Sports Center';
     window.scrollTo(0, 0);
   }, []);
 
   return (
     <div className="min-h-screen bg-charcoal text-cream">
       <Navbar />
-
       <div className="container-page pt-24 pb-16">
-        <Link
-          to="/"
-          className="mb-6 inline-flex items-center gap-1.5 text-xs font-semibold text-cream-muted transition hover:text-primary-300"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Back to Home
+        <Link to="/" className="mb-6 inline-flex items-center gap-1.5 text-xs font-semibold text-cream-muted transition hover:text-primary-300">
+          <ArrowLeft className="h-3.5 w-3.5" /> Back to Home
         </Link>
 
         <div className="mx-auto max-w-3xl">
@@ -43,203 +35,106 @@ export function Terms() {
               <FileText className="h-6 w-6 text-primary-300" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-cream sm:text-3xl">
-                Terms & Conditions
-              </h1>
+              <h1 className="text-2xl font-bold tracking-tight text-cream sm:text-3xl">Terms & Conditions</h1>
               <p className="text-xs text-cream-muted sm:text-sm">
-                Last updated:{' '}
-                {new Date().toLocaleDateString('en-PH', {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
+                Last updated: {new Date().toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}
               </p>
             </div>
           </div>
 
           <div className="space-y-8">
-            {/* Intro */}
             <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <p className="text-sm leading-relaxed text-cream-muted">
-                Please read these Terms & Conditions carefully before booking a court or using the facilities of Smash Point Pickle Sports Center. These terms govern your use of our facilities and online booking services.
+                By booking a court or using the facilities of Smash Point Pickle Sports Center, you
+                agree to these Terms & Conditions. Please read them before making a reservation.
               </p>
             </section>
 
-            {/* Section 1 */}
             <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
-              <div className="mb-3 flex items-center gap-2.5">
-                <CalendarCheck className="h-5 w-5 shrink-0 text-primary-300" />
-                <h2 className="text-lg font-bold text-cream">1. Acceptance of Terms</h2>
-              </div>
-              <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
-                <p>
-                  By using our facilities or booking platform, you agree to comply with these Terms & Conditions. If you do not agree to these terms, please do not proceed with your reservation.
-                </p>
-              </div>
+              <h2 className="mb-3 text-lg font-bold text-cream">1. Bookings</h2>
+              <p className="text-sm leading-relaxed text-cream-muted">
+                All bookings are subject to court availability. A booking is confirmed only after
+                payment is verified and you receive a confirmation email. Smash Point may cancel or
+                reschedule bookings for maintenance, safety, or events beyond our control.
+              </p>
             </section>
 
-            {/* Section 2 */}
-            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
-              <div className="mb-3 flex items-center gap-2.5">
-                <CalendarCheck className="h-5 w-5 shrink-0 text-primary-300" />
-                <h2 className="text-lg font-bold text-cream">2. Court Bookings</h2>
-              </div>
-              <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
-                <p>
-                  All court reservations are subject to availability. A booking is confirmed only upon receipt of a confirmation email. Smash Point reserves the right to cancel or reschedule bookings due to facility maintenance, safety concerns, or force majeure events.
-                </p>
-              </div>
-            </section>
-
-            {/* Section 3 — NO CANCELLATION */}
             <section className="rounded-2xl border border-rose-900/50 bg-rose-950/25 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
                 <Ban className="h-5 w-5 shrink-0 text-rose-400" />
-                <h2 className="text-lg font-bold text-rose-400">
-                  3. No Cancellation Policy
-                </h2>
+                <h2 className="text-lg font-bold text-rose-400">2. No Cancellation Policy</h2>
               </div>
-              <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
-                <div className="flex items-start gap-2.5">
-                  <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-rose-400" />
-                  <div>
-                    <p className="font-bold text-rose-400">ALL BOOKINGS ARE FINAL.</p>
-                    <p className="mt-1.5">
-                      Confirmed bookings are non-cancellable and non-refundable. If you cannot attend, you may arrange for someone else to take your slot and settle payment directly with them.
-                    </p>
-                  </div>
+              <div className="flex items-start gap-2.5 text-sm leading-relaxed text-cream-muted">
+                <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-rose-400" />
+                <div>
+                  <p className="font-bold text-rose-400">ALL BOOKINGS ARE FINAL.</p>
+                  <p className="mt-1.5">
+                    Confirmed bookings are non-cancellable and non-refundable. If you cannot play, you
+                    may pass your slot to someone else and settle payment with them directly.
+                  </p>
                 </div>
               </div>
             </section>
 
-            {/* Section 4 */}
             <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
                 <Users className="h-5 w-5 shrink-0 text-primary-300" />
-                <h2 className="text-lg font-bold text-cream">4. Walk-in Policy</h2>
+                <h2 className="text-lg font-bold text-cream">3. Court Rules</h2>
               </div>
-              <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
-                <p>
-                  Walk-ins are welcome, subject to court availability. Advance online booking is recommended, especially during peak hours, to secure your preferred time slot.
-                </p>
-              </div>
+              <ul className="list-inside list-disc space-y-1.5 pl-2 text-sm leading-relaxed text-cream-muted">
+                {rules.map((rule) => <li key={rule}>{rule}</li>)}
+              </ul>
             </section>
 
-            {/* Section 5 */}
             <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
-              <div className="mb-3 flex items-center gap-2.5">
-                <AlertTriangle className="h-5 w-5 shrink-0 text-primary-300" />
-                <h2 className="text-lg font-bold text-cream">5. Player Conduct</h2>
-              </div>
-              <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
-                <p>
-                  All players must treat staff, fellow players, and the facility with respect. Smash Point Pickle Sports Center reserves the right to remove anyone displaying disruptive, unsafe, or inappropriate behavior without a refund.
-                </p>
-              </div>
+              <h2 className="mb-3 text-lg font-bold text-cream">4. Conduct</h2>
+              <p className="text-sm leading-relaxed text-cream-muted">
+                Players must treat staff, other players, and the facility with respect. Smash Point
+                may remove anyone behaving disruptively or unsafely, without a refund.
+              </p>
             </section>
 
-            {/* Section 6 */}
             <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
-              <div className="mb-3 flex items-center gap-2.5">
-                <AlertTriangle className="h-5 w-5 shrink-0 text-primary-300" />
-                <h2 className="text-lg font-bold text-cream">6. Facility Rules</h2>
-              </div>
-              <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
-                <ul className="list-inside list-disc space-y-1.5 pl-2">
-                  <li>Players must wear non-marking athletic shoes at all times.</li>
-                  <li>Food and beverages are not allowed on the court surface.</li>
-                  <li>All players must observe proper court etiquette and respect their reserved playing time.</li>
-                  <li>The use of loudspeakers and excessive shouting are prohibited, especially after 10:00 PM, to maintain a peaceful environment for nearby residents.</li>
-                  <li>Pets are not allowed in the court playing area or courtside but are permitted in the designated waiting area.</li>
-                </ul>
-              </div>
+              <h2 className="mb-3 text-lg font-bold text-cream">5. Equipment & Damage</h2>
+              <p className="text-sm leading-relaxed text-cream-muted">
+                The booking party is responsible for any damage to the facility or rental equipment
+                caused by misuse or negligence during their booking. Repair or replacement costs must
+                be paid in full.
+              </p>
             </section>
 
-            {/* Section 7 */}
             <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
-              <div className="mb-3 flex items-center gap-2.5">
-                <AlertTriangle className="h-5 w-5 shrink-0 text-primary-300" />
-                <h2 className="text-lg font-bold text-cream">7. Equipment & Property</h2>
-              </div>
-              <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
-                <p>
-                  By making a booking, the booking party agrees to be financially responsible for any damage to the facility or rental equipment caused by negligence, misuse, or willful misconduct by themselves or any individual included in the booking. Repair or replacement costs will be assessed by facility management and must be paid in full by the booking party.
-                </p>
-              </div>
+              <h2 className="mb-3 text-lg font-bold text-cream">6. Health & Liability</h2>
+              <p className="text-sm leading-relaxed text-cream-muted">
+                Pickleball is a physical sport with inherent risk of injury. By booking, players
+                confirm they are fit to play and agree, to the extent permitted by law, to hold Smash
+                Point Pickle Sports Center, its owners, and staff harmless from claims arising from
+                personal injury or property damage during use of the facility.
+              </p>
             </section>
 
-            {/* Section 8 */}
             <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
-              <div className="mb-3 flex items-center gap-2.5">
-                <AlertTriangle className="h-5 w-5 shrink-0 text-primary-300" />
-                <h2 className="text-lg font-bold text-cream">8. Medical Fitness</h2>
-              </div>
-              <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
-                <p>
-                  All participants acknowledge their responsibility to ensure they are physically fit to play, recognize their health limitations, and obtain medical clearance when necessary.
-                </p>
-              </div>
+              <h2 className="mb-3 text-lg font-bold text-cream">7. Minors</h2>
+              <p className="text-sm leading-relaxed text-cream-muted">
+                Minors (under 18) must be accompanied by a parent or guardian, who is responsible for
+                their safety and conduct.
+              </p>
             </section>
 
-            {/* Section 9 */}
-            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
-              <div className="mb-3 flex items-center gap-2.5">
-                <ShieldAlert className="h-5 w-5 shrink-0 text-primary-300" />
-                <h2 className="text-lg font-bold text-cream">9. Liability Waiver, Release & Indemnity</h2>
-              </div>
-              <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
-                <p>
-                  Pickleball is a physical sport that carries inherent risks of injury. By making a reservation or using our facilities, the booking party and all participants acknowledge these risks and agree, to the extent permitted by law, to release and hold harmless Smash Point Pickle Sports Center, its owners, and employees from claims or liabilities arising from personal injury, property damage, or death related to the use of the facility.
-                </p>
-              </div>
-            </section>
-
-            {/* Section 10 */}
-            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
-              <div className="mb-3 flex items-center gap-2.5">
-                <Users className="h-5 w-5 shrink-0 text-primary-300" />
-                <h2 className="text-lg font-bold text-cream">10. Minors (Under 18)</h2>
-              </div>
-              <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
-                <p>
-                  Minors must be accompanied by a parent or legal guardian throughout their visit. The parent or legal guardian is responsible for the minor's safety, conduct, and compliance with these Terms & Conditions while using the facility. The parent or legal guardian must ensure that the minor follows all facility rules.
-                </p>
-              </div>
-            </section>
-
-            {/* Section 11 */}
-            <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
-              <div className="mb-3 flex items-center gap-2.5">
-                <FileText className="h-5 w-5 shrink-0 text-primary-300" />
-                <h2 className="text-lg font-bold text-cream">11. Privacy</h2>
-              </div>
-              <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
-                <p>
-                  Personal information collected during booking, such as your name, email address, and phone number, is used only to process reservations and communicate booking-related updates. We do not sell or disclose your personal information to third parties for commercial purposes.
-                </p>
-              </div>
-            </section>
-
-            {/* Section 12 */}
             <section className="rounded-2xl border border-neutral-700 bg-neutral-900/80 p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2.5">
                 <RefreshCw className="h-5 w-5 shrink-0 text-primary-300" />
-                <h2 className="text-lg font-bold text-cream">12. Changes to Terms</h2>
+                <h2 className="text-lg font-bold text-cream">8. Changes to Terms</h2>
               </div>
-              <div className="space-y-3 text-sm leading-relaxed text-cream-muted">
-                <p>
-                  Smash Point Pickle Sports Center reserves the right to modify or update these Terms and Conditions at any time. Continued use of our facilities or booking platform constitutes acceptance of the revised terms.
-                </p>
-              </div>
+              <p className="text-sm leading-relaxed text-cream-muted">
+                We may update these Terms at any time. Continued use of our courts and booking
+                platform means you accept the revised terms.
+              </p>
             </section>
 
-            {/* Contact */}
             <section className="rounded-2xl border border-primary-400/30 bg-primary-600/20 p-5 sm:p-6">
               <h2 className="mb-3 text-lg font-bold text-cream">Questions?</h2>
-              <p className="text-sm leading-relaxed text-cream-muted">
-                If you have any questions about these Terms & Conditions, please contact us:
-              </p>
-              <ul className="mt-3 space-y-2 text-sm text-cream-muted">
+              <ul className="space-y-2 text-sm text-cream-muted">
                 <li className="flex items-center gap-2.5">
                   <Mail className="h-4 w-4 shrink-0 text-primary-300" />
                   <span>smashpoint@gmail.com</span>
@@ -264,7 +159,6 @@ export function Terms() {
           </div>
         </div>
       </div>
-
       <Footer />
     </div>
   );

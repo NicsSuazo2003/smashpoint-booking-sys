@@ -22,7 +22,6 @@ const navItems = [
   { path: '/admin/bookings', label: 'Bookings', icon: CalendarDays },
   { path: '/admin/courts', label: 'Courts', icon: Building2 },
   { path: '/admin/pricing', label: 'Pricing', icon: Tag },
-  { path: '/admin/open-play', label: 'Open Play', icon: Users },
   { path: '/admin/security-logs', label: 'Security Logs', icon: Shield },
   { path: '/admin/settings', label: 'Settings', icon: Settings },
 ];
