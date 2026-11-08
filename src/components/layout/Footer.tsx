@@ -54,7 +54,7 @@ export function Footer() {
           </p>
           <div className="mt-3.5 flex gap-2.5 sm:mt-4">
             <a
-              href="https://www.facebook.com/profile.php?id=61594106069425"
+              href="https://www.facebook.com/psyche.goyongcocatacte"
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-2 text-cream-muted transition hover:border-primary-400 hover:text-primary-300"
@@ -159,7 +159,7 @@ export function Footer() {
               <li className="flex items-start gap-2.5">
                 <Facebook className="h-4 w-4 shrink-0 text-primary-300 mt-0.5" />
                 <a
-                  href="https://www.facebook.com/profile.php?id=61594106069425"
+                  href="https://www.facebook.com/psyche.goyongcocatacte"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="leading-snug hover:text-primary-300 transition"

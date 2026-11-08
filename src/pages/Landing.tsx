@@ -1102,63 +1102,6 @@ export function Landing() {
         </div>
       </section>
 
-      {/* ─── Venue Amenities ─── */}
-      <section className="border-b border-neutral-800 bg-neutral-900/60 py-12 sm:py-20">
-        <div className="container-page">
-          <div className="mb-8 text-center sm:mb-12">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-accent-400 sm:text-xs">
-              Court Specs & Comfort
-            </span>
-            <h2 className="section-title mt-2 text-2xl sm:text-3xl md:text-4xl">
-              Venue Amenities
-            </h2>
-            <p className="mt-2 text-xs text-cream-muted sm:text-sm">
-              Everything you need for a great game — on and off the court
-            </p>
-          </div>
-
-          {availableAmenities.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-neutral-700 bg-neutral-950/40 p-6 text-center sm:p-8">
-              <Sparkles className="mx-auto h-9 w-9 text-cream-muted/30 sm:h-10 sm:w-10" />
-              <p className="mt-3 text-sm font-semibold text-cream-muted">
-                Amenities coming soon
-              </p>
-              <p className="mt-1 text-xs text-cream-muted/70">
-                Check back shortly for our full list of on-site facilities.
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
-              {availableAmenities.map((amenity, idx) => {
-                const Icon = getAmenityIconForItem(amenity);
-                return (
-                  <motion.div
-                    key={`${amenity.name}-${idx}`}
-                    initial={{ opacity: 0, y: 15 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: idx * 0.05 }}
-                    className="flex flex-col items-center rounded-2xl border border-neutral-700 bg-neutral-800/80 p-3.5 text-center transition hover:border-sky-400/40 hover:bg-neutral-800 sm:p-6"
-                  >
-                    <div className="mb-2.5 flex h-11 w-11 items-center justify-center rounded-xl border border-sky-400/30 bg-sky-950/50 shadow-inner sm:mb-3 sm:h-12 sm:w-12">
-                      <Icon className="h-5 w-5 text-sky-300 sm:h-6 sm:w-6" />
-                    </div>
-                    <h3 className="text-xs font-bold leading-tight text-cream sm:text-base">
-                      {amenity.name}
-                    </h3>
-                    {amenity.description && (
-                      <p className="mt-1.5 text-[10px] leading-snug text-cream-muted sm:mt-2 sm:text-xs sm:leading-relaxed">
-                        {amenity.description}
-                      </p>
-                    )}
-                  </motion.div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </section>
-
       {/* How It Works Section */}
       <section className="py-14 sm:py-20 bg-neutral-950/40">
         <div className="container-page">
