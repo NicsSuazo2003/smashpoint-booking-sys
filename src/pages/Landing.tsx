@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   CalendarPlus,
@@ -14,7 +14,6 @@ import {
   CloudSun,
   Users,
   UserCircle2,
-  AlertTriangle,
   X,
   AlertCircle,
   Sparkles,
@@ -28,7 +27,6 @@ import { useOpenPlayStore } from '@/stores/openPlayStore';
 import { useClientStore } from '@/stores/clientStore';
 import { bookingService } from '@/services/bookingService';
 import { APP_CONFIG, BOOKING_COPY } from '@/utils/constants';
-import { getAmenityIconForItem } from '@/utils/amenityIcons';
 import type { AmenityItem } from '@/types';
 import {
   formatCurrency,
@@ -47,7 +45,7 @@ const COURT_ACCENTS = [
     header: 'text-[#ED1C24]',
     dot: 'bg-[#ED1C24]',
     border: 'border-[#ED1C24]',
-    bg: 'bg-[#2A0B0D]', // Solid dark red
+    bg: 'bg-[#2A0B0D]',
     text: 'text-white',
     hoverBorder: 'hover:border-[#FF3B41]',
     hoverBg: 'hover:bg-[#3D1114]',
@@ -56,7 +54,7 @@ const COURT_ACCENTS = [
     header: 'text-[#FFB703]',
     dot: 'bg-[#FFB703]',
     border: 'border-[#FFB703]',
-    bg: 'bg-[#2A1F0B]', // Solid dark gold
+    bg: 'bg-[#2A1F0B]',
     text: 'text-white',
     hoverBorder: 'hover:border-[#FFC533]',
     hoverBg: 'hover:bg-[#3D2D11]',
@@ -188,7 +186,6 @@ export function Landing() {
   const availableAmenities: AmenityItem[] =
     useClientStore((state) => state.settings?.available_amenities) ?? EMPTY_AMENITIES;
 
-  // ⭐ NEW — master online-bookings switch
   const bookingsEnabled = useClientStore(
     (state) => state.settings?.bookings_enabled ?? true
   );
@@ -529,9 +526,12 @@ export function Landing() {
               </motion.button>
             )}
 
-            <h1 className="text-4xl font-bold leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl">
-              <span className="text-cream">Smash</span>{' '}
-              <span className="text-accent-400">Point</span>
+            {/* Hero Gradient Title */}
+            <h1 className="text-4xl font-black leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl">
+              Smash{' '}
+              <span className="bg-gradient-to-r from-rose-500 via-orange-400 to-amber-400 bg-clip-text text-transparent">
+                Point
+              </span>
             </h1>
 
             <p className="mt-3 text-xl font-medium text-cream-dark sm:mt-4 sm:text-3xl">
@@ -694,7 +694,7 @@ export function Landing() {
         </section>
       )}
 
-      {/* ⭐ NEW — Bookings closed banner */}
+      {/* Bookings Closed Banner */}
       {!bookingsEnabled && (
         <section className="border-y border-amber-500/40 bg-amber-950/40 py-4">
           <div className="container-page flex items-start gap-3 text-amber-200">
@@ -713,26 +713,26 @@ export function Landing() {
       <div ref={bookingSectionRef}>
         <section className="relative z-20 border-y border-neutral-800 bg-neutral-950 py-8 md:py-16">
           <div className="container-page max-w-7xl">
-            <div className="overflow-hidden rounded-2xl border border-neutral-700 bg-neutral-900 shadow-2xl md:rounded-3xl">
+            <div className="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900 shadow-2xl md:rounded-3xl">
 
-              <div className="border-b border-neutral-800 bg-neutral-950 px-4 py-4 sm:px-6 sm:py-5 md:px-8 md:py-7">
+              {/* Booking Section Header */}
+              <div className="border-b border-neutral-800 bg-neutral-950/70 px-4 py-4 sm:px-6 sm:py-5 md:px-8 md:py-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h2 className="text-xl font-bold tracking-tight text-cream sm:text-2xl md:text-3xl">
-                      Book a <span className="text-accent-400">Court</span>
+                      Book a <span className="bg-gradient-to-r from-rose-500 to-amber-400 bg-clip-text text-transparent">Court</span>
                     </h2>
                     <p className="mt-0.5 text-xs text-cream-muted sm:text-sm">
                       {BOOKING_COPY.bookingInstructions}
                     </p>
                   </div>
-                  <div className="hidden rounded-xl border border-sky-500/40 bg-sky-950/40 p-2.5 text-sky-300 sm:block md:p-3">
+                  <div className="hidden rounded-xl border border-neutral-800 bg-neutral-900 p-2.5 text-neutral-300 sm:block md:p-3">
                     <CalendarDays className="h-5 w-5 md:h-6 md:w-6" />
                   </div>
                 </div>
               </div>
 
               <div className="p-4 pb-24 sm:p-6 sm:pb-24 md:p-8 md:pb-8">
-                {/* ⭐ NEW — closed state replaces the whole booking UI */}
                 {!bookingsEnabled ? (
                   <div className="rounded-2xl border border-amber-500/40 bg-amber-500/10 p-8 text-center">
                     <AlertCircle className="mx-auto h-10 w-10 text-amber-400" />
@@ -745,69 +745,61 @@ export function Landing() {
                   </div>
                 ) : (
                   <>
-                <div className="mb-6 md:mb-10">
-                  <div className="mb-3 flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full border border-sky-400/50 bg-sky-600 text-xs font-bold text-white shadow-sm">
-                        1
+                    {/* ─── REDESIGNED DATE PICKER ─── */}
+                    <div className="mb-6 rounded-2xl border border-neutral-800 bg-neutral-950/60 p-3 sm:p-5 md:mb-8 shadow-inner">
+                      {/* Date Header Strip */}
+                      <div className="mb-3 flex items-center justify-between gap-2 border-b border-neutral-800/80 pb-3">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-[10px] font-black text-white shrink-0">
+                            1
+                          </span>
+                          <span className="text-xs sm:text-sm font-bold text-cream truncate">
+                            {formatDateLong(selectedDate)}
+                          </span>
+                        </div>
+
+                        {/* Controls (Jump to Calendar + Prev/Next Week) */}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <div className="relative flex h-8 items-center gap-1.5 rounded-lg border border-neutral-700 bg-neutral-800/80 px-2.5 text-xs font-semibold text-cream transition hover:border-neutral-500">
+                            <CalendarDays className="h-3.5 w-3.5 text-rose-400" />
+                            <span className="hidden sm:inline">Pick Date</span>
+                            <input
+                              type="date"
+                              value={selectedDate}
+                              min={todayISO()}
+                              max={maxSelectableDate ?? undefined}
+                              onChange={handleCalendarPick}
+                              aria-label="Pick a date from calendar"
+                              className="absolute inset-0 h-full w-full cursor-pointer opacity-0 [color-scheme:dark]"
+                            />
+                          </div>
+
+                          <button
+                            onClick={() => setWeekOffset((w) => Math.max(0, w - 1))}
+                            disabled={weekOffset === 0}
+                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-800 text-cream-muted transition hover:text-white disabled:opacity-30 active:scale-95"
+                            aria-label="Previous week"
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => setWeekOffset((w) => w + 1)}
+                            disabled={isNextWeekDisabled}
+                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-800 text-cream-muted transition hover:text-white disabled:opacity-30 active:scale-95"
+                            aria-label="Next week"
+                          >
+                            <ChevronRight className="h-4 w-4" />
+                          </button>
+                        </div>
                       </div>
-                      <h3 className="text-sm font-bold text-cream sm:text-base">
-                        Choose <span className="text-accent-400">Date</span>
-                      </h3>
-                    </div>
 
-                    <div className="flex items-center gap-1.5">
-                      <div className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-sky-400/50 bg-sky-950/50 text-sky-200 transition hover:border-sky-300 hover:bg-sky-900/50 active:scale-95">
-                        <CalendarDays className="pointer-events-none h-4 w-4" />
-                        <input
-                          type="date"
-                          value={selectedDate}
-                          min={todayISO()}
-                          max={maxSelectableDate ?? undefined}
-                          onChange={handleCalendarPick}
-                          aria-label="Pick a date from calendar"
-                          className="absolute inset-0 h-full w-full cursor-pointer opacity-0 [color-scheme:dark]"
-                        />
-                      </div>
-
-                      <div className="flex items-center gap-1.5 sm:hidden">
-                        <button
-                          onClick={() => setWeekOffset((w) => Math.max(0, w - 1))}
-                          disabled={weekOffset === 0}
-                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-800 text-cream-muted transition hover:border-sky-400/60 hover:text-sky-200 disabled:opacity-30 active:scale-95"
-                          aria-label="Previous week"
-                        >
-                          <ChevronLeft className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => setWeekOffset((w) => w + 1)}
-                          disabled={isNextWeekDisabled}
-                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-800 text-cream-muted transition hover:border-sky-400/60 hover:text-sky-200 disabled:opacity-30 active:scale-95"
-                          aria-label="Next week"
-                        >
-                          <ChevronRight className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="relative -mx-4 overflow-hidden px-4 sm:mx-0 sm:overflow-visible sm:px-0">
-                    <div className="flex items-center gap-1.5 sm:gap-2">
-                      <button
-                        onClick={() => setWeekOffset((w) => Math.max(0, w - 1))}
-                        disabled={weekOffset === 0}
-                        className="hidden h-14 w-10 shrink-0 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-cream-muted transition hover:border-sky-400/60 hover:text-sky-200 disabled:opacity-30 sm:flex"
-                        aria-label="Previous week"
-                      >
-                        <ChevronLeft className="h-5 w-5" />
-                      </button>
-
-                      <div className="no-scrollbar snap-x flex flex-1 gap-2 overflow-x-auto pb-1.5 pt-2.5 sm:grid sm:grid-cols-7 sm:overflow-visible sm:py-0">
+                      {/* Horizontal 7-Day Ribbon */}
+                      <div className="no-scrollbar -mx-1 flex gap-1.5 overflow-x-auto px-1 sm:mx-0 sm:grid sm:grid-cols-7 sm:gap-2">
                         {weekDays.map((day) => {
                           const iso = toISODate(day);
                           const isSelected = selectedDate === iso;
                           const isToday = iso === todayISO();
-                          const dayName = day.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+                          const dayName = day.toLocaleDateString('en-US', { weekday: 'short' });
                           const dayNumber = day.getDate();
                           const monthName = day.toLocaleDateString('en-US', { month: 'short' });
                           const hasOpenPlay = openPlaySessions.some(
@@ -821,31 +813,27 @@ export function Landing() {
                               onClick={() => setDate(iso)}
                               disabled={beyondLimit}
                               title={beyondLimit ? `Bookings open up to ${maxAdvanceDays} days ahead` : undefined}
-                              className={`relative flex min-w-[54px] flex-1 snap-center flex-col items-center justify-center rounded-xl border py-2 transition-all ${
+                              className={`group relative flex min-w-[54px] flex-1 shrink-0 snap-start flex-col items-center justify-center rounded-xl py-2 transition-all sm:min-w-0 ${
                                 beyondLimit
-                                  ? 'cursor-not-allowed border-neutral-800/50 bg-neutral-950/50 opacity-40 text-cream-muted/50'
+                                  ? 'cursor-not-allowed border border-neutral-800/40 bg-neutral-900/40 opacity-40 text-neutral-600'
                                   : isSelected
-                                    ? 'border-sky-400 bg-sky-600 text-white font-bold shadow-[0_0_16px_rgba(56,189,248,0.3)]'
-                                    : 'border-neutral-700/80 bg-neutral-800/90 text-cream-muted hover:border-sky-400/50 hover:text-cream'
+                                    ? 'border border-rose-500 bg-rose-600 text-white font-bold shadow-[0_0_16px_rgba(244,63,94,0.35)]'
+                                    : 'border border-neutral-800 bg-neutral-900 text-cream-muted hover:border-neutral-700 hover:bg-neutral-850 hover:text-white'
                               }`}
                             >
                               {isToday && (
                                 <span
-                                  className={`absolute -top-2 rounded-full px-1.5 py-[1px] text-[8px] font-black tracking-wider ${
+                                  className={`mb-0.5 rounded-full px-1.5 py-[1px] text-[8px] font-black uppercase tracking-wider ${
                                     isSelected
-                                      ? 'bg-neutral-950 text-accent-400'
-                                      : 'bg-sky-500 text-white'
+                                      ? 'bg-black text-rose-300'
+                                      : 'bg-rose-500/20 text-rose-400'
                                   }`}
                                 >
                                   TODAY
                                 </span>
                               )}
 
-                              <span
-                                className={`text-[10px] font-semibold tracking-tight ${
-                                  isSelected ? 'text-white' : 'text-cream-muted'
-                                }`}
-                              >
+                              <span className={`text-[10px] font-semibold uppercase ${isSelected ? 'text-white' : 'text-cream-muted'}`}>
                                 {dayName}
                               </span>
 
@@ -853,11 +841,7 @@ export function Landing() {
                                 {dayNumber}
                               </span>
 
-                              <span
-                                className={`text-[9px] uppercase font-medium ${
-                                  isSelected ? 'text-sky-200' : 'text-cream-muted/70'
-                                }`}
-                              >
+                              <span className={`text-[9px] uppercase font-medium ${isSelected ? 'text-white/80' : 'text-cream-muted/60'}`}>
                                 {monthName}
                               </span>
 
@@ -872,176 +856,167 @@ export function Landing() {
                           );
                         })}
                       </div>
-
-                      <button
-                        onClick={() => setWeekOffset((w) => w + 1)}
-                        disabled={isNextWeekDisabled}
-                        title={isNextWeekDisabled ? `Bookings open up to ${maxAdvanceDays} days ahead` : undefined}
-                        className="hidden h-14 w-10 shrink-0 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-cream-muted transition hover:border-sky-400/60 hover:text-sky-200 disabled:opacity-30 sm:flex"
-                        aria-label="Next week"
-                      >
-                        <ChevronRight className="h-5 w-5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="mb-3.5 flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full border border-sky-400/50 bg-sky-600 text-xs font-bold text-white shadow-sm">
-                        2
-                      </div>
-                      <h3 className="text-sm font-bold text-cream sm:text-base">
-                        Choose <span className="text-accent-400">Court & Time</span>
-                      </h3>
                     </div>
 
-                    <span className="rounded-full border border-sky-400/40 bg-sky-950/50 px-3 py-1 text-xs font-semibold text-sky-200 shadow-sm">
-                      <span className="sm:hidden">
-                        {new Date(`${selectedDate}T00:00:00`).toLocaleDateString('en-US', {
-                          weekday: 'short',
-                          month: 'short',
-                          day: 'numeric',
-                        })}
-                      </span>
-                      <span className="hidden sm:inline">{formatDateLong(selectedDate)}</span>
-                    </span>
-                  </div>
-
-                  {/* Status legend — Open Play removed */}
-                  <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-b border-neutral-800 pb-3 text-[11px] text-cream-muted">
-                    <div className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full border border-[#ED1C24] bg-[#ED1C24]/40" />
-                      <span>Available</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full bg-amber-400" />
-                      <span>Pending</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full bg-neutral-600" />
-                      <span>Booked</span>
-                    </div>
-                  </div>
-
-                  {loadingSlots || loadingCourts || loadingOpenPlay ? (
-                    <LoadingSpinner className="py-12 md:py-20" />
-                  ) : error ? (
-                    <div className="py-8 text-center font-medium text-amber-400 md:py-16">{error}</div>
-                  ) : courts.length === 0 ? (
-                    <div className="py-8 text-center text-sm font-medium text-cream-muted md:py-16">
-                      No courts found.
-                    </div>
-                  ) : allPeriodsEmpty ? (
-                    <div className="rounded-2xl border border-neutral-700 bg-neutral-950/40 p-8 text-center">
-                      <Clock className="mx-auto h-8 w-8 text-sky-400/50" />
-                      <p className="mt-3 text-sm font-semibold text-cream">
-                        {selectedDate === todayISO()
-                          ? BOOKING_COPY.emptyState.titleToday
-                          : BOOKING_COPY.emptyState.titleFuture}
-                      </p>
-                      <p className="mt-1 text-xs text-cream-muted">
-                        {BOOKING_COPY.emptyState.description}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="block">
-                      <div className="max-h-[75vh] overflow-y-auto overflow-x-auto rounded-2xl border border-neutral-700 bg-neutral-950/40">
-                        <div className="w-full p-4 sm:min-w-[580px]">
-                          <div
-                            className="sticky top-0 z-30 -mx-4 -mt-4 mb-4 border-b border-neutral-700 bg-neutral-900 px-4 py-3 text-center text-xs font-extrabold uppercase tracking-wider text-cream shadow-md backdrop-blur-md"
-                            style={{
-                              display: 'grid',
-                              gridTemplateColumns: `repeat(${courts.length}, minmax(90px, 1fr))`,
-                              gap: '0.75rem',
-                            }}
-                          >
-                            {courts.map((court, idx) => {
-                              const accent = getCourtAccent(idx);
-                              return (
-                                <div
-                                  key={court.id}
-                                  className={`flex items-center justify-center gap-2 truncate ${accent.header}`}
-                                >
-                                  <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${accent.dot}`} />
-                                  <span className="truncate font-bold">{court.name}</span>
-                                </div>
-                              );
-                            })}
+                    {/* Step 2: Time Slots Matrix (Preserved from original) */}
+                    <div>
+                      <div className="mb-3.5 flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-rose-600 text-xs font-bold text-white shadow-sm">
+                            2
                           </div>
+                          <h3 className="text-sm font-bold text-cream sm:text-base">
+                            Choose <span className="text-accent-400">Court & Time</span>
+                          </h3>
+                        </div>
 
-                          <div className="space-y-6">
-                            {morningTimes.length > 0 && (
-                              <DesktopPeriodSection
-                                title="MORNING"
-                                icon={<CloudSun className="h-4 w-4 text-sky-300" />}
-                                courts={courts}
-                                timeIntervals={morningTimes}
-                                getSlotForCourtAndTime={getSlotForCourtAndTime}
-                                selectedSlotIds={selectedSlotIds}
-                                onToggleSlot={toggleSlot}
-                                getOpenPlaySession={getOpenPlaySessionForSlot}
-                                onOpenPlayClick={handleOpenPlayClick}
-                              />
-                            )}
-                            {afternoonTimes.length > 0 && (
-                              <DesktopPeriodSection
-                                title="AFTERNOON"
-                                icon={<Sun className="h-4 w-4 text-sky-300" />}
-                                courts={courts}
-                                timeIntervals={afternoonTimes}
-                                getSlotForCourtAndTime={getSlotForCourtAndTime}
-                                selectedSlotIds={selectedSlotIds}
-                                onToggleSlot={toggleSlot}
-                                getOpenPlaySession={getOpenPlaySessionForSlot}
-                                onOpenPlayClick={handleOpenPlayClick}
-                              />
-                            )}
-                            {eveningTimes.length > 0 && (
-                              <DesktopPeriodSection
-                                title="EVENING"
-                                icon={<Moon className="h-4 w-4 text-sky-300" />}
-                                courts={courts}
-                                timeIntervals={eveningTimes}
-                                getSlotForCourtAndTime={getSlotForCourtAndTime}
-                                selectedSlotIds={selectedSlotIds}
-                                onToggleSlot={toggleSlot}
-                                getOpenPlaySession={getOpenPlaySessionForSlot}
-                                onOpenPlayClick={handleOpenPlayClick}
-                              />
+                        <span className="rounded-full border border-neutral-700 bg-neutral-800/80 px-3 py-1 text-xs font-semibold text-cream-muted shadow-sm">
+                          <span className="sm:hidden">
+                            {new Date(`${selectedDate}T00:00:00`).toLocaleDateString('en-US', {
+                              weekday: 'short',
+                              month: 'short',
+                              day: 'numeric',
+                            })}
+                          </span>
+                          <span className="hidden sm:inline">{formatDateLong(selectedDate)}</span>
+                        </span>
+                      </div>
+
+                      {/* Status legend */}
+                      <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-b border-neutral-800 pb-3 text-[11px] text-cream-muted">
+                        <div className="flex items-center gap-1.5">
+                          <span className="h-2 w-2 rounded-full border border-[#ED1C24] bg-[#ED1C24]/40" />
+                          <span>Available</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="h-2 w-2 rounded-full bg-amber-400" />
+                          <span>Pending</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="h-2 w-2 rounded-full bg-neutral-600" />
+                          <span>Booked</span>
+                        </div>
+                      </div>
+
+                      {loadingSlots || loadingCourts || loadingOpenPlay ? (
+                        <LoadingSpinner className="py-12 md:py-20" />
+                      ) : error ? (
+                        <div className="py-8 text-center font-medium text-amber-400 md:py-16">{error}</div>
+                      ) : courts.length === 0 ? (
+                        <div className="py-8 text-center text-sm font-medium text-cream-muted md:py-16">
+                          No courts found.
+                        </div>
+                      ) : allPeriodsEmpty ? (
+                        <div className="rounded-2xl border border-neutral-800 bg-neutral-950/40 p-8 text-center">
+                          <Clock className="mx-auto h-8 w-8 text-neutral-500" />
+                          <p className="mt-3 text-sm font-semibold text-cream">
+                            {selectedDate === todayISO()
+                              ? BOOKING_COPY.emptyState.titleToday
+                              : BOOKING_COPY.emptyState.titleFuture}
+                          </p>
+                          <p className="mt-1 text-xs text-cream-muted">
+                            {BOOKING_COPY.emptyState.description}
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="block">
+                          <div className="max-h-[75vh] overflow-y-auto overflow-x-auto rounded-2xl border border-neutral-800 bg-neutral-950/40">
+                            <div className="w-full p-4 sm:min-w-[580px]">
+                              {/* Courts Column Header */}
+                              <div
+                                className="sticky top-0 z-30 -mx-4 -mt-4 mb-4 border-b border-neutral-800 bg-neutral-900 px-4 py-3 text-center text-xs font-extrabold uppercase tracking-wider text-cream shadow-md backdrop-blur-md"
+                                style={{
+                                  display: 'grid',
+                                  gridTemplateColumns: `repeat(${courts.length}, minmax(90px, 1fr))`,
+                                  gap: '0.75rem',
+                                }}
+                              >
+                                {courts.map((court, idx) => {
+                                  const accent = getCourtAccent(idx);
+                                  return (
+                                    <div
+                                      key={court.id}
+                                      className={`flex items-center justify-center gap-2 truncate ${accent.header}`}
+                                    >
+                                      <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${accent.dot}`} />
+                                      <span className="truncate font-bold">{court.name}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+
+                              <div className="space-y-6">
+                                {morningTimes.length > 0 && (
+                                  <DesktopPeriodSection
+                                    title="MORNING"
+                                    icon={<CloudSun className="h-4 w-4 text-rose-400" />}
+                                    courts={courts}
+                                    timeIntervals={morningTimes}
+                                    getSlotForCourtAndTime={getSlotForCourtAndTime}
+                                    selectedSlotIds={selectedSlotIds}
+                                    onToggleSlot={toggleSlot}
+                                    getOpenPlaySession={getOpenPlaySessionForSlot}
+                                    onOpenPlayClick={handleOpenPlayClick}
+                                  />
+                                )}
+                                {afternoonTimes.length > 0 && (
+                                  <DesktopPeriodSection
+                                    title="AFTERNOON"
+                                    icon={<Sun className="h-4 w-4 text-amber-400" />}
+                                    courts={courts}
+                                    timeIntervals={afternoonTimes}
+                                    getSlotForCourtAndTime={getSlotForCourtAndTime}
+                                    selectedSlotIds={selectedSlotIds}
+                                    onToggleSlot={toggleSlot}
+                                    getOpenPlaySession={getOpenPlaySessionForSlot}
+                                    onOpenPlayClick={handleOpenPlayClick}
+                                  />
+                                )}
+                                {eveningTimes.length > 0 && (
+                                  <DesktopPeriodSection
+                                    title="EVENING"
+                                    icon={<Moon className="h-4 w-4 text-sky-400" />}
+                                    courts={courts}
+                                    timeIntervals={eveningTimes}
+                                    getSlotForCourtAndTime={getSlotForCourtAndTime}
+                                    selectedSlotIds={selectedSlotIds}
+                                    onToggleSlot={toggleSlot}
+                                    getOpenPlaySession={getOpenPlaySessionForSlot}
+                                    onOpenPlayClick={handleOpenPlayClick}
+                                  />
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Desktop Slot Selection Bar */}
+                      <div className="mt-8 hidden items-center justify-between gap-4 rounded-xl border border-neutral-800 bg-neutral-850 p-5 sm:flex">
+                        <div>
+                          <span className="text-xs font-semibold uppercase tracking-wider text-rose-400">
+                            Selected Slots
+                          </span>
+                          <div className="text-lg font-bold text-cream">
+                            {selectedSlotIds.length} slot{selectedSlotIds.length !== 1 && 's'} chosen
+                            {selectedSlotIds.length > 0 && (
+                              <span className="ml-2 text-base font-semibold text-accent-400">
+                                ({formatCurrency(totalSelected)})
+                              </span>
                             )}
                           </div>
                         </div>
+
+                        <Button
+                          size="md"
+                          onClick={() => navigate('/booking')}
+                          disabled={selectedSlotIds.length === 0 || !bookingsEnabled}
+                          rightIcon={<ArrowRight className="h-5 w-5" />}
+                        >
+                          Proceed to Reservation
+                        </Button>
                       </div>
                     </div>
-                  )}
-
-                  <div className="mt-8 hidden items-center justify-between gap-4 rounded-xl border border-neutral-700 bg-neutral-800/90 p-5 sm:flex">
-                    <div>
-                      <span className="text-xs font-semibold uppercase tracking-wider text-sky-300">
-                        Selected Slots
-                      </span>
-                      <div className="text-lg font-bold text-cream">
-                        {selectedSlotIds.length} slot{selectedSlotIds.length !== 1 && 's'} chosen
-                        {selectedSlotIds.length > 0 && (
-                          <span className="ml-2 text-base font-semibold text-accent-400">
-                            ({formatCurrency(totalSelected)})
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <Button
-                      size="md"
-                      onClick={() => navigate('/booking')}
-                      disabled={selectedSlotIds.length === 0 || !bookingsEnabled}
-                      rightIcon={<ArrowRight className="h-5 w-5" />}
-                    >
-                      Proceed to Reservation
-                    </Button>
-                  </div>
-                </div>
                   </>
                 )}
               </div>
@@ -1050,6 +1025,7 @@ export function Landing() {
         </section>
       </div>
 
+      {/* Mobile Sticky Bottom Floating Action Bar */}
       {selectedSlotIds.length > 0 && bookingsEnabled && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-700 bg-charcoal/95 p-3.5 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-md sm:hidden">
           <div className="flex items-center gap-3">
@@ -1071,7 +1047,7 @@ export function Landing() {
         </div>
       )}
 
-      {/* ─── Find Us (Google Maps) ─── */}
+      {/* Find Us Section */}
       <section className="border-b border-neutral-800 bg-neutral-950/60 py-12 sm:py-20">
         <div className="container-page">
           <div className="mb-8 text-center sm:mb-12">
@@ -1086,7 +1062,7 @@ export function Landing() {
             </p>
           </div>
 
-          <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-neutral-700 bg-neutral-900/80 shadow-xl">
+          <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/80 shadow-xl">
             <div className="relative w-full aspect-[4/3] sm:aspect-auto sm:h-[500px]">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d280.2669586700182!2d126.20822932494922!3d9.053797356959693!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x330237000c13b973%3A0xfc62991506f06131!2sSmash%20Point%20Pickle%20Sports%20Center!5e1!3m2!1sen!2sph!4v1793489693612!5m2!1sen!2sph"
@@ -1127,7 +1103,7 @@ export function Landing() {
                 transition={{ delay: i * 0.1 }}
                 className="relative"
               >
-                <div className="mb-3 font-display text-4xl font-extrabold tracking-tight text-sky-400/30 sm:mb-4 sm:text-5xl">
+                <div className="mb-3 font-display text-4xl font-extrabold tracking-tight text-neutral-700 sm:mb-4 sm:text-5xl">
                   {item.step}
                 </div>
 
@@ -1135,7 +1111,7 @@ export function Landing() {
                 <p className="mt-2 text-xs leading-relaxed text-cream-muted sm:text-sm">{item.desc}</p>
 
                 {i < 3 && (
-                  <div className="mt-6 hidden h-px bg-gradient-to-r from-sky-400/40 via-sky-400/10 to-transparent md:block" />
+                  <div className="mt-6 hidden h-px bg-gradient-to-r from-neutral-800 via-neutral-700/50 to-transparent md:block" />
                 )}
               </motion.div>
             ))}
@@ -1150,7 +1126,7 @@ export function Landing() {
 }
 
 // --------------------------------------------------------
-// SUB-COMPONENTS
+// SUB-COMPONENTS (Original Timeslot Table Intact)
 // --------------------------------------------------------
 
 function DesktopPeriodSection({
@@ -1178,10 +1154,10 @@ function DesktopPeriodSection({
     <div>
       <div className="mb-3 flex items-center gap-2">
         <span className="h-4 w-4">{icon}</span>
-        <span className="text-xs font-bold uppercase tracking-wider text-sky-300">
+        <span className="text-xs font-bold uppercase tracking-wider text-cream-muted">
           {title}
         </span>
-        <div className="h-px flex-1 bg-neutral-700/80" />
+        <div className="h-px flex-1 bg-neutral-800" />
       </div>
 
       <div className="space-y-2.5">
@@ -1294,7 +1270,6 @@ function SlotPill({
   } else if (isPending) {
     styleClasses = 'border-amber-500/40 bg-amber-500/10 text-amber-300/80 cursor-not-allowed';
   } else if (isSelected) {
-    // Selected state: solid background, white text
     styleClasses = 'border-white bg-[#ED1C24] text-white font-bold shadow-[0_0_16px_rgba(237,28,36,0.35)]';
   }
 
